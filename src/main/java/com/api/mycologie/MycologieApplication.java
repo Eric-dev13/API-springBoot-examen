@@ -14,4 +14,5 @@ public class MycologieApplication implements CommandLineRunner {
 	public void run(String... args) throws Exception {
  		System.out.println("L'application est démarré !");
 	}
+
 }
