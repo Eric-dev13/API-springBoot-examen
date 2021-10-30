@@ -29,10 +29,11 @@ public class UserService {
     }
 
     public void updateUser(final Long userId, UserEntity userEntity) {
-        Optional<UserEntity> user = userRepository.findById(userId);
-        // Mapping
-        // user.name =  userEntity.name
-        // ...
+        // get userEntity  by userId
+        Optional<UserEntity> optionalUser = userRepository.findById(userId);
+
+        // Update methode
+        userRepository.save(optionalUser.get());
     }
 
     public void deleteUser(final Long userId) {
