@@ -47,11 +47,13 @@ public class UserEntity {
     // METHODES
    @PrePersist
     public void prePresist(){
+
        this.createdAt = LocalDateTime.now();
    }
 
    @PreUpdate
     public void preUpdate() {
+
        this.updatedAt = LocalDateTime.now();
    }
 
