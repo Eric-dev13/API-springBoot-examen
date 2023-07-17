@@ -1,6 +1,9 @@
 package com.api.mushroom.entity;
 
 
+import com.api.mushroom.repository.UserRepository;
+import com.github.slugify.Slugify;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import jakarta.persistence.*;
@@ -11,6 +14,9 @@ import java.util.Set;
 @Data
 @Table(name = "mushroom")
 public class MushroomEntity {
+    // instanciation de la classe slugify dans le constructeur (injection de dépendance).
+    //private final Slugify slugify;
+
     // DECLARATION DES ATTRIBUTS
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // id auto-incrémente
@@ -49,6 +55,9 @@ public class MushroomEntity {
     @Column(name="comment")
     private String comment;
 
+    @Column(name="slug")
+    private String slug;
+
     /*
     // RELATIONS
     @ManyToOne(fetch = FetchType.LAZY)
@@ -85,8 +94,10 @@ public class MushroomEntity {
     // METHODES
     @PrePersist
     public void prePresist(){
-        // Enregistre la date au moment de la création d'un compte.
+        // Enregistre la date au moment de la création d'un enregistrement.
         this.createdAt = LocalDateTime.now();
+        // Génère un slug à partir du nom commun (champ obligatoire) au moment de la création d'un enregistrement.
+        //this.slug = slugify.slugify(this.commonname);
     }
 
     @PreUpdate

@@ -17,28 +17,31 @@ import java.util.Optional;
 @Service
 public class UserService {
 
-    // Lombok va génèrer un constructeur avec un paramètre pour chaque constante (final)
+    // Via l'annotation @RequiredArgsConstructor Lombok va génèrer un constructeur avec un paramètre pour chaque constante (final)
     private final UserEntityJpaRepository userEntityJpaRepository;
-    final UserRepository userRepository;
+    // private final UserRepository userRepository;
 
+    // GET - Récupère un tableau d'enregistrement
     public Iterable<UserEntity> getAll(){
-        return userRepository.findAll();
+        return userEntityJpaRepository.findAll();
     }
 
-    // Récupère une entité par son identifiant
+    // GET - Récupère un enregistrement par l'ID
     public Optional<UserEntity> getById(Long id){
         return userEntityJpaRepository.findById(id);
     }
 
-    // UPDATE : Mettre à jour un compte utilisateur
+    // POST : Ajouter un enregistrement
     public UserEntity add(@RequestBody UserEntity userEntity){
         return userEntityJpaRepository.save(userEntity);
     }
 
+    // UPDATE : Mettre à jour un enregistrement
     public UserEntity edit(@RequestBody UserEntity userEntity){
         return userEntityJpaRepository.save(userEntity);
     }
 
+    // delete : Supprimer un enregistrement
     public void delete(Long id) {
         userEntityJpaRepository.deleteById(id);
     }
@@ -51,7 +54,7 @@ public class UserService {
         return userDAO.entityMappingToDto(optionalUserEntity.get());
     }
 
-        public UserEntity addUser(@RequestBody UserDTO userDTO) {
+    public UserEntity addUser(@RequestBody UserDTO userDTO) {
         UserDAO userDAO = new UserDAO();
         UserEntity userEntity = userDAO.dtoMappingToEntity(userDTO);
         return userRepository.save(userEntity);

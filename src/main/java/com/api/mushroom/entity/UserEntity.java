@@ -40,7 +40,7 @@ public class UserEntity implements Serializable, UserDetails {
     @Column(name = "pseudo", length = 255)
     private String pseudo;
 
-    @Column(name = "lastname", length = 255, nullable = true)
+    @Column(name = "lastname", length = 255)
     private String lastname;
 
     @Column(name = "firstname", length = 255)
