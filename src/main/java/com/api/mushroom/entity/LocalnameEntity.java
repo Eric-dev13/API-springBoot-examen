@@ -1,5 +1,6 @@
 package com.api.mushroom.entity;
 
+import com.github.slugify.Slugify;
 import lombok.Data;
 
 import jakarta.persistence.*;
@@ -15,11 +16,11 @@ public class LocalnameEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY) // id auto-incrémente
     private Long id;
 
-    @Column(name="created_at")
-    private LocalDateTime createdAt;
-
     @Column(name="name")
     private String name;
+
+    @Column(name="slug", length =255, unique = true)
+    private String slug;
 
     /*
     // RELATION (table de jointure)
@@ -27,9 +28,13 @@ public class LocalnameEntity {
     Set<MushroomEntity> mushroomEntities;
      */
 
-    // METHODES
+    // METHODES pour générer automatiquement un slug (identifiant unique texte remplacant l'id dans l'url) avant la mise à jour de base de donnée.
+    /*
     @PrePersist
-    public void prePresist(){
-        this.createdAt = LocalDateTime.now();
+    public void SlugGenerator() {
+        final Slugify slugify = Slugify.builder().build();
+        this.slug = slugify.slugify(this.name);
     }
+     */
+
 }

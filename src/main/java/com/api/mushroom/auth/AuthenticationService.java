@@ -22,11 +22,14 @@ public class AuthenticationService {
 
     public AuthenticationResponse register(RegisterRequest request) {
        var user = UserEntity.builder()
-               .firstname(request.getFirstname())
+               .pseudo(request.getPseudo())
+               .role(Role.USER)
                .lastname(request.getLastname())
+               .firstname(request.getFirstname())
                .email(request.getEmail())
                .password(passwordEncoder.encode(request.getPassword()))
-               .role(Role.USER)
+               .avatar(request.getAvatar())
+               .isVerified(false)
                .build();
         userEntityJpaRepository.save(user);
         var jwtToken = jwtService.generateToken(user);

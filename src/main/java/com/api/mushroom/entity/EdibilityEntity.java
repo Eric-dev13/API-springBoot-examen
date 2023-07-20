@@ -17,6 +17,12 @@ public class EdibilityEntity {
     @Column(name="name")
     private String name;
 
+    @Column(name="path")
+    private String path;
+
+    @Column(name="slug")
+    private String slug;
+
     /*
     // ASSOCIATION
     @OneToMany(mappedBy = "lamellaType", fetch = FetchType.LAZY)

@@ -1,6 +1,7 @@
 package com.api.mushroom.entity;
 
 import com.api.mushroom.security.Role;
+import com.github.slugify.Slugify;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -29,16 +30,14 @@ public class UserEntity implements Serializable, UserDetails {
     @Column(name="created_at")
     private LocalDateTime createdAt;
 
-    @Column(name="updated_at", nullable = true)
+    @Column(name="updated_at")
     private LocalDateTime updatedAt;
 
-    // @Column(name = "role")
-    // private String role;
+    @Column(name = "pseudo", length = 255, nullable = false)
+    private String pseudo;
+
     @Enumerated(EnumType.STRING)
     private Role role;
-
-    @Column(name = "pseudo", length = 255)
-    private String pseudo;
 
     @Column(name = "lastname", length = 255)
     private String lastname;
@@ -52,27 +51,30 @@ public class UserEntity implements Serializable, UserDetails {
     @Column(name = "password", length = 255)
     private String password;
 
-    // RELATIONS
-    /* @OneToMany(mappedBy = "userEntity", fetch = FetchType.LAZY)
-    private Set<MushroomEntity> mushroomEntities; */
+    @Column(name = "avatar", length = 255)
+    private String avatar;
 
+    @Column(name = "is_verified")
+    private Boolean isVerified;
 
-    // METHODES
-   @PrePersist
+    @Column(name="slug", length =255, unique = true)
+    private String slug;
+
+    // METHODES pour stocker automatiquement la date de création de l'enregistrement en de base de données.
+    @PrePersist
     public void prePresist(){
-       this.createdAt = LocalDateTime.now();
-   }
+        // Générer automatiquement un slug (identifiant unique texte remplacant l'id dans l'url) avant la mise à jour de base de donnée.
+        final Slugify slg = Slugify.builder().build();
+        this.slug = slg.slugify(this.pseudo);
+        // stocker automatiquement la date de création de l'enregistrement en de base de données.
+        this.createdAt = LocalDateTime.now();
+    }
 
-   @PreUpdate
+    // METHODES pour stocker automatiquement la date de mise à jour de l'enregistrement dans la base de données.
+    @PreUpdate
     public void preUpdate() {
-       this.updatedAt = LocalDateTime.now();
-   }
-
-//   @PreRemove
-//   private void preRemove() {
-//       this.mushroomEntities.forEach(mushroomEntity -> mushroomEntity.setUserEntity(null));
-//   }
-
+        this.updatedAt = LocalDateTime.now();
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

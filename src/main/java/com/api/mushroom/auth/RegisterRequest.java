@@ -1,5 +1,6 @@
 package com.api.mushroom.auth;
 
+import com.api.mushroom.security.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,9 +12,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RegisterRequest {
 
-    private String firstname;
+    private String pseudo;
+    private Role role;
     private String lastname;
+    private String firstname;
     private String email;
     private String password;
+    private String avatar;
+    private Boolean isVerified;
 
 }

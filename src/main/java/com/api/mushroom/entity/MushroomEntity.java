@@ -15,7 +15,8 @@ import java.util.Set;
 @Table(name = "mushroom")
 public class MushroomEntity {
     // instanciation de la classe slugify dans le constructeur (injection de dépendance).
-    //private final Slugify slugify;
+    // private final Slugify slugify;
+    //final Slugify slugify = Slugify.builder().build();
 
     // DECLARATION DES ATTRIBUTS
     @Id
@@ -31,79 +32,77 @@ public class MushroomEntity {
     @Column(name="visibility")
     private boolean visibility;
 
-    @Column(name="commonname", nullable = false)
+    @Column(name="commonname", length = 255, nullable = false)
     private String commonname;
 
-    @Column(name="latinname")
+    @Column(name="latinname", length =255)
     private String latinname;
 
-    @Column(name="flesh")
+    @Lob
+    @Column(name="flesh", columnDefinition = "LONGTEXT")
     private String flesh;
 
-    @Column(name="hat")
+    @Lob
+    @Column(name="hat", columnDefinition = "LONGTEXT")
     private String hat;
 
-    @Column(name="lamella")
+    @Lob
+    @Column(name="lamella", columnDefinition = "LONGTEXT")
     private String lamella;
 
-    @Column(name="foot")
+    @Lob
+    @Column(name="foot", columnDefinition = "LONGTEXT")
     private String foot;
 
-    @Column(name="habitat")
+    @Lob
+    @Column(name="habitat", columnDefinition = "LONGTEXT")
     private String habitat;
 
-    @Column(name="comment")
+    @Lob
+    @Column(name="comment", columnDefinition = "LONGTEXT")
     private String comment;
 
-    @Column(name="slug")
+    @Column(name="slug", length =255, unique = true)
     private String slug;
 
-    /*
-    // RELATIONS
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_user")
-    private UserEntity userEntity ;
-    */
 
-    /*
-    @OneToMany(mappedBy = "mushroomEntity", fetch = FetchType.LAZY)
-    private Set<MediaEntity> mediaEntities;
-    */
+    @ManyToOne
+    @JoinColumn(name = "id_lamella_type")
+    private LamellatypeEntity lamellatypeEntity;
 
-    /*
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_lamella") // La cle étrangère
-    private LamellatypeEntity lamellaType;
-    */
-
-     /*
-    @ManyToMany
-    @JoinTable(
-        name = "mushroom_localname",
-        joinColumns = @JoinColumn(name = "id_mushroom"),
-        inverseJoinColumns = @JoinColumn(name = "id_localname"))
-    private Set<LocalnameEntity> localnames;
-      */
-
-    /*
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_edibility") // Jointure vers la cle étrangère de la table comestibility
-    private EdibilityEntity edibilityEntity;
-     */
-
-    // METHODES
-    @PrePersist
-    public void prePresist(){
-        // Enregistre la date au moment de la création d'un enregistrement.
-        this.createdAt = LocalDateTime.now();
-        // Génère un slug à partir du nom commun (champ obligatoire) au moment de la création d'un enregistrement.
-        //this.slug = slugify.slugify(this.commonname);
+    public LamellatypeEntity getLamellatypeEntity() {
+        return lamellatypeEntity;
     }
 
+    public void setLamellatypeEntity(LamellatypeEntity lamellatypeEntity) {
+        this.lamellatypeEntity = lamellatypeEntity;
+    }
+
+
+    @PrePersist
+    public void prePresist(){
+        // Générer automatiquement un slug (identifiant unique texte remplacant l'id dans l'url) avant la mise à jour de base de donnée.
+        final Slugify slg = Slugify.builder().build();
+        this.slug = slg.slugify(this.commonname);
+        // stocker automatiquement la date de création de l'enregistrement en de base de données.
+        this.createdAt = LocalDateTime.now();
+    }
+
+    // METHODES pour stocker automatiquement la date de mise à jour de l'enregistrement dans la base de données.
     @PreUpdate
     public void preUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
+
+    // METHODES pour générer automatiquement un slug (identifiant unique texte remplacant l'id dans l'url) avant la mise à jour de base de donnée.
+
+    //@PrePersist
+    //public void SlugGenerator() {
+        //final Slugify slg = Slugify.builder().build();
+        //final String result = slg.slugify("Hello, world!");
+        // result: hello-world
+    //}
+
 
 
 }
