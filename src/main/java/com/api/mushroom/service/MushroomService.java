@@ -44,5 +44,4 @@ public class MushroomService {
         mushroomJpaRepository.deleteById(id);
     }
 
-
 }
