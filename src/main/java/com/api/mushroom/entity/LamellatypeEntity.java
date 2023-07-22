@@ -46,6 +46,7 @@ public class LamellatypeEntity {
         this.mushroomEntities = mushroomEntities;
     }
 
+
     // METHODES pour stocker automatiquement la date de création de l'enregistrement en de base de données.
     @PrePersist
     public void prePresist(){
@@ -59,13 +60,5 @@ public class LamellatypeEntity {
         this.updatedAt = LocalDateTime.now();
     }
 
-    // METHODES pour générer automatiquement un slug (identifiant unique texte remplacant l'id dans l'url) avant la mise à jour de base de donnée.
-    /*
-    @PrePersist
-    public void SlugGenerator() {
-        final Slugify slugify = Slugify.builder().build();
-        this.slug = slugify.slugify(this.name);
-    }
-     */
 
 }

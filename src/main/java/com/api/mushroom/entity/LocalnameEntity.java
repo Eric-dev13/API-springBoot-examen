@@ -16,25 +16,32 @@ public class LocalnameEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY) // id auto-incrémente
     private Long id;
 
+    @Column(name="created_at")
+    private LocalDateTime createdAt;
+
+    @Column(name="updated_at")
+    private LocalDateTime updatedAt;
+
+
     @Column(name="name")
     private String name;
 
     @Column(name="slug", length =255, unique = true)
     private String slug;
 
-    /*
-    // RELATION (table de jointure)
-    @ManyToMany
-    Set<MushroomEntity> mushroomEntities;
-     */
 
-    // METHODES pour générer automatiquement un slug (identifiant unique texte remplacant l'id dans l'url) avant la mise à jour de base de donnée.
-    /*
     @PrePersist
-    public void SlugGenerator() {
-        final Slugify slugify = Slugify.builder().build();
-        this.slug = slugify.slugify(this.name);
+    public void prePresist(){
+        // Générer automatiquement un slug (identifiant unique texte remplacant l'id dans l'url) avant la mise à jour de base de donnée.
+        final Slugify slg = Slugify.builder().build();
+        this.slug = slg.slugify(this.name);
+        // Stocker automatiquement la date de création de l'enregistrement en de base de données.
+        this.createdAt = LocalDateTime.now();
     }
-     */
 
+    @PreUpdate
+    // METHODES pour stocker automatiquement la date de mise à jour de l'enregistrement dans la base de données.
+    public void preUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
 }

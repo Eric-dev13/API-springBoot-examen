@@ -2,7 +2,6 @@ package com.api.mushroom.controller;
 
 import com.api.mushroom.entity.UserEntity;
 import com.api.mushroom.service.UserService;
-import com.api.mushroom.service.dto.UserDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +21,7 @@ public class UserController {
     // GET - Récupère un tableau d'enregistrement
     @Secured("ROLE_USER")
     @GetMapping("/")
-     public Iterable<UserEntity>getAll(){
+     public Iterable<UserEntity> getAll(){
         // retourne la liste des utilisateurs
         return userService.getAll();
      }
@@ -41,8 +40,8 @@ public class UserController {
 
     // UPDATE : Mettre à jour un enregistrement
     @PutMapping("/{id}")
-    public void edit(@PathVariable("id") final String id, @RequestBody final UserEntity userEntity) {
-        userService.edit(userEntity);
+    public UserEntity edit(@PathVariable("id") final String id, @RequestBody final UserEntity userEntity) {
+        return userService.edit(userEntity);
     }
 
     // DELETE : Supprimer un enregistrement

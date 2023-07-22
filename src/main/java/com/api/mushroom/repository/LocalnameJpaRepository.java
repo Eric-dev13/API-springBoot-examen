@@ -1,6 +1,6 @@
 package com.api.mushroom.repository;
 
-import com.api.mushroom.entity.LamellatypeEntity;
+import com.api.mushroom.entity.LocalnameEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -9,5 +9,5 @@ l'annotation @Repository sur l'interface indique à Spring que cette interface e
 que les exceptions DataAccessException qui se produisent au niveau de cette interface doivent être interceptées et traduites en exceptions plus spécifiques de Spring.
  */
 @Repository
-public interface LamellaTypeJpaRepository extends JpaRepository<LamellatypeEntity, Long> {
+public interface LocalnameJpaRepository extends JpaRepository<LocalnameEntity, Long> {
 }

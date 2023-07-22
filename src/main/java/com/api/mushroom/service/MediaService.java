@@ -1,7 +1,8 @@
 package com.api.mushroom.service;
 
+import com.api.mushroom.entity.MediaEntity;
 import com.api.mushroom.entity.MushroomEntity;
-import com.api.mushroom.repository.MushroomJpaRepository;
+import com.api.mushroom.repository.MediaJpaRepository;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -9,37 +10,36 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Optional;
 
-@Data
 @RequiredArgsConstructor
+@Data
 @Service
-public class MushroomService {
+public class MediaService {
 
     //private final MushroomRepository mushroomRepository;
-    private final MushroomJpaRepository mushroomJpaRepository;
+    private final MediaJpaRepository mediaJpaRepository;
 
     // GET - Récupère un tableau d'enregistrement
-    public Iterable<MushroomEntity> getAll() {
-        return mushroomJpaRepository.findAll();
+    public Iterable<MediaEntity> getAll() {
+        return mediaJpaRepository.findAll();
     }
 
     // GET - Récupère un enregistrement par l'ID
-    public Optional<MushroomEntity> getById(Long id){
-        return mushroomJpaRepository.findById(id);
+    public Optional<MediaEntity> getById(Long id){
+        return mediaJpaRepository.findById(id);
     }
 
     // POST : Ajouter un enregistrement
-    public MushroomEntity add(@RequestBody MushroomEntity mushroomEntity) {
-        return mushroomJpaRepository.save(mushroomEntity);
+    public MediaEntity add(@RequestBody MediaEntity mediaEntity) {
+        return mediaJpaRepository.save(mediaEntity);
     }
 
     // UPDATE : Mettre à jour un enregistrement
-    public MushroomEntity edit(@RequestBody MushroomEntity mushroomEntity){
-        return mushroomJpaRepository.save(mushroomEntity);
+    public MediaEntity edit(@RequestBody MediaEntity mediaEntity){
+        return mediaJpaRepository.save(mediaEntity);
     }
 
     // delete : Supprimer un enregistrement
     public void delete(Long id) {
-        mushroomJpaRepository.deleteById(id);
+        mediaJpaRepository.deleteById(id);
     }
-
 }

@@ -1,10 +1,7 @@
 package com.api.mushroom.service;
 
 import com.api.mushroom.entity.LamellatypeEntity;
-import com.api.mushroom.entity.MushroomEntity;
 import com.api.mushroom.repository.LamellaTypeJpaRepository;
-import com.api.mushroom.repository.LamellatypeRepository;
-import com.api.mushroom.repository.MushroomJpaRepository;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -12,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Optional;
 
-@Data
 @RequiredArgsConstructor
+@Data
 @Service
 public class LamellaTypeService {
     private final LamellaTypeJpaRepository lamellaTypeJpaRepository;

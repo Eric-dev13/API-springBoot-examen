@@ -2,9 +2,6 @@ package com.api.mushroom.service;
 
 import com.api.mushroom.entity.UserEntity;
 import com.api.mushroom.repository.UserEntityJpaRepository;
-import com.api.mushroom.repository.UserRepository;
-import com.api.mushroom.service.dto.UserDTO;
-import com.api.mushroom.service.mapperdao.UserDAO;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

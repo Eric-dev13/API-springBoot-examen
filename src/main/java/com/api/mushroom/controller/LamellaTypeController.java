@@ -1,7 +1,6 @@
 package com.api.mushroom.controller;
 
 import com.api.mushroom.entity.LamellatypeEntity;
-import com.api.mushroom.entity.MushroomEntity;
 import com.api.mushroom.service.LamellaTypeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -35,8 +34,8 @@ public class LamellaTypeController {
 
     // UPDATE : Mettre à jour un enregistrement
     @PutMapping("/{id}")
-    public void edit(@PathVariable("id") final String id, @RequestBody final LamellatypeEntity lamellatypeEntity) {
-        lamellaTypeService.edit(lamellatypeEntity);
+    public LamellatypeEntity edit(@PathVariable("id") final String id, @RequestBody final LamellatypeEntity lamellatypeEntity) {
+        return lamellaTypeService.edit(lamellatypeEntity);
     }
 
     // DELETE : Supprimer un enregistrement
