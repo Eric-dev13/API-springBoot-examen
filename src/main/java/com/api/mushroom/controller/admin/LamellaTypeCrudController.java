@@ -1,4 +1,4 @@
-package com.api.mushroom.controller;
+package com.api.mushroom.controller.admin;
 
 import com.api.mushroom.entity.LamellatypeEntity;
 import com.api.mushroom.service.LamellaTypeService;
@@ -9,8 +9,8 @@ import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/v1/lamellaType")
-public class LamellaTypeController {
+@RequestMapping("api/v1/admin/lamellaType")
+public class LamellaTypeCrudController {
     // Via l'annotation @RequiredArgsConstructor Lombok va génèrer un constructeur avec un paramètre pour chaque constante (final)
     final LamellaTypeService lamellaTypeService;
 
@@ -26,4 +26,21 @@ public class LamellaTypeController {
         return lamellaTypeService.getById(id);
     }
 
+    // POST : Ajouter un enregistrement
+    @PostMapping("/")
+    public LamellatypeEntity add(@RequestBody LamellatypeEntity lamellatypeEntity) {
+        return lamellaTypeService.add(lamellatypeEntity);
+    }
+
+    // UPDATE : Mettre à jour un enregistrement
+    @PutMapping("/{id}")
+    public LamellatypeEntity edit(@PathVariable("id") final String id, @RequestBody final LamellatypeEntity lamellatypeEntity) {
+        return lamellaTypeService.edit(lamellatypeEntity);
+    }
+
+    // DELETE : Supprimer un enregistrement
+    @DeleteMapping("/{id}")
+    public void deleter(@PathVariable("id") Long id){
+        lamellaTypeService.delete(id);
+    }
 }

@@ -2,7 +2,6 @@ package com.api.mushroom.entity;
 
 
 import com.github.slugify.Slugify;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import jakarta.persistence.*;
@@ -13,12 +12,12 @@ import java.util.Set;
 @Entity
 @Data
 @Table(name = "mushroom")
+@NamedQuery(name = "MushroomEntity.findAllIsVisibility", query = "SELECT e FROM MushroomEntity e WHERE e.visibility = :visibility")
 public class MushroomEntity {
-    // instanciation de la classe slugify dans le constructeur (injection de dépendance).
-    // private final Slugify slugify;
-    //final Slugify slugify = Slugify.builder().build();
 
-    // DECLARATION DES ATTRIBUTS
+    // =============================
+    // = DECLARATION DES ATTRIBUTS =
+    // =============================
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // id auto-incrémente
     private Long id;
@@ -29,7 +28,7 @@ public class MushroomEntity {
     @Column(name="updated_at")
     private LocalDateTime updatedAt;
 
-    @Column(name="visibility")
+    @Column(name="visibility",columnDefinition = "tinyint" )
     private boolean visibility;
 
     @Column(name="commonname", length = 255, nullable = false)
@@ -78,6 +77,7 @@ public class MushroomEntity {
         this.lamellatypeEntity = lamellatypeEntity;
     }
 
+
     // RELATIONS LOCALNAME
     @OneToMany(orphanRemoval = true)
     @JoinColumn(name = "mushroom_id")
@@ -94,7 +94,7 @@ public class MushroomEntity {
 
     // RELATIONS MEDIA mapping type: unidirectionnal joinColumn
     // Récupère la collection des médias lié avec l'enreigistrment One To Many
-    /*
+
     @OneToMany(orphanRemoval = true)
     @JoinColumn(name = "mushroom_id")
     private Set<MediaEntity> mediaEntities = new LinkedHashSet<>();
@@ -106,7 +106,7 @@ public class MushroomEntity {
     public void setMediaEntities(Set<MediaEntity> mediaEntities) {
         this.mediaEntities = mediaEntities;
     }
-     */
+
 
 
     // RELATIONS MEDIA mapping type: bidirectionnal joinColumn
@@ -120,7 +120,6 @@ public class MushroomEntity {
     public void setMediaEntitiesBidirectionnel(Set<MediaEntity> mediaEntitiesBidirectionnel) {
         this.mediaEntitiesBidirectionnel = mediaEntitiesBidirectionnel;
     }
-
 
 
     // RELATIONS EDIBILITY

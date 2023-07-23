@@ -59,5 +59,4 @@ public class MediaEntity {
         this.updatedAt = LocalDateTime.now();
     }
 
-
 }

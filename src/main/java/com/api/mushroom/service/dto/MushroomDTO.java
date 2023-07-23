@@ -1,8 +1,11 @@
 package com.api.mushroom.service.dto;
 
+import lombok.Data;
+
 import java.time.LocalDateTime;
 
-public class MushroomDto {
+@Data
+public class MushroomDTO {
     private Long id;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -14,4 +17,5 @@ public class MushroomDto {
     private String foot;
     private String habitat;
     private String comment;
+    private String slug;
 }

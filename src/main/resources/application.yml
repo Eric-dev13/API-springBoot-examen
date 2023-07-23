@@ -5,6 +5,7 @@
 server:
   port: 9000
 
+
 # ======================================
 # = CONFIGURATION DE LA JOURNALISATION =
 # ======================================
@@ -13,7 +14,7 @@ logging:
     # Permet de voir dans la console le port utilisé par Tomcat au démarrage
     org.springframework.boot.web.embedded.tomcat: INFO
     root: INFO
-    com.example: DEBUG
+    com.api: DEBUG
 
 # =============================
 # = DEFINIR PLUSIEURS PROFILS =
@@ -30,14 +31,19 @@ spring:
     # active: @spring.profiles.active@
 
 
+
 ---
+# =================================
+# = PROFIL PHASE DE DEVELOPPEMENT =
+# =================================
 spring:
   #  Définir des propriétés spécifiques pour chaque profil
   config:
     activate:
       on-profile: dev
+
   # ============================================
-  # = CONFIGURATION DE LA BASE DE DONNEE MySQL =
+  # = CONFIGURATION DE LA SOURCE DE DONNEE MySQL =
   # ============================================
   datasource:
     url: jdbc:mysql://localhost:3306/mushroom
@@ -45,16 +51,24 @@ spring:
     password:
     driver-class-name: com.mysql.cj.jdbc.Driver
     initialization-mode: always
-    data: ./data.sql
+
+
+  # ===========================================================
+  # = CONFIGURATION DES PROPRIETES JPA (Java Persistence API) =
+  # ===========================================================
   jpa:
     hibernate:
-       ddl-auto: create-drop   # Hibernate va créer le schéma de base de données à partir des entités annotées. À la fin de l'application, le schéma sera supprimé.
+      ddl-auto: create-drop   # Hibernate va créer le schéma de base de données à partir des entités annotées. À la fin de l'application, le schéma sera supprimé.
       # ddl-auto: create        # Hibernate va créer le schéma de base de données à partir des entités annotées. Si des tables existent déjà, elles seront supprimées et recréées.
       # ddl-auto: none         # Aucune action DDL automatique ne sera effectuée par Hibernate. Cela signifie que vous devez gérer manuellement la création et la mise à jour des schémas de base de données.
       # ddl-auto: update        # Hibernate va mettre à jour le schéma de base de données pour refléter les changements apportés aux entités annotées. Cela peut inclure la création de nouvelles tables, l'ajout de nouvelles colonnes, etc. Les données existantes ne seront pas supprimées.
       # ddl-auto: validate      # Hibernate va valider le schéma de base de données par rapport aux entités annotées, mais aucune modification ne sera apportée à la base de données.
 
 
+    # Si nous voulons toujours avoir à la fois la génération automatique de schéma Hibernate
+      # en conjugaison avec la création de schéma basée sur un script et le remplissage de données,
+      # nous devrons utiliser: (src/main/resources/data.sql)
+    defer-datasource-initialization: true
 
     # Le moyen le plus simple de vider les requêtes sql vers la sortie standard mais a priori non recommandé
     show-sql: true
@@ -64,21 +78,20 @@ spring:
         format_sql: true
         #database: mysql
         #database-plateform:
-      javax:
-        persistence:
-          schema-generation:
-            scripts:
-            # Génère un schéma de BDD avec Spring Boot JPA à partir des entités
-            # Actions ( https://www.baeldung.com/spring-data-jpa-generate-db-schema)
-            #       none            - ne génère aucune commande DDL
-            #       create          - génère uniquement des commandes de création de base de données
-            #       drop            - génère uniquement des commandes de suppression de base de données
-            #       drop-and-create - génère des commandes de suppression de base de données suivies de commandes de création
-            # action: create
-            # create-target: create.sql
-            # create-source: metadata
+
+
+  # Veuillez noter que pour toute initialisation basée sur un script, c’est-à-dire l’insertion de données via des données.sql
+    # ou la création de schéma via un schéma.sql (que nous apprendrons ensuite),
+    # nous devons définir la propriété ci-dessous:
+  sql:
+    init:
+      mode: always
+
 
 ---
+# ==============================
+# = PROFIL PHASE DE PRODUCTION =
+# ==============================
 spring:
   config:
     activate:

@@ -1,15 +1,16 @@
 {
 	"info": {
-		"_postman_id": "04a724d8-e30c-4c1c-b306-ee577f958c28",
+		"_postman_id": "49c24441-7946-46ba-a436-d125fe5bc409",
 		"name": "api-springBoot-mushroom",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "28174666"
 	},
 	"item": [
 		{
 			"name": "Authentification",
 			"item": [
 				{
-					"name": "Inscription minimaliste - MOI",
+					"name": "Inscription minimaliste - other user",
 					"request": {
 						"auth": {
 							"type": "noauth"
@@ -18,7 +19,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"pseudo\": \"ricou\",\r\n    \"email\":\"lanzae32@gmail.com\",\r\n    \"password\": \"1234\"\r\n}",
+							"raw": "{\r\n    \"pseudo\": \"other user\",\r\n    \"email\":\"otherusergmail.com\",\r\n    \"password\": \"1234\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -77,7 +78,41 @@
 					"response": []
 				},
 				{
-					"name": "Authenticate - MOI",
+					"name": "Authenticate - ADMIN",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\":\"lanzae32@gmail.com\",\r\n    \"password\": \"1234\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9000/api/v1/auth/authenticate",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"authenticate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Authenticate - USER",
 					"request": {
 						"auth": {
 							"type": "noauth"
@@ -265,7 +300,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:9000/api/v1/user/",
+							"raw": "http://localhost:9000/api/v1/admin/user/",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -274,6 +309,7 @@
 							"path": [
 								"api",
 								"v1",
+								"admin",
 								"user",
 								""
 							]
@@ -284,10 +320,20 @@
 				{
 					"name": "Show by  id",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Auth Token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:9000/api/v1/user/1",
+							"raw": "http://localhost:9000/api/v1/admin/user/1",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -296,6 +342,7 @@
 							"path": [
 								"api",
 								"v1",
+								"admin",
 								"user",
 								"1"
 							]
@@ -306,6 +353,16 @@
 				{
 					"name": "Add user",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Auth Token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [],
 						"body": {
@@ -318,7 +375,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:9000/api/v1/user/",
+							"raw": "http://localhost:9000/api/admin/v1/user/",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -326,6 +383,7 @@
 							"port": "9000",
 							"path": [
 								"api",
+								"admin",
 								"v1",
 								"user",
 								""
@@ -337,6 +395,16 @@
 				{
 					"name": "edit user (change all )",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Auth Token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "PUT",
 						"header": [],
 						"body": {
@@ -349,7 +417,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:9000/api/v1/user/",
+							"raw": "http://localhost:9000/api/admin/v1/user/",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -357,6 +425,7 @@
 							"port": "9000",
 							"path": [
 								"api",
+								"admin",
 								"v1",
 								"user",
 								""
@@ -391,14 +460,14 @@
 			"name": "mushroom",
 			"item": [
 				{
-					"name": "add",
+					"name": "add - admin",
 					"request": {
 						"auth": {
 							"type": "bearer",
 							"bearer": [
 								{
 									"key": "token",
-									"value": "",
+									"value": "{{Auth Token}}",
 									"type": "string"
 								}
 							]
@@ -415,7 +484,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:9000/api/v1/mushroom/",
+							"raw": "http://localhost:9000/api/v1/admin/mushroom/",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -424,6 +493,7 @@
 							"path": [
 								"api",
 								"v1",
+								"admin",
 								"mushroom",
 								""
 							]
@@ -432,14 +502,46 @@
 					"response": []
 				},
 				{
-					"name": "show all",
+					"name": "show all - admin",
 					"request": {
 						"auth": {
 							"type": "bearer",
 							"bearer": [
 								{
 									"key": "token",
-									"value": "",
+									"value": "{{Auth Token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9000/api/v1/admin/mushroom",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"api",
+								"v1",
+								"admin",
+								"mushroom"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "show all Is Visibility",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Auth Token}}",
 									"type": "string"
 								}
 							]
@@ -470,7 +572,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "",
+									"value": "{{Auth Token}}",
 									"type": "string"
 								}
 							]
@@ -495,14 +597,14 @@
 					"response": []
 				},
 				{
-					"name": "edit (change title and content)",
+					"name": "edit (change title and content) - admin",
 					"request": {
 						"auth": {
 							"type": "bearer",
 							"bearer": [
 								{
 									"key": "token",
-									"value": "",
+									"value": "{{Auth Token}}",
 									"type": "string"
 								}
 							]
@@ -519,7 +621,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:9000/api/v1/mushroom/1",
+							"raw": "http://localhost:9000/api/v1/admin/mushroom/1",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -528,6 +630,7 @@
 							"path": [
 								"api",
 								"v1",
+								"admin",
 								"mushroom",
 								"1"
 							]
@@ -536,9 +639,178 @@
 					"response": []
 				}
 			],
-			"auth": {
-				"type": "bearer"
-			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Media",
+			"item": [
+				{
+					"name": "add",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Auth Token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"New média\",\r\n    \"path\": \"619d434603bb8195867859.jpg\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9000/api/v1/admin/media/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"api",
+								"v1",
+								"admin",
+								"media",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "show all",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Auth Token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9000/api/v1/media",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"api",
+								"v1",
+								"media"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "show by  id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Auth Token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9000/api/v1/media/16",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"api",
+								"v1",
+								"media",
+								"16"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "edit (change title and content)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Auth Token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"update média\",\r\n    \"path\": \"619d434603bb8195867859.jpg\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9000/api/v1/admin/media/16",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"api",
+								"v1",
+								"admin",
+								"media",
+								"16"
+							]
+						}
+					},
+					"response": []
+				}
+			],
 			"event": [
 				{
 					"listen": "prerequest",
@@ -574,10 +846,6 @@
 		},
 		{
 			"name": "type de lamelle",
-			"item": []
-		},
-		{
-			"name": "Media",
 			"item": []
 		}
 	],

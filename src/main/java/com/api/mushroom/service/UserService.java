@@ -15,8 +15,9 @@ import java.util.Optional;
 public class UserService {
 
     // Via l'annotation @RequiredArgsConstructor Lombok va génèrer un constructeur avec un paramètre pour chaque constante (final)
+    // DAO : Data Acces Object permet de communiquer avec la DB
     private final UserEntityJpaRepository userEntityJpaRepository;
-    // private final UserRepository userRepository;
+
 
     // GET - Récupère un tableau d'enregistrement
     public Iterable<UserEntity> getAll(){
@@ -42,25 +43,5 @@ public class UserService {
     public void delete(Long id) {
         userEntityJpaRepository.deleteById(id);
     }
-
-    /*
-
-    public UserDTO getById(Long userId){
-        UserDAO userDAO = new UserDAO();
-        Optional <UserEntity> optionalUserEntity = userRepository.findById(userId);
-        return userDAO.entityMappingToDto(optionalUserEntity.get());
-    }
-
-    public UserEntity addUser(@RequestBody UserDTO userDTO) {
-        UserDAO userDAO = new UserDAO();
-        UserEntity userEntity = userDAO.dtoMappingToEntity(userDTO);
-        return userRepository.save(userEntity);
-    }
-
-    public void deleteUser(final Long userId) {
-        userRepository.deleteById(userId);
-    }
-
-     */
 
 }

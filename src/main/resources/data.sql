@@ -1,18 +1,27 @@
 --
--- Déchargement des données de la table `edibility`
+-- Déchargement des données de la table user
 --
-INSERT INTO `edibility` (`id`, `name`, `path`, `slug`) VALUES
-(1, 'Mortel', 'mortel.png', 'mortel'),
-(2, 'Toxique', 'toxique.png', 'toxique'),
-(3, 'A rejeter', 'rejeter.png', 'a-rejeter'),
-(4, 'Comestible médiocre', 'mediocre.png', 'comestible-mediocre'),
-(5, 'Bon comestible', 'bon.png', 'bon-comestible'),
-(6, 'Excellent comestible', 'excellent.png', 'excellent-comestible');
+INSERT INTO user (id, avatar, created_at, email, firstname, is_verified, lastname, password, pseudo, role, slug, updated_at) VALUES
+(1, NULL, '2023-07-23 11:16:10.472996', 'lanzae32@gmail.com', NULL, b'0', NULL, '$2a$10$adXxyDL/K/4Lf2sx1syJqOKxWy0E714q9Ifna16sI/kbGyOd29y82', 'admin', 'ADMIN', 'admin', NULL);
+
+INSERT INTO user (id, avatar, created_at, email, firstname, is_verified, lastname, password, pseudo, role, slug, updated_at) VALUES
+(2, NULL, '2023-07-23 11:31:53.420574', 'usergmail.com', NULL, b'0', NULL, '$2a$10$RUvHLtjyVyU5Lj49T5vbVO9/S0Duz0MZPgDcjZGdMWFd8/RuMzfL6', 'user', 'USER', 'user', NULL);
+COMMIT;
 
 --
--- Déchargement des données de la table `lamellatype`
+-- Déchargement des données de la table edibility
 --
-INSERT INTO `lamella_type` (`id`, `name`, `path`, `created_at`, `updated_at`, `slug`) VALUES
+INSERT INTO edibility (id, name, path, slug) VALUES (1, 'Mortel', 'mortel.png', 'mortel');
+INSERT INTO edibility (id, name, path, slug) VALUES  (2, 'Toxique', 'toxique.png', 'toxique');
+INSERT INTO edibility (id, name, path, slug) VALUES (3, 'A rejeter', 'rejeter.png', 'a-rejeter');
+INSERT INTO edibility (id, name, path, slug) VALUES (4, 'Comestible médiocre', 'mediocre.png', 'comestible-mediocre');
+INSERT INTO edibility (id, name, path, slug) VALUES (5, 'Bon comestible', 'bon.png', 'bon-comestible');
+INSERT INTO edibility (id, name, path, slug) VALUES (6, 'Excellent comestible', 'excellent.png', 'excellent-comestible');
+
+--
+-- Déchargement des données de la table lamellatype
+--
+INSERT INTO lamella_type (id, name, path, created_at, updated_at, slug) VALUES
 (1, 'Adnées', 'adnees.png', '2021-12-04 11:30:15', NULL, 'adnees'),
 (2, 'Décurrentes', 'decurrentes.png', '2021-12-04 11:30:15', NULL, 'decurrentes'),
 (3, 'Echancrées', 'echancrees.png', '2021-12-04 11:30:15', NULL, 'echancrees'),
@@ -23,9 +32,9 @@ INSERT INTO `lamella_type` (`id`, `name`, `path`, `created_at`, `updated_at`, `s
 (8, 'Subdécurrentes', 'subdecurrentes.png', '2021-12-04 11:30:15', NULL, 'subdecurrentes');
 
 --
--- Déchargement des données de la table `mushroom`
+-- Déchargement des données de la table mushroom
 --
-INSERT INTO `mushroom` (`id`, `lamellatype_id`, `edibility_id`, `created_at`, `updated_at`, `visibility`, `commonname`, `latinname`, `flesh`, `hat`, `lamella`, `foot`, `habitat`, `comment`, `slug`) VALUES
+INSERT INTO mushroom (id, lamellatype_id, edibility_id, created_at, updated_at, visibility, commonname, latinname, flesh, hat, lamella, foot, habitat, comment, slug) VALUES
 (1, NULL, 6, '2021-11-04 00:00:00', '2021-12-07 05:30:25', 1, 'Cèpe de Bordeaux', 'BOLETUS EDULIS', 'blanche.', 'de 10 à 20 cm, hémisphérique puis convexe, charnu, de couleur allant du beige au marron à brun noisette ou brun ochracé clair, parfois plus clair selon exposition, à marge épaisse, souvent excédente et généralement soulignée d\'un fin liseré blanchâtre.', 'tubes fins et serrés prolongés de pores d\'abord de couleur blanche à blanchâtre puis jaune, devenant ensuite verdâtre sur la fin.', 'robuste et ferme, renflé à ventru ou allongé en massue vers la base, de couleur fauve strié d\'un fin réseau blanc en saillie, devenant blanc vers la base.', NULL, 'excellent comestible.', 'cepe-de-bordeaux'),
 (2, NULL, 6, '2021-11-04 00:00:00', '2021-11-26 11:32:34', 1, 'Cèpe bronzé', 'BOLETUS AEREUS', 'saveur et odeur douces.', 'de 10 à 20 cm hémisphérique puis convexe, charnu, à surface plus ou moins bosselée et cuticule veloutée devenant mate, à marge lisse et régulière devenant très faiblement sinueuse, de couleur brun foncé à reflets bronzés, brun ochracés ou chamois, parfois plus clair selon l\'exposition.', 'tubes fins de couleur blanchâtre devenant crème puis jaune à jaune verdâtre en vieillissant', '6 à 10 cm, très trapu, robuste, renflé à la base, obèse même, de couleur chamois à roux, strié d\'un fin réseau d\'abord blanc puis brun ; en bordure de sentier, lorsqu\'il est bien exposé, il est parfois très court , le camouflant ainsi davantage dans la végétation ...', 'thermophile, il pousse de la fin de l\'été au début de l\'hiver, généralement dans les chênaies aérées.', 'La chair du bolet bronzé est blanche et ferme lorsqu\'il est frais et les spores sont de couleur brun olivâtre. Rarement isolé, il est le plus souvent entouré de plusieurs individus de la même espèce. Ses couleurs peuvent être claires ou sombres et il est assez fréquent de voir des individus à la cuticule aux couleurs zonées. Il s\'agit d\'un des plus fins champignons des bois qui dégage son arôme avec intensité à la cuisson.', 'cepe-bronze'),
 (3, NULL, 2, '2021-11-04 00:00:00', NULL, 1, 'Amanite tue mouches', 'AMANITA MUSCARIA', 'blanche.', 'après avoir émergé du sol, le chapeau est couvert de nombreuses verrues blanches en forme de pyramides.', 'libres, sont blanches, de même que l\'empreinte de spore.', 'est blanc, il mesure 5 à 20 centimètres de haut pour 1 à 2 centimètres de diamètre, et a la texture fibreuse et légèrement friable typique de la plupart des grands champignons. À sa base, la volve (ou bulbe) porte des résidus du voile universel sous la forme d\'un ou deux anneaux concentriques.', 'Amanita muscaria est un champignon cosmopolite, qui croît dans les forêts de conifères et de feuillus de toutes les régions tempérées et boréales de l\'hémisphère Nord.', 'toxique, hallucinogène.', 'amanite-tue-mouche'),
@@ -57,18 +66,18 @@ INSERT INTO `mushroom` (`id`, `lamellatype_id`, `edibility_id`, `created_at`, `u
 (38, NULL, NULL, '2022-04-27 04:44:28', NULL, 1, 'test', '', '', '', '', '', '', '', 'test');
 
 --
--- Déchargement des données de la table `localname`
+-- Déchargement des données de la table localname
 --
-INSERT INTO `localname` (`id`, `mushroom_id`, `created_at`, `name`, `updated_at`, `slug`) VALUES
+INSERT INTO localname (id, mushroom_id, created_at, name, updated_at, slug) VALUES
 (2, 9, '2021-12-09 22:54:42', 'Safrané', '2021-12-09 22:55:10', 'safrane'),
 (3, 8, '2021-12-09 22:55:52', 'Sanguin', NULL, 'sanguin'),
 (4, 8, '2021-12-09 22:56:05', 'Rouge', NULL, 'rouge'),
 (5, 8, '2021-12-09 22:56:33', 'Vineux', NULL, 'vineux');
 
 --
--- Déchargement des données de la table `media`
+-- Déchargement des données de la table media
 --
-INSERT INTO `media` (`id`, `mushroom_id`, `created_at`, `name`, `path`, `updated_at`) VALUES
+INSERT INTO media (id, mushroom_id, created_at, name, path, updated_at) VALUES
 (16, 1, '2021-11-23 19:38:46', NULL, '619d434603bb8195867859.jpg', '2021-11-23 19:38:46'),
 (17, 1, '2021-11-23 19:38:46', NULL, '619d434606189839000481.jpg', '2021-11-23 19:38:46'),
 (18, 1, '2021-11-23 19:38:46', NULL, '619d434607188955443823.jpg', '2021-11-23 19:38:46'),

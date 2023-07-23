@@ -1,4 +1,4 @@
-package com.api.mushroom.controller;
+package com.api.mushroom.controller.admin;
 
 
 import com.api.mushroom.entity.MediaEntity;
@@ -11,8 +11,8 @@ import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/v1/media")
-public class MediaController {
+@RequestMapping("api/v1/admin/media")
+public class MediaCrudController {
     // Via l'annotation @RequiredArgsConstructor Lombok va génèrer un constructeur avec un paramètre pour chaque constante (final)
     private final MediaService mediaService;
 
@@ -26,6 +26,25 @@ public class MediaController {
     @GetMapping("/{id}")
     public Optional<MediaEntity> getById(@PathVariable("id") Long id) {
         return mediaService.getById(id);
+    }
+
+    // POST : Ajouter un enregistrement
+    @PostMapping("/")
+    public MediaEntity add(@RequestBody MediaEntity mediaEntity) {
+        return mediaService.add(mediaEntity);
+    }
+
+    // UPDATE : Mettre à jour un enregistrement
+    @PutMapping("/{id}")
+    public MediaEntity edit(@PathVariable("id") final String id, @RequestBody final MediaEntity mediaEntity) {
+        return mediaService.edit(mediaEntity);
+    }
+
+    // DELETE : Supprimer un enregistrement
+    @DeleteMapping("/{id}")
+
+    public void deleter(@PathVariable("id") Long id){
+        mediaService.delete(id);
     }
 
 }

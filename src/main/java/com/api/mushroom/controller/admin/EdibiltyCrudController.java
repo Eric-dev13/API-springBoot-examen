@@ -1,4 +1,4 @@
-package com.api.mushroom.controller;
+package com.api.mushroom.controller.admin;
 
 import com.api.mushroom.entity.EdibilityEntity;
 import com.api.mushroom.service.EdibilityService;
@@ -9,8 +9,8 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("api/v1/edibility")
-public class EdibiltyController {
+@RequestMapping("api/v1/admin/edibility")
+public class EdibiltyCrudController {
 
     // Via l'annotation @RequiredArgsConstructor Lombok va génèrer un constructeur avec un paramètre pour chaque constante (final)
     private final EdibilityService edibilityService;
@@ -27,4 +27,21 @@ public class EdibiltyController {
         return edibilityService.getById(id);
     }
 
+    // POST : Ajouter un enregistrement
+    @PostMapping("/")
+    public EdibilityEntity add(@RequestBody EdibilityEntity edibilityEntity) {
+        return edibilityService.add(edibilityEntity);
+    }
+
+    // UPDATE : Mettre à jour un enregistrement
+    @PutMapping("/{id}")
+    public EdibilityEntity edit(@PathVariable("id") final String id, @RequestBody final EdibilityEntity edibilityEntity) {
+        return edibilityService.edit(edibilityEntity);
+    }
+
+    // DELETE : Supprimer un enregistrement
+    @DeleteMapping("/{id}")
+    public void deleter(@PathVariable("id") Long id){
+        edibilityService.delete(id);
+    }
 }

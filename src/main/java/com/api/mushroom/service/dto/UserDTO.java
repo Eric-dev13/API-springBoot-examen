@@ -1,14 +1,11 @@
 package com.api.mushroom.service.dto;
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 
-@Getter
-@Setter
+@Data
 public class UserDTO {
     private Long id;
     private LocalDateTime createdAt;
@@ -19,4 +16,5 @@ public class UserDTO {
     private String firstName;
     private String email;
     private String password;
+    private String avatar;
 }

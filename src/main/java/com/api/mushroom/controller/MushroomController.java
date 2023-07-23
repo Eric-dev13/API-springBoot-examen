@@ -18,33 +18,14 @@ public class MushroomController {
 
     // GET - Récupère un tableau d'enregistrement
     @GetMapping(name = "/")
-    public Iterable<MushroomEntity> getAll() {
-        return mushroomService.getAll();
+    public Iterable<MushroomEntity> findAllIsVisibility() {
+        return mushroomService.findAllIsVisibility();
     }
 
     // GET : Afficher un utilisateur via son ID
     @GetMapping("/{id}")
     public Optional<MushroomEntity> getById(@PathVariable("id") Long id) {
         return mushroomService.getById(id);
-    }
-
-    // POST : Ajouter un enregistrement
-    @PostMapping("/")
-    public MushroomEntity add(@RequestBody MushroomEntity mushroomEntity) {
-        return mushroomService.add(mushroomEntity);
-    }
-
-    // UPDATE : Mettre à jour un enregistrement
-    @PutMapping("/{id}")
-    public MushroomEntity edit(@PathVariable("id") final String id, @RequestBody final MushroomEntity mushroomEntity) {
-        return mushroomService.edit(mushroomEntity);
-    }
-
-    // DELETE : Supprimer un enregistrement
-    @DeleteMapping("/{id}")
-
-    public void deleter(@PathVariable("id") Long id){
-        mushroomService.delete(id);
     }
 
 }
