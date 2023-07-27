@@ -31,10 +31,10 @@ public class MediaEntity {
     private String slug;
 
     // RELATIONS MUSHROOM mapping type: bidirectionnal joinColumn
+    /*
     @ManyToOne
-    @JoinColumn(name = "mushroom_id")
-    private MushroomEntity mushroomEntity;
-
+    @JoinColumn(name = "mushroom_id") // nom de la colonne dans media pour stocker id mushroom
+    private MushroomEntity mushroomEntity; // reference vers l'entité cibler
     public MushroomEntity getMushroomEntity() {
         return mushroomEntity;
     }
@@ -42,6 +42,7 @@ public class MediaEntity {
     public void setMushroomEntity(MushroomEntity mushroomEntity) {
         this.mushroomEntity = mushroomEntity;
     }
+     */
 
 
     @PrePersist

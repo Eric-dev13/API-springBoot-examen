@@ -22,13 +22,11 @@ public class LocalnameEntity {
     @Column(name="updated_at")
     private LocalDateTime updatedAt;
 
-
     @Column(name="name")
     private String name;
 
     @Column(name="slug", length =255, unique = true)
     private String slug;
-
 
     @PrePersist
     public void prePresist(){

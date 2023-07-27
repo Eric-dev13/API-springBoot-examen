@@ -11,6 +11,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -20,16 +21,22 @@ public class SecurityConfiguration {
     private  final JwtAuthenticationFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
 
+
+    // https://docs.spring.io/spring-security/reference/servlet/authorization/authorize-http-requests.html#migrate-authorize-requests
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+            // Le http.securityMatcher indique que ce HttpSecurity s’applique uniquement aux URL commençant /api/.
+            .securityMatcher("/api/**")
+            .cors()
+            .and()
             .csrf()
             .disable()
             .authorizeHttpRequests()
-                //.requestMatchers("/api/v1/admin/**").hasRole("ADMIN")// Autoriser l'accès à /admin pour les utilisateurs avec le rôle "ADMIN"
                 //.requestMatchers("/api/v1/user/**").hasRole("USER")
-                .requestMatchers("/api/v1/auth/**").permitAll()
-                .anyRequest().authenticated()
+                //.requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
+                //.anyRequest().authenticate()
+                .anyRequest().permitAll()
             .and()
             .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)

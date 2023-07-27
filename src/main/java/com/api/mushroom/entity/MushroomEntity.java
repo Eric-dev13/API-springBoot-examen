@@ -7,6 +7,7 @@ import lombok.Data;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -81,45 +82,45 @@ public class MushroomEntity {
     // RELATIONS LOCALNAME
     @OneToMany(orphanRemoval = true)
     @JoinColumn(name = "mushroom_id")
-    private Set<LocalnameEntity> localnameEntities = new LinkedHashSet<>();
+    private Set<LocalnameEntity> localnames = new LinkedHashSet<>();
 
-    public Set<LocalnameEntity> getLocalnameEntities() {
-        return localnameEntities;
+    public Set<LocalnameEntity> getLocalnames() {
+        return localnames;
     }
 
-    public void setLocalnameEntities(Set<LocalnameEntity> localnameEntities) {
-        this.localnameEntities = localnameEntities;
+    public void setLocalnames(Set<LocalnameEntity> localnames) {
+        this.localnames = localnames;
     }
 
 
     // RELATIONS MEDIA mapping type: unidirectionnal joinColumn
-    // Récupère la collection des médias lié avec l'enreigistrment One To Many
-
+    // Récupère la collection des médias lié avec l'enreigistrement One To Many
     @OneToMany(orphanRemoval = true)
     @JoinColumn(name = "mushroom_id")
-    private Set<MediaEntity> mediaEntities = new LinkedHashSet<>();
+    private Set<MediaEntity> medias = new LinkedHashSet<>();
 
-    public Set<MediaEntity> getMediaEntities() {
-        return mediaEntities;
+    public Set<MediaEntity> getMedias() {
+        return medias;
     }
 
-    public void setMediaEntities(Set<MediaEntity> mediaEntities) {
-        this.mediaEntities = mediaEntities;
+    public void setMedias(Set<MediaEntity> medias) {
+        this.medias = medias;
     }
-
 
 
     // RELATIONS MEDIA mapping type: bidirectionnal joinColumn
+/*
     @OneToMany(mappedBy = "mushroomEntity", orphanRemoval = true)
-    private Set<MediaEntity> mediaEntitiesBidirectionnel = new LinkedHashSet<>();
+    private List<MediaEntity> mediasMapped;
 
-    public Set<MediaEntity> getMediaEntitiesBidirectionnel() {
-        return mediaEntitiesBidirectionnel;
+    public List<MediaEntity> getMediasMapped() {
+        return mediasMapped;
     }
 
-    public void setMediaEntitiesBidirectionnel(Set<MediaEntity> mediaEntitiesBidirectionnel) {
-        this.mediaEntitiesBidirectionnel = mediaEntitiesBidirectionnel;
+    public void setMediasMapped(List<MediaEntity> mediasMapped) {
+        this.mediasMapped = mediasMapped;
     }
+ */
 
 
     // RELATIONS EDIBILITY

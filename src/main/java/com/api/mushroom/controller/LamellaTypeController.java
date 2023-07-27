@@ -12,7 +12,7 @@ import java.util.Optional;
 @RequestMapping("api/v1/lamellaType")
 public class LamellaTypeController {
     // Via l'annotation @RequiredArgsConstructor Lombok va génèrer un constructeur avec un paramètre pour chaque constante (final)
-    final LamellaTypeService lamellaTypeService;
+    private final LamellaTypeService lamellaTypeService;
 
     // GET - Récupère un tableau d'enregistrement
     @GetMapping(name = "/")

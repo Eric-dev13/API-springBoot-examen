@@ -7,12 +7,14 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
+
 @RestController
 @RequiredArgsConstructor
+@CrossOrigin
 @RequestMapping("api/v1/admin/mushroom")
 public class MushroomCrudController {
     // Via l'annotation @RequiredArgsConstructor Lombok va génèrer un constructeur avec un paramètre pour chaque constante (final)
-    final MushroomService mushroomService;
+    private final MushroomService mushroomService;
 
     // GET - Récupère un tableau d'enregistrement
     @GetMapping(name = "/")
@@ -40,7 +42,6 @@ public class MushroomCrudController {
 
     // DELETE : Supprimer un enregistrement
     @DeleteMapping("/{id}")
-
     public void deleter(@PathVariable("id") Long id){
         mushroomService.delete(id);
     }

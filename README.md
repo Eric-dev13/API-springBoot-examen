@@ -44,6 +44,171 @@ Initialiser le projet avec le générateur https://start.spring.io/
 ![img.png](assets.readme/img.png)
 
 
+
+## Sécurité
+
+Gérer les autorisations sur des routes (endpoints) en utilisant Spring Security. Spring Security est un module de sécurité puissant qui permet de définir des règles d'accès et de contrôler l'accès aux ressources de votre application.
+
+Dans le contexte de Spring Security (la gestion de la sécurité dans les applications Spring), lorsque vous vous connectez avec succès en tant qu'utilisateur authentifié, vous obtenez un "jeton" (ou "token") d'accès qui vous permet d'accéder à certaines ressources protégées ou d'exécuter certaines actions spécifiques. Dans ce cas, vous pouvez dire que l'accès à ces ressources ou actions a été "granted" (accordé) à l'utilisateur.
+
+![](.\assets.readme\authorizationfilter.png)
+
+
+
+
+
+## HttpSécurité (Configuration par default)
+
+https://docs.spring.io/spring-security/reference/servlet/configuration/java.html
+
+Jusqu’à présent, notre [`WebSecurityConfig`](https://docs.spring.io/spring-security/reference/servlet/configuration/java.html#jc-hello-wsca) ne contient que des informations sur la façon d’authentifier nos utilisateurs. Comment Spring Security sait-elle que nous voulons exiger que tous les utilisateurs soient authentifiés ? Comment Spring Security sait-elle que nous voulons prendre en charge l’authentification basée sur les formulaires ? En fait, il existe une classe de configuration (appelée `SecurityFilterChain`) qui est appelée en arrière-plan. Il est configuré avec l’implémentation par défaut suivante :
+
+```java
+@Bean
+public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+	http
+		.authorizeRequests(authorize -> authorize
+			.anyRequest().authenticated()
+		)
+		.formLogin(withDefaults())
+		.httpBasic(withDefaults());
+	return http.build();
+}
+```
+
+La configuration par défaut (illustrée dans l’exemple précédent) :
+
+- Garantit que toute demande adressée à notre application nécessite que l’utilisateur soit authentifié
+
+- Permet aux utilisateurs de s’authentifier avec une connexion basée sur un formulaire
+
+- Permet aux utilisateurs de s’authentifier avec l’authentification HTTP Basic
+
+  
+
+### Configuration perso avec JWT
+
+````java
+// src/main/java/com/api/mushroom/configuration/SecurityConfiguration.java
+
+package com.api.mushroom.configuration;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+@Configuration
+@EnableWebSecurity
+@EnableMethodSecurity
+@RequiredArgsConstructor
+public class SecurityConfiguration {
+
+    private  final JwtAuthenticationFilter jwtAuthFilter;
+    private final AuthenticationProvider authenticationProvider;
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+            .csrf()
+            .disable()
+            .authorizeHttpRequests()
+                .requestMatchers("/api/v1/auth/**").permitAll()
+                .anyRequest().authenticated()
+            .and()
+            .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .authenticationProvider(authenticationProvider)
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+        return http.build();
+    }
+
+}
+````
+
+
+
+### Configurer la protection CSRF
+
+Spring Security protège par défaut contre les attaques CSRF, le `CsrfToken` est nécessaire chaque fois qu’une demande est effectuée avec une [méthode HTTP non sécurisée](https://docs.spring.io/spring-security/reference/features/exploits/csrf.html#csrf-protection-idempotent), telle qu’un POST. En outre, il est nécessaire pour toute requête qui  restitue le jeton à la réponse, telle qu’une page Web avec une balise  <`<form>`> qui inclut une `<input>` masquée pour le jeton CSRF.
+
+	@Configuration
+	@EnableWebSecurity
+	public class SecurityConfig {
+	@Bean
+	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+		http
+			// ...
+			.csrf(Customizer.withDefaults());
+		return http.build();
+		}
+	}
+https://docs.spring.io/spring-security/reference/servlet/exploits/csrf.html#servlet-csrf-configure-disable
+
+
+
+### CORS
+
+La méthode cors()  ajoutera le CorsFilter fourni par Spring au contexte de l'application, en contournant les vérifications d'autorisation pour les requêtes OPTIONS.
+
+````java
+ @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+            .cors()
+            .disable()
+            ...
+            ;
+        return http.build();
+    }
+````
+
+#### Configuration CORS globale
+````java
+@Override
+public void addCorsMappings(CorsRegistry registry) {
+registry.addMapping("/**");
+}
+````
+
+#### @CrossOrigin sur la méthode du contrôleur
+
+````java
+   public class MushroomCrudController {
+    // Via l'annotation @RequiredArgsConstructor Lombok va génèrer un constructeur avec un paramètre pour chaque constante (final)
+    final MushroomService mushroomService;
+
+    // GET - Récupère un tableau d'enregistrement
+    @CrossOrigin("http://example.com")
+    @GetMapping(name = "/")
+    public Iterable<MushroomEntity> getAll() {
+        return mushroomService.getAll();
+    }
+````
+
+#### @CrossOrigin sur une méthode de gestionnaire annoté @RequestMapping
+
+````java
+@RestController
+@RequiredArgsConstructor
+++ @CrossOrigin
+@RequestMapping("api/v1/admin/mushroom")
+public class MushroomCrudController {
+   ...
+}
+````
+
+
+
+
+
 ## Requête SQL
 
 Exemple de Named Query dans une entité avec Spring Boot et JPA :
@@ -125,11 +290,4 @@ Dans le repository JPA, nous avons défini une méthode `findByPriceGreaterThan`
        }
    }
    ````
-
-
-## Sécurité
-
-érer les autorisations sur des routes (endpoints) en utilisant Spring Security. Spring Security est un module de sécurité puissant qui permet de définir des règles d'accès et de contrôler l'accès aux ressources de votre application.
-
-Dans le contexte de Spring Security (la gestion de la sécurité dans les applications Spring), lorsque vous vous connectez avec succès en tant qu'utilisateur authentifié, vous obtenez un "jeton" (ou "token") d'accès qui vous permet d'accéder à certaines ressources protégées ou d'exécuter certaines actions spécifiques. Dans ce cas, vous pouvez dire que l'accès à ces ressources ou actions a été "granted" (accordé) à l'utilisateur.
 

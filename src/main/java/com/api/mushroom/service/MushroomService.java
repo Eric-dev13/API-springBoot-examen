@@ -48,7 +48,7 @@ public class MushroomService {
     }
 
     public List<MushroomEntity> findAllIsVisibility() {
-        return mushroomJpaRepository.findAllIsVisibility();
+        return mushroomJpaRepository.findAllIsVisibility(true);
     }
 
 

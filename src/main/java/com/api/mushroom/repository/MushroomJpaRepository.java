@@ -13,5 +13,5 @@ l'annotation @Repository sur l'interface indique à Spring que cette interface e
  */
 @Repository
 public interface MushroomJpaRepository extends JpaRepository<MushroomEntity, Long> {
-    List<MushroomEntity> findAllIsVisibility();
+    List<MushroomEntity> findAllIsVisibility(boolean visibility);
 }

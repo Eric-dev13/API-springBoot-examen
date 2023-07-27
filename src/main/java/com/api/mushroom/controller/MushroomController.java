@@ -10,11 +10,12 @@ import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
+@CrossOrigin
 @RequestMapping("api/v1/mushroom")
 public class MushroomController {
 
     // Via l'annotation @RequiredArgsConstructor Lombok va génèrer un constructeur avec un paramètre pour chaque constante (final)
-    final MushroomService mushroomService;
+    private final MushroomService mushroomService;
 
     // GET - Récupère un tableau d'enregistrement
     @GetMapping(name = "/")
