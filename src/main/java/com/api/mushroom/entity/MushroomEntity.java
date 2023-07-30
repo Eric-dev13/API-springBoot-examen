@@ -7,13 +7,15 @@ import lombok.Data;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
 @Data
 @Table(name = "mushroom")
-@NamedQuery(name = "MushroomEntity.findAllIsVisibility", query = "SELECT e FROM MushroomEntity e WHERE e.visibility = :visibility")
+@NamedQueries({
+    @NamedQuery(name = "MushroomEntity.findAllByVisibility", query = "SELECT m FROM MushroomEntity m WHERE m.visibility = :visibility"),
+    @NamedQuery(name = "MushroomEntity.findAllTitleImageEdibilityByVisibility", query = "SELECT m.commonname as commonname, m.medias as medias, m.edibility as edibility FROM MushroomEntity m WHERE m.visibility = :visibility")
+})
 public class MushroomEntity {
 
     // =============================
@@ -126,14 +128,14 @@ public class MushroomEntity {
     // RELATIONS EDIBILITY
     @ManyToOne
     @JoinColumn(name = "edibility_id")
-    private EdibilityEntity edibilityEntity;
+    private EdibilityEntity edibility;
 
-    public EdibilityEntity getEdibilityEntity() {
-        return edibilityEntity;
+    public EdibilityEntity getEdibility() {
+        return edibility;
     }
 
-    public void setEdibilityEntity(EdibilityEntity edibilityEntity) {
-        this.edibilityEntity = edibilityEntity;
+    public void setEdibilityEntity(EdibilityEntity edibility) {
+        this.edibility = edibility;
     }
 
 

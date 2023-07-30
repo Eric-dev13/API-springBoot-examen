@@ -43,9 +43,25 @@ Initialiser le projet avec le générateur https://start.spring.io/
 
 ![img.png](assets.readme/img.png)
 
+## Stockages des assets dans l'arborescence du projet
 
+Dans un projet Spring Boot, vous pouvez stocker les fichiers statiques, y compris les images, dans différents endroits en fonction de vos besoins spécifiques.
+
+Voici quelques options courantes pour stocker les assets dans un projet Spring Boot avec une API REST :
+
+1. **Répertoire "src/main/resources/static" :** Dans un projet Spring Boot, vous pouvez placer les fichiers statiques tels que les images dans le répertoire "src/main/resources/static". Les fichiers dans ce répertoire sont accessibles publiquement par le serveur et peuvent être servis directement via l'URL. Par exemple, si vous avez un fichier "image.jpg" dans "src/main/resources/static/images", vous pouvez y accéder avec l'URL "http://localhost:8080/images/image.jpg".
+
+2. **Répertoire "src/main/resources/public" :** De la même manière que "src/main/resources/static", vous pouvez également placer les fichiers statiques dans le répertoire "src/main/resources/public". Les fichiers dans ce répertoire sont également accessibles publiquement par le serveur.
+
+3. **Répertoire externe configurable :** Si vous préférez stocker les fichiers statiques en dehors du répertoire du projet, vous pouvez configurer un répertoire externe dans votre application Spring Boot en utilisant des propriétés de configuration. Cela vous permettra de spécifier le chemin d'accès au répertoire où vous stockez les fichiers statiques dans votre application.
+
+4. **Stockage dans le système de fichiers :** Pour une solution plus évolutive et flexible, vous pouvez utiliser un système de stockage de fichiers dédié, comme Amazon S3, Google Cloud Storage ou tout autre service de stockage cloud. Vous pouvez également utiliser des solutions de stockage sur site, comme NFS, CIFS, etc.
+
+Dans tous les cas, assurez-vous que les fichiers statiques sont correctement configurés et accessibles publiquement par le serveur pour que les clients puissent y accéder via les URLs appropriées. Pensez également à configurer correctement les en-têtes de réponse HTTP pour la mise en cache, la compression, etc., selon les besoins de votre application.
 
 ## Sécurité
+
+https://docs.spring.io/spring-security/reference/servlet/authorization/authorize-http-requests.html
 
 Gérer les autorisations sur des routes (endpoints) en utilisant Spring Security. Spring Security est un module de sécurité puissant qui permet de définir des règles d'accès et de contrôler l'accès aux ressources de votre application.
 
@@ -55,7 +71,60 @@ Dans le contexte de Spring Security (la gestion de la sécurité dans les applic
 
 
 
+```java
+http
+    .authorizeHttpRequests((authorize) -> authorize
+        .requestMatchers("/resource/**").hasAuthority("USER")
+        .anyRequest().authenticated()
+    )
+```
 
+```java
+http
+    .authorizeHttpRequests((authorize) -> authorize
+        .requestMatchers(HttpMethod.GET).hasAuthority("read")
+        .requestMatchers(HttpMethod.POST).hasAuthority("write")
+        .anyRequest().denyAll()
+    )
+```
+
+````
+import static jakarta.servlet.DispatcherType.*;
+
+import static org.springframework.security.authorization.AuthorizationManagers.allOf;
+import static org.springframework.security.authorization.AuthorityAuthorizationManager.hasAuthority;
+import static org.springframework.security.authorization.AuthorityAuthorizationManager.hasRole;
+
+@Bean
+SecurityFilterChain web(HttpSecurity http) throws Exception {
+	http
+		// ...
+		.authorizeHttpRequests(authorize -> authorize                                  (1)
+            .dispatcherTypeMatchers(FORWARD, ERROR).permitAll() (2)
+			.requestMatchers("/static/**", "/signup", "/about").permitAll()         (3)
+			.requestMatchers("/admin/**").hasRole("ADMIN")                             (4)
+			.requestMatchers("/db/**").access(allOf(hasAuthority('db'), hasRole('ADMIN')))   (5)
+			.anyRequest().denyAll()                                                (6)
+		);
+
+	return http.build();
+}
+````
+
+
+
+
+
+## Autorisation des demandes
+
+- `permitAll` - La demande ne nécessite aucune autorisation et est un point de terminaison public ; Notez que dans ce cas, [`Authentication` n’est](https://docs.spring.io/spring-security/reference/servlet/authentication/architecture.html#servlet-authentication-authentication) jamais récupérée à partir de la session
+- `denyAll` - La demande n’est en aucun cas autorisée; Notez que dans ce cas, `Authentication` n’est jamais récupérée à partir de la session
+- `hasAuthority` - La demande nécessite que `Authentication` ait [un `GrantedAuthority`](https://docs.spring.io/spring-security/reference/servlet/authorization/architecture.html#authz-authorities) qui correspond à la valeur donnée
+- `hasRole` - Un raccourci pour `hasAuthority` qui préfixe `ROLE_` ou tout ce qui est configuré comme préfixe par défaut
+- `hasAnyAuthority` - La demande nécessite que `Authentication` ait un `GrantedAuthority` qui correspond à l’une des valeurs données
+- `hasAnyRole` - Un raccourci pour `hasAnyAuthority` qui préfixe `ROLE_` ou tout ce qui est configuré comme préfixe par défaut
+- `access` - La demande utilise ce `AuthorizationManager` personnalisé pour déterminer l’accès
+- 
 
 ## HttpSécurité (Configuration par default)
 
@@ -205,13 +274,9 @@ public class MushroomCrudController {
 }
 ````
 
-
-
-
-
 ## Requête SQL
 
-Exemple de Named Query dans une entité avec Spring Boot et JPA :
+Exemple de Named Query (requêtes nommées) dans une entité avec Spring Boot et JPA :
 
 1. **Définir l'entité `MushroomEntity` avec une Named Query**
 
@@ -252,8 +317,20 @@ Nous  définissons une Named Query pour récupérer tous les enregistrements  do
        List<MushroomEntity> findAllIsVisibility();
    }
    ````
+   
+OU
 
+On peux utiliser ces requêtes nommées dans le code Java (service) en utilisant l'`EntityManager`
 
+````
+EntityManager entityManager; // Initialisez votre EntityManager ici
+
+List<MushroomEntity> mushroomsByVisibility = entityManager.createNamedQuery("MushroomEntity.findAllIsVisibility")
+                                                            .setParameter("visibility", true)
+                                                            .getResultList();
+````
+
+**Méthode N°2**
 
 3. Utilisation de la Named Query dans le service ou le contrôleur
 
@@ -270,7 +347,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
 Dans le repository JPA, nous avons défini une méthode `findByPriceGreaterThan`, qui correspond à la Named Query définie dans l'entité `Product`. Spring Data JPA utilisera automatiquement la Named Query pour exécuter la requête appropriée en fonction du nom de la méthode.
 
-3. Utilisation de la Named Query dans le service ou le contrôleur :
+4. Utilisation de la Named Query dans le service ou le contrôleur :
 
    ````
    // src/main/java/com/api/mushroom/service/MushroomService.java
@@ -290,4 +367,24 @@ Dans le repository JPA, nous avons défini une méthode `findByPriceGreaterThan`
        }
    }
    ````
+### Autre exemple avec plusieurs filtres
 
+Les :params doivent porter le meme nom que les variables dans la methode du repository
+````java
+@Entity
+@Data
+@Table(name = "mushroom")
+@NamedQueries({
+        @NamedQuery(name = "MushroomEntity.findAllByVisibility", query = "SELECT m FROM MushroomEntity m WHERE m.visibility = :visibility AND commonname = :nom " )
+})
+public class MushroomEntity {
+   ...
+}
+````
+
+````java
+@Repository
+public interface MushroomJpaRepository extends JpaRepository<MushroomEntity, Long> {
+    List<MushroomEntity> findAllByVisibility(boolean visibility, String nom);
+}
+````

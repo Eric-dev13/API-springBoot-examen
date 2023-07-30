@@ -1,17 +1,16 @@
 package com.api.mushroom.service;
 
 import com.api.mushroom.entity.MushroomEntity;
-import com.api.mushroom.entity.UserEntity;
 import com.api.mushroom.repository.MushroomJpaRepository;
 import com.api.mushroom.service.dto.MushroomDTO;
-import com.api.mushroom.service.dto.UserDTO;
+import jakarta.persistence.EntityManager;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Data
@@ -19,12 +18,26 @@ import java.util.Optional;
 @Service
 public class MushroomService {
 
-    //private final MushroomRepository mushroomRepository;
-    private final MushroomJpaRepository mushroomJpaRepository;
+    private final MushroomJpaRepository mushroomJpaRepository; // MushroomJpaRepository intancié via le constructeur
+
+    private final EntityManager entityManager; // EntityManager intancié via le constructeur
 
     // GET - Récupère un tableau d'enregistrement
     public Iterable<MushroomEntity> getAll() {
         return mushroomJpaRepository.findAll();
+    }
+
+    // GET - Retourne un tableau d'objets - liste de tous les enregisterments validé par l'administrateur pour la publication.
+    public List<MushroomEntity> findAllByVisibility(boolean isVisible) {
+        return mushroomJpaRepository.findAllByVisibility(isVisible);
+    }
+
+    // GET - Retourne une liste de tableau de 3 propriétés.
+    public List findAllByVisibilityWithTitleImageEdibility () {
+        return entityManager
+            .createNamedQuery("MushroomEntity.findAllTitleImageEdibilityByVisibility")
+            .setParameter("visibility", true)
+            .getResultList();
     }
 
     // GET - Récupère un enregistrement par l'ID
@@ -45,10 +58,6 @@ public class MushroomService {
     // delete : Supprimer un enregistrement
     public void delete(Long id) {
         mushroomJpaRepository.deleteById(id);
-    }
-
-    public List<MushroomEntity> findAllIsVisibility() {
-        return mushroomJpaRepository.findAllIsVisibility(true);
     }
 
 

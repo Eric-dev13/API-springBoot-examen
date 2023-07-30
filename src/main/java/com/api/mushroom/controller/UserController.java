@@ -2,6 +2,7 @@ package com.api.mushroom.controller;
 
 import com.api.mushroom.entity.UserEntity;
 import com.api.mushroom.service.UserService;
+import jakarta.persistence.NamedQueries;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +13,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping(value = "api/v1/user")
+@NamedQueries({ })
 public class UserController {
 
     // Lombok va génèrer un constructeur avec un paramètre pour chaque constante (final)
