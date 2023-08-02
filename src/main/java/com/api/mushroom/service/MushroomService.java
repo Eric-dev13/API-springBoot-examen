@@ -4,6 +4,7 @@ import com.api.mushroom.entity.MushroomEntity;
 import com.api.mushroom.repository.MushroomJpaRepository;
 import com.api.mushroom.service.dto.MushroomDTO;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -43,6 +44,19 @@ public class MushroomService {
     // GET - Récupère un enregistrement par l'ID
     public Optional<MushroomEntity> getById(Long id){
         return mushroomJpaRepository.findById(id);
+    }
+
+    public Optional<MushroomEntity> findBySlug(String slug){
+        try {
+            MushroomEntity result = entityManager
+                    .createNamedQuery("MushroomEntity.findBySlug", MushroomEntity.class)
+                    .setParameter("slug", slug)
+                    .getSingleResult();
+            return Optional.of(result);
+        } catch (
+            NoResultException ex) {
+            return Optional.empty();
+        }
     }
 
     // POST : Ajouter un enregistrement

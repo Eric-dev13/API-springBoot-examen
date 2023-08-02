@@ -34,13 +34,14 @@ public class MediaEntity {
     /*
     @ManyToOne
     @JoinColumn(name = "mushroom_id") // nom de la colonne dans media pour stocker id mushroom
-    private MushroomEntity mushroomEntity; // reference vers l'entité cibler
-    public MushroomEntity getMushroomEntity() {
-        return mushroomEntity;
+    private MushroomEntity mushroom; // reference vers l'entité cibler
+
+    public MushroomEntity getMushroom() {
+        return mushroom;
     }
 
-    public void setMushroomEntity(MushroomEntity mushroomEntity) {
-        this.mushroomEntity = mushroomEntity;
+    public void setMushroomEntity(MushroomEntity mushroom) {
+        this.mushroom = mushroomE;
     }
      */
 

@@ -1,10 +1,12 @@
 package com.api.mushroom.repository;
 
 import com.api.mushroom.entity.MushroomEntity;
+import com.api.mushroom.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 /*
 l'annotation @Repository sur l'interface indique à Spring que cette interface est un bean de repository et
@@ -14,4 +16,5 @@ l'annotation @Repository sur l'interface indique à Spring que cette interface e
 @Repository
 public interface MushroomJpaRepository extends JpaRepository<MushroomEntity, Long> {
     List<MushroomEntity> findAllByVisibility(boolean visibility);
+    // Optional<MushroomEntity> findBySlug(String slug);
 }

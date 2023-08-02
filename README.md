@@ -59,6 +59,14 @@ Voici quelques options courantes pour stocker les assets dans un projet Spring B
 
 Dans tous les cas, assurez-vous que les fichiers statiques sont correctement configurés et accessibles publiquement par le serveur pour que les clients puissent y accéder via les URLs appropriées. Pensez également à configurer correctement les en-têtes de réponse HTTP pour la mise en cache, la compression, etc., selon les besoins de votre application.
 
+
+Dans le dossier src/main/resources, il y a :
+
+    Le dossier static qui permet de stocker tous les fichiers images, CSS, bref tous les fichiers qui ne fournissent pas un contenu dynamique (son utilisation n'est pas obligatoire).
+    Le dossier templates qui permet de stocker des fichiers web si on utilise le Framework Thymeleaf de Spring (Thymeleaf ne sera pas utilisé dans le cadre de ce projet).
+    Le fichier application.properties qui nous sera très utile pour configurer le projet. Pour le moment, il est vide, car je vais d'abord utiliser les configurations par défaut de Spring Boot.
+
+
 ## Sécurité
 
 https://docs.spring.io/spring-security/reference/servlet/authorization/authorize-http-requests.html
@@ -68,8 +76,6 @@ Gérer les autorisations sur des routes (endpoints) en utilisant Spring Security
 Dans le contexte de Spring Security (la gestion de la sécurité dans les applications Spring), lorsque vous vous connectez avec succès en tant qu'utilisateur authentifié, vous obtenez un "jeton" (ou "token") d'accès qui vous permet d'accéder à certaines ressources protégées ou d'exécuter certaines actions spécifiques. Dans ce cas, vous pouvez dire que l'accès à ces ressources ou actions a été "granted" (accordé) à l'utilisateur.
 
 ![](.\assets.readme\authorizationfilter.png)
-
-
 
 ```java
 http
@@ -273,6 +279,32 @@ public class MushroomCrudController {
    ...
 }
 ````
+
+### Configuration de spring boot
+
+Configuration du fichier `application.yml`
+
+### Création du model
+
+création des classes d'Entité, elles représentent les tables de la BDD  les propriétes représentent les colonnes.
+
+----- ALIMENTER AVEC UN EXEMPLE D'ENTITE
+
+### Génération de la base de données
+
+----- ALIMENTER AVEC UN EXEMPLE D'ENTITE
+
+### Création de la couche DAO - repository
+
+Création de la couche DAO =repository
+
+----- ALIMENTER AVEC UN EXEMPLE D'ENTITE
+
+
+### Couche de services
+
+----- ALIMENTER AVEC UN EXEMPLE D'ENTITE
+
 
 ## Requête SQL
 

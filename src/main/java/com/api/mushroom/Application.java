@@ -17,7 +17,6 @@ public class Application extends SpringBootServletInitializer implements Command
  		System.out.println("L'application est démarré !");
 	}
 
-	//
 	@Override
 	protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
 		return builder.sources(Application.class);

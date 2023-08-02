@@ -40,4 +40,8 @@ public class MushroomController {
         return mushroomService.getById(id);
     }
 
+    @GetMapping("/test/{slug}")
+    public Optional<MushroomEntity> findBySlug(@PathVariable("slug") String slug) {
+        return mushroomService.findBySlug(slug);
+    }
 }

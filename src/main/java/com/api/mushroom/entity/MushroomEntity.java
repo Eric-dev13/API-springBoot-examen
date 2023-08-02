@@ -14,7 +14,8 @@ import java.util.Set;
 @Table(name = "mushroom")
 @NamedQueries({
     @NamedQuery(name = "MushroomEntity.findAllByVisibility", query = "SELECT m FROM MushroomEntity m WHERE m.visibility = :visibility"),
-    @NamedQuery(name = "MushroomEntity.findAllTitleImageEdibilityByVisibility", query = "SELECT m.commonname as commonname, m.medias as medias, m.edibility as edibility FROM MushroomEntity m WHERE m.visibility = :visibility")
+    @NamedQuery(name = "MushroomEntity.findAllTitleImageEdibilityByVisibility", query = "SELECT m.commonname as commonname, m.medias as medias, m.edibility as edibility FROM MushroomEntity m WHERE m.visibility = :visibility"),
+    @NamedQuery(name = "MushroomEntity.findBySlug", query="SELECT m FROM MushroomEntity m WHERE m.slug=:slug")
 })
 public class MushroomEntity {
 
@@ -67,6 +68,7 @@ public class MushroomEntity {
     @Column(name="slug", length =255, unique = true)
     private String slug;
 
+
     // RELATIONS LAMELLA TYPE
     @ManyToOne
     @JoinColumn(name = "lamellatype_id")
@@ -79,7 +81,6 @@ public class MushroomEntity {
     public void setLamellatypeEntity(LamellatypeEntity lamellatypeEntity) {
         this.lamellatypeEntity = lamellatypeEntity;
     }
-
 
     // RELATIONS LOCALNAME
     @OneToMany(orphanRemoval = true)
@@ -113,6 +114,8 @@ public class MushroomEntity {
     // RELATIONS MEDIA mapping type: bidirectionnal joinColumn
 /*
     @OneToMany(mappedBy = "mushroomEntity", orphanRemoval = true)
+    private Set<MediaEntity> medias = new LinkedHashSet<>();
+    // OU BIEN
     private List<MediaEntity> mediasMapped;
 
     public List<MediaEntity> getMediasMapped() {
