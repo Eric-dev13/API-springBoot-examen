@@ -6,7 +6,9 @@ import lombok.Data;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -68,12 +70,27 @@ public class MushroomEntity {
     @Column(name="slug", length =255, unique = true)
     private String slug;
 
-
     // RELATIONS LAMELLA TYPE
     @ManyToOne
     @JoinColumn(name = "lamellatype_id")
     private LamellatypeEntity lamellatypeEntity;
 
+    // RELATIONS LOCALNAME
+    @OneToMany(orphanRemoval = true)
+    @JoinColumn(name = "mushroom_id")
+    private Set<LocalnameEntity> localnames = new LinkedHashSet<>();
+
+    // RELATIONS EDIBILITY
+    @ManyToOne
+    @JoinColumn(name = "edibility_id")
+    private EdibilityEntity edibility;
+
+    // RELATIONS MEDIAS - mapping type: bidirectionnel
+    @OneToMany(mappedBy = "mushroomEntity",cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
+    private List<MediaEntity> medias = new ArrayList<>();
+
+
+    // methodes LAMELLA TYPE
     public LamellatypeEntity getLamellatypeEntity() {
         return lamellatypeEntity;
     }
@@ -82,11 +99,7 @@ public class MushroomEntity {
         this.lamellatypeEntity = lamellatypeEntity;
     }
 
-    // RELATIONS LOCALNAME
-    @OneToMany(orphanRemoval = true)
-    @JoinColumn(name = "mushroom_id")
-    private Set<LocalnameEntity> localnames = new LinkedHashSet<>();
-
+    // methodes LOCALNAME
     public Set<LocalnameEntity> getLocalnames() {
         return localnames;
     }
@@ -96,43 +109,7 @@ public class MushroomEntity {
     }
 
 
-    // RELATIONS MEDIA mapping type: unidirectionnal joinColumn
-    // Récupère la collection des médias lié avec l'enreigistrement One To Many
-    @OneToMany(orphanRemoval = true)
-    @JoinColumn(name = "mushroom_id")
-    private Set<MediaEntity> medias = new LinkedHashSet<>();
-
-    public Set<MediaEntity> getMedias() {
-        return medias;
-    }
-
-    public void setMedias(Set<MediaEntity> medias) {
-        this.medias = medias;
-    }
-
-
-    // RELATIONS MEDIA mapping type: bidirectionnal joinColumn
-/*
-    @OneToMany(mappedBy = "mushroomEntity", orphanRemoval = true)
-    private Set<MediaEntity> medias = new LinkedHashSet<>();
-    // OU BIEN
-    private List<MediaEntity> mediasMapped;
-
-    public List<MediaEntity> getMediasMapped() {
-        return mediasMapped;
-    }
-
-    public void setMediasMapped(List<MediaEntity> mediasMapped) {
-        this.mediasMapped = mediasMapped;
-    }
- */
-
-
-    // RELATIONS EDIBILITY
-    @ManyToOne
-    @JoinColumn(name = "edibility_id")
-    private EdibilityEntity edibility;
-
+    // methodes EDIBILITY
     public EdibilityEntity getEdibility() {
         return edibility;
     }
@@ -140,7 +117,6 @@ public class MushroomEntity {
     public void setEdibilityEntity(EdibilityEntity edibility) {
         this.edibility = edibility;
     }
-
 
 
 

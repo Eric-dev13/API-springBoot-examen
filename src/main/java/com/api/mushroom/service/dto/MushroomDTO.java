@@ -1,8 +1,11 @@
 package com.api.mushroom.service.dto;
 
+import com.api.mushroom.entity.MediaEntity;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 public class MushroomDTO {
@@ -18,4 +21,5 @@ public class MushroomDTO {
     private String habitat;
     private String comment;
     private String slug;
+    private List<MediaEntity> medias = new ArrayList<>();
 }

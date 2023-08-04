@@ -26,13 +26,10 @@ public class MushroomController {
         return mushroomService.findAllByVisibility(true);
     }
 
-
-    // GET - Retourne un tableau de tableau de 3 propriétés.
-    @GetMapping("/field-selected")
-    public List findAllByVisibilityWithTitleImageEdibility() {
-       return mushroomService.findAllByVisibilityWithTitleImageEdibility();
+    @GetMapping("/findBySlug/{slug}")
+    public Optional<MushroomEntity> findBySlug(@PathVariable("slug") String slug) {
+        return mushroomService.findBySlug(slug);
     }
-
 
     // GET - Afficher un utilisateur via son ID
     @GetMapping("/{id}")
@@ -40,8 +37,11 @@ public class MushroomController {
         return mushroomService.getById(id);
     }
 
-    @GetMapping("/test/{slug}")
-    public Optional<MushroomEntity> findBySlug(@PathVariable("slug") String slug) {
-        return mushroomService.findBySlug(slug);
+    /*
+    // GET - Retourne un tableau de tableau de 3 propriétés.
+    @GetMapping("/field-selected")
+    public List findAllByVisibilityWithTitleImageEdibility() {
+       return mushroomService.findAllByVisibilityWithTitleImageEdibility();
     }
+    */
 }

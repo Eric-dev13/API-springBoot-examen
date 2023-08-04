@@ -19,9 +19,9 @@ import java.util.Optional;
 @Service
 public class MushroomService {
 
-    private final MushroomJpaRepository mushroomJpaRepository; // MushroomJpaRepository intancié via le constructeur
-
-    private final EntityManager entityManager; // EntityManager intancié via le constructeur
+    private final MushroomJpaRepository mushroomJpaRepository; // Intancié dans le constructeur
+    private final EntityManager entityManager; // EntityManager intancié dans
+    // le constructeur
 
     // GET - Récupère un tableau d'enregistrement
     public Iterable<MushroomEntity> getAll() {
@@ -73,7 +73,6 @@ public class MushroomService {
     public void delete(Long id) {
         mushroomJpaRepository.deleteById(id);
     }
-
 
 
     // Exemple avec mappage des données (forunit par le DAO: MushroomJpaRepository)  vers un objet DTO.
