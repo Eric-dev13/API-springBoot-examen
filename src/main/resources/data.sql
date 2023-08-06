@@ -1,35 +1,34 @@
 --
 -- Déchargement des données de la table user
 --
-INSERT INTO user (id, avatar, created_at, email, firstname, is_verified, lastname, password, pseudo, role, slug, updated_at) VALUES
-(1, NULL, '2023-07-23 11:16:10.472996', 'lanzae32@gmail.com', NULL, b'0', NULL, '$2a$10$adXxyDL/K/4Lf2sx1syJqOKxWy0E714q9Ifna16sI/kbGyOd29y82', 'admin', 'ADMIN', 'admin', NULL);
-
-INSERT INTO user (id, avatar, created_at, email, firstname, is_verified, lastname, password, pseudo, role, slug, updated_at) VALUES
-(2, NULL, '2023-07-23 11:31:53.420574', 'usergmail.com', NULL, b'0', NULL, '$2a$10$RUvHLtjyVyU5Lj49T5vbVO9/S0Duz0MZPgDcjZGdMWFd8/RuMzfL6', 'user', 'USER', 'user', NULL);
-COMMIT;
+INSERT INTO user (id, avatar, created_at, email, firstname, is_verified, lastname, password, pseudo, role, updated_at) VALUES
+(1, NULL, '2023-07-23 11:16:10.472996', 'lanzae32@gmail.com', NULL, b'0', NULL, '$2a$10$adXxyDL/K/4Lf2sx1syJqOKxWy0E714q9Ifna16sI/kbGyOd29y82', 'admin', 'ADMIN', NULL),
+(2, NULL, '2023-07-23 11:31:53.420574', 'usergmail.com', NULL, b'0', NULL, '$2a$10$RUvHLtjyVyU5Lj49T5vbVO9/S0Duz0MZPgDcjZGdMWFd8/RuMzfL6', 'user', 'USER', NULL);
+-- COMMIT;
 
 --
 -- Déchargement des données de la table edibility
 --
-INSERT INTO edibility (id, name, path, slug) VALUES (1, 'Mortel', 'mortel.png', 'mortel');
-INSERT INTO edibility (id, name, path, slug) VALUES  (2, 'Toxique', 'toxique.png', 'toxique');
-INSERT INTO edibility (id, name, path, slug) VALUES (3, 'A rejeter', 'rejeter.png', 'a-rejeter');
-INSERT INTO edibility (id, name, path, slug) VALUES (4, 'Comestible médiocre', 'mediocre.png', 'comestible-mediocre');
-INSERT INTO edibility (id, name, path, slug) VALUES (5, 'Bon comestible', 'bon.png', 'bon-comestible');
-INSERT INTO edibility (id, name, path, slug) VALUES (6, 'Excellent comestible', 'excellent.png', 'excellent-comestible');
+INSERT INTO edibility (id, name, path) VALUES 
+(1, 'Mortel', 'mortel.png'),
+(2, 'Toxique', 'toxique.png'),
+(3, 'A rejeter', 'rejeter.png'),
+(4, 'Comestible médiocre', 'mediocre.png'),
+(5, 'Bon comestible', 'bon.png'),
+(6, 'Excellent comestible', 'excellent.png');
 
 --
 -- Déchargement des données de la table lamellatype
 --
-INSERT INTO lamella_type (id, name, path, created_at, updated_at, slug) VALUES
-(1, 'Adnées', 'adnees.png', '2021-12-04 11:30:15', NULL, 'adnees'),
-(2, 'Décurrentes', 'decurrentes.png', '2021-12-04 11:30:15', NULL, 'decurrentes'),
-(3, 'Echancrées', 'echancrees.png', '2021-12-04 11:30:15', NULL, 'echancrees'),
-(4, 'Emarginées', 'emarginees.png', '2021-12-04 11:30:15', NULL, 'emarginees'),
-(5, 'Libres', 'libres.png', '2021-12-04 11:30:15', NULL, 'libres'),
-(6, 'Sécédentes', 'secedentes.png', '2021-12-04 11:30:15', NULL, 'secedentes'),
-(7, 'Sinuées', 'sinuees.png', '2021-12-04 11:30:15', NULL, 'sinuees'),
-(8, 'Subdécurrentes', 'subdecurrentes.png', '2021-12-04 11:30:15', NULL, 'subdecurrentes');
+INSERT INTO lamella_type (id, name, path, created_at) VALUES
+(1, 'Adnées', 'adnees.png', '2021-12-04 11:30:15'),
+(2, 'Décurrentes', 'decurrentes.png', '2021-12-04 11:30:15'),
+(3, 'Echancrées', 'echancrees.png', '2021-12-04 11:30:15'),
+(4, 'Emarginées', 'emarginees.png', '2021-12-04 11:30:15'),
+(5, 'Libres', 'libres.png', '2021-12-04 11:30:15'),
+(6, 'Sécédentes', 'secedentes.png', '2021-12-04 11:30:15'),
+(7, 'Sinuées', 'sinuees.png', '2021-12-04 11:30:15'),
+(8, 'Subdécurrentes', 'subdecurrentes.png', '2021-12-04 11:30:15');
 
 --
 -- Déchargement des données de la table mushroom
@@ -67,11 +66,11 @@ INSERT INTO mushroom (id, lamellatype_id, edibility_id, created_at, updated_at, 
 --
 -- Déchargement des données de la table localname
 --
-INSERT INTO localname (id, mushroom_id, created_at, name, updated_at, slug) VALUES
-(2, 9, '2021-12-09 22:54:42', 'Safrané', '2021-12-09 22:55:10', 'safrane'),
-(3, 8, '2021-12-09 22:55:52', 'Sanguin', NULL, 'sanguin'),
-(4, 8, '2021-12-09 22:56:05', 'Rouge', NULL, 'rouge'),
-(5, 8, '2021-12-09 22:56:33', 'Vineux', NULL, 'vineux');
+INSERT INTO localname (id, mushroom_id, created_at, name) VALUES
+(2, 9, '2021-12-09 22:54:42', 'Safrané'),
+(3, 8, '2021-12-09 22:55:52', 'Sanguin'),
+(4, 8, '2021-12-09 22:56:05', 'Rouge'),
+(5, 8, '2021-12-09 22:56:33', 'Vineux');
 
 --
 -- Déchargement des données de la table media

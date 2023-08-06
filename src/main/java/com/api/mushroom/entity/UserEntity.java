@@ -58,15 +58,10 @@ public class UserEntity implements Serializable, UserDetails {
     @Column(name = "is_verified")
     private Boolean isVerified;
 
-    @Column(name="slug", length =255, unique = true)
-    private String slug;
 
     // METHODES pour stocker automatiquement la date de création de l'enregistrement en de base de données.
     @PrePersist
     public void prePresist(){
-        // Générer automatiquement un slug (identifiant unique texte remplacant l'id dans l'url) avant la mise à jour de base de donnée.
-        final Slugify slg = Slugify.builder().build();
-        this.slug = slg.slugify(this.pseudo);
         // stocker automatiquement la date de création de l'enregistrement en de base de données.
         this.createdAt = LocalDateTime.now();
     }

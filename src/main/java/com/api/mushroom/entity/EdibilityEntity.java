@@ -24,28 +24,4 @@ public class EdibilityEntity {
     @Column(name="path")
     private String path;
 
-    @Column(name="slug")
-    private String slug;
-
-    // RELATION AVEC MUSHROOM
-    /*
-    @OneToMany(mappedBy = "edibilityEntity", orphanRemoval = true)
-    private List<MushroomEntity> mushroomEntities = new ArrayList<>();
-
-    public List<MushroomEntity> getMushroomEntities() {
-        return mushroomEntities;
-    }
-
-    public void setMushroomEntities(List<MushroomEntity> mushroomEntities) {
-        this.mushroomEntities = mushroomEntities;
-    }
-     */
-
-    @PrePersist
-    public void prePresist(){
-        // Générer automatiquement un slug (identifiant unique texte remplacant l'id dans l'url) avant la mise à jour de base de donnée.
-        final Slugify slg = Slugify.builder().build();
-        this.slug = slg.slugify(this.name);
-    }
-
 }

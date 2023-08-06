@@ -34,10 +34,16 @@ public class MushroomCrudController {
         return mushroomService.add(mushroomEntity);
     }
 
-    // UPDATE : Mettre à jour un enregistrement
+    // UPDATE : Mise à jour complète d'un enregistrement
     @PutMapping("/{id}")
-    public MushroomEntity edit(@PathVariable("id") final String id, @RequestBody final MushroomEntity mushroomEntity) {
-        return mushroomService.edit(mushroomEntity);
+    public MushroomEntity put(@PathVariable("id") final String id, @RequestBody final MushroomEntity mushroomEntity) {
+        return mushroomService.put(mushroomEntity);
+    }
+
+    // PATCH : Mise à jour  partiel d'un enregistrement
+    @PatchMapping("/{id}")
+    public MushroomEntity patch(@PathVariable("id") final String id, @RequestBody final MushroomEntity mushroomEntity) {
+        return mushroomService.patch(mushroomEntity);
     }
 
     // DELETE : Supprimer un enregistrement

@@ -1,15 +1,16 @@
 package com.api.mushroom.entity;
 
 
+import com.api.mushroom.service.utils.UniqueSlugService;
 import com.github.slugify.Slugify;
 import lombok.Data;
 
 import jakarta.persistence.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
+
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Data
@@ -73,7 +74,7 @@ public class MushroomEntity {
     // RELATIONS LAMELLA TYPE
     @ManyToOne
     @JoinColumn(name = "lamellatype_id")
-    private LamellatypeEntity lamellatypeEntity;
+    private LamellatypeEntity lamellatype;
 
     // RELATIONS LOCALNAME
     @OneToMany(orphanRemoval = true)
@@ -90,41 +91,21 @@ public class MushroomEntity {
     private List<MediaEntity> medias = new ArrayList<>();
 
 
-    // methodes LAMELLA TYPE
-    public LamellatypeEntity getLamellatypeEntity() {
-        return lamellatypeEntity;
-    }
-
-    public void setLamellatypeEntity(LamellatypeEntity lamellatypeEntity) {
-        this.lamellatypeEntity = lamellatypeEntity;
-    }
-
-    // methodes LOCALNAME
-    public Set<LocalnameEntity> getLocalnames() {
-        return localnames;
-    }
-
-    public void setLocalnames(Set<LocalnameEntity> localnames) {
-        this.localnames = localnames;
-    }
-
-
-    // methodes EDIBILITY
-    public EdibilityEntity getEdibility() {
-        return edibility;
-    }
-
-    public void setEdibilityEntity(EdibilityEntity edibility) {
-        this.edibility = edibility;
-    }
-
-
-
     @PrePersist
     public void prePresist(){
-        // Générer automatiquement un slug (identifiant unique texte remplacant l'id dans l'url) avant la mise à jour de base de donnée.
+        // Générer automatiquement un slug en utilisant l'identifiant unique avant la mise à jour de la base de données.
+        // Générer un identifiant universellement unique.
+        UUID uniqueID = UUID.randomUUID();
+        String uniqueIDToStr = uniqueID.toString();
+        // Supprime les tirets de l'identifiant universellement uniques convertit en chaine de caractère avec la méthode replace.
+        String searchString = "-";
+        String replacementString = "";
+        String randomUniqueId = uniqueIDToStr.replace(searchString, replacementString);
+        // Bibliothèque simple et légère qui permet de générer des slugs à partir de chaînes de caractères.
         final Slugify slg = Slugify.builder().build();
-        this.slug = slg.slugify(this.commonname);
+        // on concatène le nom de l'espèce et le numero
+        this.slug = slg.slugify(this.commonname + "-" + randomUniqueId);
+
         // Stocker automatiquement la date de création de l'enregistrement en de base de données.
         this.createdAt = LocalDateTime.now();
     }

@@ -420,3 +420,15 @@ public interface MushroomJpaRepository extends JpaRepository<MushroomEntity, Lon
     List<MushroomEntity> findAllByVisibility(boolean visibility, String nom);
 }
 ````
+# A TRIER
+
+## Crud
+@PutMapping("/{id}"): Utilisez cette annotation lorsque vous souhaitez effectuer une mise à jour complète de l'entité.
+
+@PatchMapping("/{id}"): Utilisez cette annotation lorsque vous souhaitez effectuer une mise à jour partielle de l'entité.
+
+MushroomEntity existingMushroom = mushroomJpaRepository.findById(id).orElse(null);
+
+        if (existingMushroom == null) {
+            return ResponseEntity.notFound().build();
+        }

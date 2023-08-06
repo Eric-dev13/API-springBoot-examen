@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 //@Data
@@ -40,24 +41,17 @@ public class MediaEntity {
     @Column(name="path")
     private String path;
 
-    @Getter
-    @Setter
-    @Column(name="slug", length =255, unique = true)
-    private String slug;
-
 
     // RELATIONS MUSHROOM - mapping type: bidirectionnel
     @ManyToOne
     @JoinColumn(name = "mushroom_id")
+    //@Getter
     @Setter
     private MushroomEntity mushroomEntity;
 
 
     @PrePersist
     public void prePresist(){
-        // Générer automatiquement un slug (identifiant unique texte remplacant l'id dans l'url) avant la mise à jour de base de donnée.
-        final Slugify slg = Slugify.builder().build();
-        this.slug = slg.slugify(this.name);
         // Stocker automatiquement la date de création de l'enregistrement en de base de données.
         this.createdAt = LocalDateTime.now();
     }

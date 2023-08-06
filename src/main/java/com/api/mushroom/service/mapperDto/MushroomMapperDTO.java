@@ -43,7 +43,7 @@ public class MushroomMapperDTO {
         mushroomEntity.setFoot(mushroomDTO.getFoot());
         mushroomEntity.setHabitat(mushroomDTO.getHabitat());
         mushroomEntity.setComment(mushroomDTO.getComment());
-        mushroomEntity.setSlug(mushroomDTO.getSlug());
+       // mushroomEntity.setSlug(mushroomDTO.getSlug());
 
         return mushroomEntity;
     }
