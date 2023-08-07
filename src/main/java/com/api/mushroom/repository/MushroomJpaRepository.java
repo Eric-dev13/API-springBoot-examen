@@ -3,6 +3,9 @@ package com.api.mushroom.repository;
 import com.api.mushroom.entity.MushroomEntity;
 import com.api.mushroom.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -15,6 +18,13 @@ l'annotation @Repository sur l'interface indique à Spring que cette interface e
  */
 @Repository
 public interface MushroomJpaRepository extends JpaRepository<MushroomEntity, Long> {
+
+    // Retourne la liste des champignons validé par l'admin ordonnée par nom commun
+    @Query(name="MushroomEntity.findAllByVisibility")
     List<MushroomEntity> findAllByVisibility(boolean visibility);
-    // Optional<MushroomEntity> findBySlug(String slug);
+
+
+    // TEST
+    @Query("SELECT m FROM MushroomEntity m WHERE m.commonname = :commonname")
+    List<MushroomEntity> getSearch(String commonname);
 }

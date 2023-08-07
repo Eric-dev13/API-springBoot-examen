@@ -8,6 +8,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -25,7 +26,7 @@ public class MushroomService {
 
     // GET - Récupère un tableau d'enregistrement
     public Iterable<MushroomEntity> getAll() {
-        return mushroomJpaRepository.findAll();
+        return mushroomJpaRepository.findAll(Sort.by(Sort.Direction.ASC, "commonname"));
     }
 
     // GET - Retourne un tableau d'objets - liste de tous les enregistrements validés par l'administrateur pour la publication.
@@ -58,6 +59,7 @@ public class MushroomService {
 
     // UPDATE : Mettre à jour un enregistrement
     public MushroomEntity patch(@RequestBody MushroomEntity mushroomEntity){
+
         return mushroomJpaRepository.save(mushroomEntity);
     }
 
@@ -66,6 +68,20 @@ public class MushroomService {
         mushroomJpaRepository.deleteById(id);
     }
 
+    // inverse l'état booleen du champ visibility
+    public void invertPublish(Long id){
+        mushroomJpaRepository.findById(id)
+                        .map(mushroom -> {
+                            boolean isVisible = mushroom.isVisibility();
+                            mushroom.setVisibility(!isVisible);
+                            return mushroomJpaRepository.save(mushroom);
+                        });
+    }
+
+    //TEST
+    public List<MushroomEntity> getSearch(String titre) {
+        return mushroomJpaRepository.getSearch(titre);
+    }
 
 /* ----------------------------------------------------------------------------------------------------------------------- */
 
@@ -89,6 +105,8 @@ public class MushroomService {
             return Optional.empty();
         }
     }
+
+
 
 
     /*

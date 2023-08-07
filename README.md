@@ -1,10 +1,13 @@
-# API springBoot - Projet pour l'EXAMEN
+
+
+# API - SPRING BOOT - EXAMEN
 
 **Pourquoi spring boot:**
 
 Spring Boot facilite la configuration et le démarrage de projet en générant un squelette prêt à l'emploi avec les dépendances et la configuration souhaitées.
 
-## Démarrer un nouveau projets
+# DEMARRER UN NOUVEAU PROJET
+
 Initialiser le projet avec le générateur https://start.spring.io/
 
 * Project : spécifier le nom du projet et le nom du package de base.
@@ -28,7 +31,8 @@ Initialiser le projet avec le générateur https://start.spring.io/
 * Spring Boot Actuator : fournit des endpoints pour la surveillance et la gestion de l'application.
 
 
-## Les dépendances du projet
+
+# LES DEPENDANCES
 
 - Spring Web Web : Build web, including RESTful, applications using Spring MVC. Uses Apache Tomcat as the default embedded container.
 - Lombok Developer Tools : C'est une bibliothèque Java qui aide à réduire le code et éviter les répétitions comme les getters, setters, etc.
@@ -39,11 +43,14 @@ Initialiser le projet avec le générateur https://start.spring.io/
 - MySQL Driver SQL : Pilote JDBC pour MySQL.
 
 
-## Structure du projet
+
+# LA STRUCTURE
 
 ![img.png](assets.readme/img.png)
 
-## Stockages des assets dans l'arborescence du projet
+
+
+# STOCKAGE DES ASSETS
 
 Dans un projet Spring Boot, vous pouvez stocker les fichiers statiques, y compris les images, dans différents endroits en fonction de vos besoins spécifiques.
 
@@ -67,7 +74,8 @@ Dans le dossier src/main/resources, il y a :
     Le fichier application.properties qui nous sera très utile pour configurer le projet. Pour le moment, il est vide, car je vais d'abord utiliser les configurations par défaut de Spring Boot.
 
 
-## Sécurité
+
+# SECURITE
 
 https://docs.spring.io/spring-security/reference/servlet/authorization/authorize-http-requests.html
 
@@ -119,9 +127,7 @@ SecurityFilterChain web(HttpSecurity http) throws Exception {
 
 
 
-
-
-## Autorisation des demandes
+## Autorisations des demandes
 
 - `permitAll` - La demande ne nécessite aucune autorisation et est un point de terminaison public ; Notez que dans ce cas, [`Authentication` n’est](https://docs.spring.io/spring-security/reference/servlet/authentication/architecture.html#servlet-authentication-authentication) jamais récupérée à partir de la session
 - `denyAll` - La demande n’est en aucun cas autorisée; Notez que dans ce cas, `Authentication` n’est jamais récupérée à partir de la session
@@ -161,7 +167,7 @@ La configuration par défaut (illustrée dans l’exemple précédent) :
 
   
 
-### Configuration perso avec JWT
+### Configuration perso avec JWT à modifier
 
 ````java
 // src/main/java/com/api/mushroom/configuration/SecurityConfiguration.java
@@ -229,7 +235,7 @@ https://docs.spring.io/spring-security/reference/servlet/exploits/csrf.html#serv
 
 
 
-### CORS
+### Cors
 
 La méthode cors()  ajoutera le CorsFilter fourni par Spring au contexte de l'application, en contournant les vérifications d'autorisation pour les requêtes OPTIONS.
 
@@ -306,109 +312,154 @@ Création de la couche DAO =repository
 ----- ALIMENTER AVEC UN EXEMPLE D'ENTITE
 
 
-## Requête SQL
 
-Exemple de Named Query (requêtes nommées) dans une entité avec Spring Boot et JPA :
+# Requête SQL avec Spring Boot et JPA
 
-1. **Définir l'entité `MushroomEntity` avec une Named Query**
+
+
+## Méthode avec @NamedQuery
+
+ENTITY
 
 ````
 // src/main/java/com/api/mushroom/entity/MushroomEntity.java
 
-@Entity
-@Data
-@Table(name = "mushroom")
-@NamedQuery(name = "MushroomEntity.findAllIsVisibility", query = "SELECT e FROM MushroomEntity e WHERE e.visibility = :visibility")
+
+@NamedQuery(name = "MushroomEntity.findAllByVisibility", query = "SELECT m FROM MushroomEntity m WHERE m.visibility = :visibility")
 public class MushroomEntity {
-    // instanciation de la classe slugify dans le constructeur (injection de dépendance).
-    // private final Slugify slugify;
-    //final Slugify slugify = Slugify.builder().build();
-
-    // DECLARATION DES ATTRIBUTS
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // id auto-incrémente
-    private Long id;
-
-    ...
-
-    @Column(name="visibility")
-    private boolean visibility;
 	...
-	}
+}
 ````
 
-Nous  définissons une Named Query pour récupérer tous les enregistrements  dont  le champ visibility est true.
-
-2. **Utiliser la Named Query dans le repository JPA**
-
-   ````
-   // src/main/java/com/api/mushroom/repository/MushroomJpaRepository.java
-   
-   @Repository
-   public interface MushroomJpaRepository extends JpaRepository<MushroomEntity, Long> {
-       List<MushroomEntity> findAllIsVisibility();
-   }
-   ````
-   
-OU
-
-On peux utiliser ces requêtes nommées dans le code Java (service) en utilisant l'`EntityManager`
+CONTROLLER
 
 ````
-EntityManager entityManager; // Initialisez votre EntityManager ici
+// src/main/java/com/api/mushroom/controller/MushroomController.java
 
-List<MushroomEntity> mushroomsByVisibility = entityManager.createNamedQuery("MushroomEntity.findAllIsVisibility")
-                                                            .setParameter("visibility", true)
-                                                            .getResultList();
+public class MushroomController {
+    ...
+    // GET - Retourne un tableau d'objets - liste de tous les enregistREments validé par l'administrateur pour la publication.
+    @GetMapping(name = "/")
+        public Iterable<MushroomEntity> findAllByVisibility() {
+        return mushroomService.findAllByVisibility(true);
+    }
+    ...
+}
 ````
 
-**Méthode N°2**
 
-3. Utilisation de la Named Query dans le service ou le contrôleur
 
-```java
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-import java.util.List;
+PUIS **SOLUTION N° 1**
+
+SERVICE
+
+````
+@Service
+public class MushroomService {
+	...
+    // GET - Retourne un tableau d'objets - liste de tous les enregistrements validés par l'administrateur pour la publication.
+    public List<MushroomEntity> findAllByVisibility(boolean isVisible) {
+    	return mushroomJpaRepository.findAllByVisibility(isVisible);
+    }
+    ...
+}
+````
+
+REPOSITORY
+
+````
+// src/main/java/com/api/mushroom/repository/MushroomJpaRepository.java
 
 @Repository
-public interface ProductRepository extends JpaRepository<Product, Long> {
-    List<Product> findByPriceGreaterThan(double price);
+public interface MushroomJpaRepository extends JpaRepository<MushroomEntity, Long> {
+
+	List<MushroomEntity> findAllByVisibility(boolean visibility);
+	
+	...
 }
-```
+````
 
-Dans le repository JPA, nous avons défini une méthode `findByPriceGreaterThan`, qui correspond à la Named Query définie dans l'entité `Product`. Spring Data JPA utilisera automatiquement la Named Query pour exécuter la requête appropriée en fonction du nom de la méthode.
 
-4. Utilisation de la Named Query dans le service ou le contrôleur :
 
-   ````
+OU **SOLUTION N° 2**
+
+AVEC **l'EntityManager** DANS LE SERVICE SANS UITLISER LE REPOSITORY
+
+SERVICE
+
+````
+@Service
+public class MushroomService {
+
+	EntityManager entityManager; // Initialisez votre EntityManager 
+
+	List<MushroomEntity> mushroomsByVisibility = entityManager
+												.createNamedQuery("MushroomEntity.findAllIsVisibility")
+                                                     .setParameter("visibility", true)
+                                                     .getResultList();
+}
+````
+
+---
+
+````
+// POUR REGROUPER PLUSIEURS REQUETES
+@NamedQueries({
+    @NamedQuery(name = "MushroomEntity.findAllByVisibility", query = "SELECT m FROM MushroomEntity m WHERE m.visibility = :visibility"),
+    @NamedQuery(name = "MushroomEntity.findBySlug", query="SELECT m FROM MushroomEntity m WHERE m.slug=:slug")
+})
+````
+
+---
+
+## Méthode avec @Query
+
+Utiliser l’annotation @Query dans Spring Data JPA pour exécuter des requêtes JPQL et SQL natives.
+
+CONTROLLER
+
+````
+    // src/main/java/com/api/mushroom/controller/admin/MushroomCrudController.java
+    ...
+    @GetMapping("/test/{titre}")
+    public  Iterable<MushroomEntity> getSearch(@PathVariable("titre") String titre) {
+        return mushroomService.getSearch(titre);
+    }
+    ...
+````
+
+SERVICE
+
+````
    // src/main/java/com/api/mushroom/service/MushroomService.java
-   
-   @Data
-   @RequiredArgsConstructor
-   @Service
-   public class MushroomService {
-   
-       //private final MushroomRepository mushroomRepository;
-       private final MushroomJpaRepository mushroomJpaRepository;
-   
-   	...
-   
-       public List<MushroomEntity> findAllIsVisibility() {
-           return mushroomJpaRepository.findAllIsVisibility();
-       }
-   }
-   ````
-### Autre exemple avec plusieurs filtres
+   ...
+   public List<MushroomEntity> getSearch(String titre) {
+        return mushroomJpaRepository.getSearch(titre);
+    }
+    ...
+````
+
+REPOSITORY
+
+````
+ // src/main/java/com/api/mushroom/repository/MushroomJpaRepository.java
+ ...
+ @Query("SELECT m FROM MushroomEntity m WHERE m.commonname = :commonname")
+    List<MushroomEntity> getSearch(String commonname);
+ ...
+````
+
+---
+
+## Autre exemple avec plusieurs filtres
 
 Les :params doivent porter le meme nom que les variables dans la methode du repository
 ````java
 @Entity
 @Data
 @Table(name = "mushroom")
-@NamedQueries({
-        @NamedQuery(name = "MushroomEntity.findAllByVisibility", query = "SELECT m FROM MushroomEntity m WHERE m.visibility = :visibility AND commonname = :nom " )
-})
+@NamedQuery(name = "MushroomEntity.findAllByVisibility", query = "SELECT m FROM MushroomEntity m WHERE m.visibility = :visibility AND commonname = :nom " )
+
 public class MushroomEntity {
    ...
 }
@@ -420,6 +471,17 @@ public interface MushroomJpaRepository extends JpaRepository<MushroomEntity, Lon
     List<MushroomEntity> findAllByVisibility(boolean visibility, String nom);
 }
 ````
+A SAVOIR
+
+````
+Définir l’ordre dans une requête
+public Iterable<MushroomEntity> getAll() {
+        return mushroomJpaRepository.findAll(Sort.by(Sort.Direction.ASC, "commonname"));
+    }
+````
+
+
+
 # A TRIER
 
 ## Crud
@@ -432,3 +494,9 @@ MushroomEntity existingMushroom = mushroomJpaRepository.findById(id).orElse(null
         if (existingMushroom == null) {
             return ResponseEntity.notFound().build();
         }
+
+
+
+
+
+

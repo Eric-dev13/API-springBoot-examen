@@ -16,7 +16,7 @@ public class MushroomCrudController {
     // Via l'annotation @RequiredArgsConstructor Lombok va génèrer un constructeur avec un paramètre pour chaque constante (final)
     private final MushroomService mushroomService;
 
-    // GET - Récupère un tableau d'enregistrement
+    // GET - Récupère un tableau d'enregistrement trié.
     @GetMapping(name = "/")
     public Iterable<MushroomEntity> getAll() {
         return mushroomService.getAll();
@@ -50,5 +50,15 @@ public class MushroomCrudController {
     @DeleteMapping("/{id}")
     public void deleter(@PathVariable("id") Long id){
         mushroomService.delete(id);
+    }
+
+    @PatchMapping("/publier/{id}")
+    public void invertPublish(@PathVariable("id") Long id) {
+        mushroomService.invertPublish(id);
+    }
+
+    @GetMapping("/test/{titre}")
+    public  Iterable<MushroomEntity> getSearch(@PathVariable("titre") String titre) {
+        return mushroomService.getSearch(titre);
     }
 }
