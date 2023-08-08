@@ -331,6 +331,16 @@ public class MushroomEntity {
 }
 ````
 
+````
+// POUR REGROUPER PLUSIEURS REQUETES
+@NamedQueries({
+    @NamedQuery(name = "MushroomEntity.findAllByVisibility", query = "SELECT m FROM MushroomEntity m WHERE m.visibility = :visibility"),
+    @NamedQuery(name = "MushroomEntity.findBySlug", query="SELECT m FROM MushroomEntity m WHERE m.slug=:slug")
+})
+````
+
+
+
 CONTROLLER
 
 ````
@@ -402,15 +412,6 @@ public class MushroomService {
 
 ---
 
-````
-// POUR REGROUPER PLUSIEURS REQUETES
-@NamedQueries({
-    @NamedQuery(name = "MushroomEntity.findAllByVisibility", query = "SELECT m FROM MushroomEntity m WHERE m.visibility = :visibility"),
-    @NamedQuery(name = "MushroomEntity.findBySlug", query="SELECT m FROM MushroomEntity m WHERE m.slug=:slug")
-})
-````
-
----
 
 ## Méthode avec @Query
 
@@ -447,6 +448,46 @@ REPOSITORY
  @Query("SELECT m FROM MushroomEntity m WHERE m.commonname = :commonname")
     List<MushroomEntity> getSearch(String commonname);
  ...
+````
+
+---
+
+## Méthode pour modifier un enregistrement
+
+````
+    // src/main/java/com/api/mushroom/controller/admin/MushroomCrudController.java
+    
+    @RestController
+	@RequestMapping("api/v1/admin/mushroom")
+	public class MushroomCrudController {
+        ...
+        @PatchMapping("/publier/{id}")
+        public void invertPublish(@PathVariable("id") Long id) {
+            mushroomService.invertPublish(id);
+        }
+        ...
+    }
+````
+
+
+
+````
+// src/main/java/com/api/mushroom/service/MushroomService.java
+
+@Service
+public class MushroomService {
+   ...
+   // inverse l'état booleen du champ visibility
+    public void invertPublish(Long id){
+        mushroomJpaRepository.findById(id)
+            .map(mushroom -> {
+                boolean isVisible = mushroom.isVisibility();
+                mushroom.setVisibility(!isVisible);
+                return mushroomJpaRepository.save(mushroom);
+            });
+    }
+    ...
+}
 ````
 
 ---
@@ -494,7 +535,6 @@ MushroomEntity existingMushroom = mushroomJpaRepository.findById(id).orElse(null
         if (existingMushroom == null) {
             return ResponseEntity.notFound().build();
         }
-
 
 
 
