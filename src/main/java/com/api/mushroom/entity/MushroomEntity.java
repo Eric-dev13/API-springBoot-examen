@@ -71,22 +71,22 @@ public class MushroomEntity {
     @Column(name="slug", length =255, unique = true)
     private String slug;
 
-    // RELATIONS LAMELLA TYPE
+    // RELATIONS LAMELLA TYPE (cle étrangère est stockée ici)
     @ManyToOne
     @JoinColumn(name = "lamellatype_id")
     private LamellatypeEntity lamellatype;
 
-    // RELATIONS LOCALNAME
-    @OneToMany(orphanRemoval = true)
-    @JoinColumn(name = "mushroom_id")
-    private Set<LocalnameEntity> localnames = new LinkedHashSet<>();
-
-    // RELATIONS EDIBILITY
+    // RELATIONS EDIBILITY - (cle étrangère est stockée ici)
     @ManyToOne
     @JoinColumn(name = "edibility_id")
     private EdibilityEntity edibility;
 
-    // RELATIONS MEDIAS - mapping type: bidirectionnel
+    // RELATIONS LOCALNAME - mapping type: unidirectionnel (cle étrangère est stockée dans la table associée)
+    @OneToMany(orphanRemoval = true)
+    @JoinColumn(name = "mushroom_id")
+    private Set<LocalnameEntity> localnames = new LinkedHashSet<>();
+
+    // RELATIONS MEDIAS - mapping type: bidirectionnel - (cle étrangère est stockée dans la table associée)
     @OneToMany(mappedBy = "mushroomEntity",cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private List<MediaEntity> medias = new ArrayList<>();
 
