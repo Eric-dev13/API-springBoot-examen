@@ -39,12 +39,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
-        // si jeton d'authentification (utilisateur authentifé avec email et mot de passe) on extrait le token
-        jwt = authHeader.substring(7); // 7 lettre de "Bearer "
+        // si jeton d'authentification on extrait le token du header
+        jwt = authHeader.substring(7); // retire les 7 premiere lettre qui correspond a "Bearer " pour n'obtenir que le token.
         // on décode le token avec la SECRET_KEY (stockée en dur dans JwtService) pour recupèrer l'email de l'utilisateur authentifié
-        userEmail = jwtService.extractUsername(jwt);
+        userEmail = jwtService.extractUsername(jwt); // On extrait les infos non sensibles qui permettent d'identifier le client.
         if(userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
+            UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail); //
             if(jwtService.isTokenValid(jwt, userDetails)) {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails,

@@ -24,7 +24,7 @@ public class MushroomService {
     private final MushroomJpaRepository mushroomJpaRepository; // Créer une instance de mushroomJpaRepository via le constructeur
     private final EntityManager entityManager; // Créer une instance de l'EntityManager via le constructeur
 
-    // GET - Récupère un tableau d'enregistrement
+    // GET - Récupère un tableau d'enregistrement trié par nom commun
     public Iterable<MushroomEntity> getAll() {
         return mushroomJpaRepository.findAll(Sort.by(Sort.Direction.ASC, "commonname"));
     }
@@ -42,7 +42,7 @@ public class MushroomService {
     // POST : Ajouter un enregistrement
     public MushroomEntity add(@RequestBody MushroomEntity mushroomEntity) {
         for (MediaEntity media : mushroomEntity.getMedias()) {
-            //Renommer le fichier
+            // Renommer le fichier
 
             // Upload le fichier
 
@@ -59,7 +59,6 @@ public class MushroomService {
 
     // UPDATE : Mettre à jour un enregistrement
     public MushroomEntity patch(@RequestBody MushroomEntity mushroomEntity){
-
         return mushroomJpaRepository.save(mushroomEntity);
     }
 
@@ -71,11 +70,11 @@ public class MushroomService {
     // inverse l'état booleen du champ visibility
     public void invertPublish(Long id){
         mushroomJpaRepository.findById(id)
-                        .map(mushroom -> {
-                            boolean isVisible = mushroom.isVisibility();
-                            mushroom.setVisibility(!isVisible);
-                            return mushroomJpaRepository.save(mushroom);
-                        });
+            .map(mushroom -> {
+                boolean isVisible = mushroom.isVisibility();
+                mushroom.setVisibility(!isVisible);
+                return mushroomJpaRepository.save(mushroom);
+            });
     }
 
     //TEST

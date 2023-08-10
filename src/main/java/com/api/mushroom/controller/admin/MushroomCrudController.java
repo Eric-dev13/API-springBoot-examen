@@ -13,10 +13,11 @@ import java.util.Optional;
 @CrossOrigin
 @RequestMapping("api/v1/admin/mushroom")
 public class MushroomCrudController {
-    // Via l'annotation @RequiredArgsConstructor Lombok va génèrer un constructeur avec un paramètre pour chaque constante (final)
+
+    // Via la constante (final) l'annotation @RequiredArgsConstructor Lombok va injecter le service dans le constructeur
     private final MushroomService mushroomService;
 
-    // GET - Récupère un tableau d'enregistrement trié.
+    // GET - Récupère un tableau d'enregistrement trié par nom commun.
     @GetMapping(name = "/")
     public Iterable<MushroomEntity> getAll() {
         return mushroomService.getAll();

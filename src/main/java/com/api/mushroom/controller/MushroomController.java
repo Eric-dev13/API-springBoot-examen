@@ -20,21 +20,21 @@ public class MushroomController {
     private final MushroomService mushroomService;
 
 
-    // GET - Retourne un tableau d'objets - liste de tous les enregistREments validé par l'administrateur pour la publication.
+    // GET - Retourne un tableau d'objets - liste de tous les enregistrements validé par l'administrateur pour la publication.
     @GetMapping(name = "/")
     public Iterable<MushroomEntity> findAllByVisibility() {
         return mushroomService.findAllByVisibility(true);
-    }
-
-    @GetMapping("/findBySlug/{slug}")
-    public Optional<MushroomEntity> findBySlug(@PathVariable("slug") String slug) {
-        return mushroomService.findBySlug(slug);
     }
 
     // GET - Afficher un utilisateur via son ID
     @GetMapping("/{id}")
     public Optional<MushroomEntity> getById(@PathVariable("id") Long id) {
         return mushroomService.getById(id);
+    }
+
+    @GetMapping("/findBySlug/{slug}")
+    public Optional<MushroomEntity> findBySlug(@PathVariable("slug") String slug) {
+        return mushroomService.findBySlug(slug);
     }
 
     /*

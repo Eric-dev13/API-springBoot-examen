@@ -2,16 +2,16 @@ package com.api.mushroom.auth;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Contrôleur pour gérer les opérations d'authentification (enregistrement et authentification des utilisateurs).
  */
 @RequiredArgsConstructor
 @RestController
+@CrossOrigin
+
 @RequestMapping("/api/v1/auth")
 public class AuthenticationController {
 

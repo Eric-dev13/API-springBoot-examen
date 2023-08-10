@@ -540,3 +540,51 @@ MushroomEntity existingMushroom = mushroomJpaRepository.findById(id).orElse(null
 
 
 
+## Authentification d’API via JWT et les Cookies
+
+https://www.ruddy-palvair.fr/articles/java/securiser-une-api-rest-avec-jwt-et-spring-boot/
+
+Un token JWT est transmis à travers les headers d’une requête HTTP. Il  est composé de 3 parties: le header, le payload, la signature. Les trois parties sont encodées en base 64 et concaténées avec un « . » afin de  former un seul élément. C’est donc une manière compacte d’échanger des  informations. La signature permet de s’assurer que le token n’a pas été  altéré depuis sa création.  Pour avoir plus de détails sur le  fonctionnement de JWT et la structure d’un token, tu peux consulter le  standard [RFC 759](https://datatracker.ietf.org/doc/html/rfc7519).
+
+Scénario qui se déroule lorsqu’un utilisateur souhaite accéder à une ressource sécurisée :
+
+1. Un utilisateur s’authentifie avec ses credentials et reçois en retour un Token JWT.
+2. L’utilisateur tente d’accéder à une ressource sécurisée en passant le token dans les headers de la requête.
+3. L’application extrait le *subject* du token. Dans notre cas, le *subject* correspond au nom de l’utilisateur.
+4. L’application va ensuite vérifier que l’utilisateur existe et mettre à jour le  contexte Spring Security avec l’utilisateur authentifié.
+5. L’utilisateur est donc autorisé à consommer la ressource qu’il demande.
+
+### Stockage dans un cookies
+
+Générer côté serveur un token, puis envoyer sous forme de Cookie avec la fonction set de la librairie Cookies.
+
+Le Cookie est par la suite automatiquement transmis au serveur par le navigateur a chaque requête.
+
+````
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
+
+// Créer un objet Cookie
+String tokenValue = "votre_token_ici";
+Cookie tokenCookie = new Cookie("access_token", tokenValue);
+
+// Définir les attributs du cookie
+//tokenCookie.setMaxAge(3600); // Durée de vie du cookie en secondes (ici, 1 heure)
+//tokenCookie.setPath("/");    // Chemin pour lequel le cookie est valide (ici, tout le site)
+tokenCookie.setHttpOnly(true); // Empêche l'accès au cookie via JavaScript côté client
+tokenCookie.setSecure(true);   // Le cookie ne peut être envoyé que via HTTPS
+
+// Ajouter le cookie à la réponse HTTP
+HttpServletResponse response = ...; // Obtenez l'objet HttpServletResponse
+response.addCookie(tokenCookie);
+
+
+````
+
+
+
+### Stockage dans le Web Storage
+
+Le token est renvoyé dans la response HTTP.
+
+Pour le renvoyer par la suite avec chaque requête, on utilise le paramètre *« Authorization »* du header HTTP. 
