@@ -1,7 +1,9 @@
 package com.api.mushroom.service;
 
+import com.api.mushroom.entity.LocalnameEntity;
 import com.api.mushroom.entity.MediaEntity;
 import com.api.mushroom.entity.MushroomEntity;
+import com.api.mushroom.repository.MediaJpaRepository;
 import com.api.mushroom.repository.MushroomJpaRepository;
 import com.api.mushroom.service.dto.MushroomDTO;
 import jakarta.persistence.EntityManager;
@@ -9,6 +11,8 @@ import jakarta.persistence.NoResultException;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -21,8 +25,9 @@ import java.util.Optional;
 @Service
 public class MushroomService {
 
-    private final MushroomJpaRepository mushroomJpaRepository; // Créer une instance de mushroomJpaRepository via le constructeur
-    private final EntityManager entityManager; // Créer une instance de l'EntityManager via le constructeur
+    private final MushroomJpaRepository mushroomJpaRepository; // Créer une instance de mushroomJpaRepository via le constructeur.
+    private final EntityManager entityManager; // Créer une instance de l'EntityManager via le constructeur.
+    private final MediaJpaRepository mediaJpaRepository;  // Créer une instance de mediaJpaRepository via le constructeur.
 
     // GET - Récupère un tableau d'enregistrement trié par nom commun
     public Iterable<MushroomEntity> getAll() {
@@ -41,14 +46,24 @@ public class MushroomService {
 
     // POST : Ajouter un enregistrement
     public MushroomEntity add(@RequestBody MushroomEntity mushroomEntity) {
+        // Les opérations de persistance vont créer automatiquement les enregistrements dans les tables, il faut ajouter la cle étrangère pour la liaison.
         for (MediaEntity media : mushroomEntity.getMedias()) {
             // Renommer le fichier
 
             // Upload le fichier
 
-             // Associez chaque média à l'entité MushroomEntity
+            // Associe chaque média nouvellement crée à l'entité MushroomEntity (RENSIGNE LA CLE ETRANGERE)
             media.setMushroomEntity(mushroomEntity);
+
+            // PERSISTE EN BASE DE DONNEE /
+            //mediaJpaRepository.save(media);
         }
+        for (LocalnameEntity localname : mushroomEntity.getLocalnames()) {
+            // Ici pas besoin de persister, car on a, définit, cascade = CascadeType.PERSIST dans MushroomEntity pour cette propriété.
+            // Associe chaque enregistrement "nom local" nouvellement crée à l'entité MushroomEntity
+            localname.setMushroomEntity(mushroomEntity);
+        }
+
         return mushroomJpaRepository.save(mushroomEntity);
     }
 
@@ -67,7 +82,7 @@ public class MushroomService {
         mushroomJpaRepository.deleteById(id);
     }
 
-    // inverse l'état booleen du champ visibility
+    // Inverse la valeur booléen du champ visibility
     public void invertPublish(Long id){
         mushroomJpaRepository.findById(id)
             .map(mushroom -> {

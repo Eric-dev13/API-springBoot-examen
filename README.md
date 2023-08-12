@@ -521,22 +521,48 @@ public Iterable<MushroomEntity> getAll() {
     }
 ````
 
+## JPA PERSISTANCE DES DONNES EN CASCADE
 
+````
+@OneToMany(mappedBy = "mushroomEntity",cascade = CascadeType.PERSIST, orphanRemoval = true)
+private List<MediaEntity> medias = new ArrayList<>();
+````
+
+L'attribut cascade = CascadeType.PERSIST dans une relation entre entités avec JPA indique que l'opération de persistance (ajout en base de données) effectuée sur l'entité parente sera propagée aux entités enfants associées. Cela signifie que lorsque vous persistez (ajoutez) une entité parente, les entités enfants associées seront également persistées automatiquement.
+
+L'attribut orphanRemoval = true dans une relation entre entités avec JPA signifie que les entités enfants seront automatiquement supprimées de la base de données lorsque elles ne sont plus associées à l'entité parente.
+
+`orphanRemoval = true` et `CascadeType.REMOVE` sont deux mécanismes différents pour gérer la suppression d'entités enfants associées à une entité parente dans une relation JPA. Bien qu'ils semblent similaires, ils ont des comportements légèrement différents :
+
+1. **orphanRemoval = true :**
+
+   L'attribut `orphanRemoval = true` est une fonctionnalité de JPA qui permet de supprimer automatiquement les entités enfants lorsqu'elles sont dissociées de l'entité parente.
+
+2. **CascadeType.REMOVE :**
+
+   `CascadeType.REMOVE` est une option de cascade qui permet de propager l'opération de suppression de l'entité parente aux entités enfants associées.
+
+En résumé, `orphanRemoval = true` se concentre sur la gestion des entités enfants lorsque leur relation avec l'entité parente est rompue (en les retirant de la collection ou en mettant à jour les références), tandis que `CascadeType.REMOVE` se concentre sur la suppression en cascade lorsqu'une opération de suppression est effectuée explicitement sur l'entité parente.
+
+
+## CRUD
+
+`@PostMapping("")`, `@PutMapping()`, `@PatchMapping()`, `@DeleteMapping()`, `@GetMapping()` : Annotation à utiliser pour mapper une méthode à une requête HTTP POST envoyée à l'URL spécifiée
+
+@PutMapping("/{id}"): Pour effectuer une mise à jour complète de l'entité.
+
+@PatchMapping("/{id}"): Pour effectuer une mise à jour partielle de l'entité.
 
 # A TRIER
 
 ## Crud
-@PutMapping("/{id}"): Utilisez cette annotation lorsque vous souhaitez effectuer une mise à jour complète de l'entité.
 
-@PatchMapping("/{id}"): Utilisez cette annotation lorsque vous souhaitez effectuer une mise à jour partielle de l'entité.
 
 MushroomEntity existingMushroom = mushroomJpaRepository.findById(id).orElse(null);
 
         if (existingMushroom == null) {
             return ResponseEntity.notFound().build();
         }
-
-
 
 
 
@@ -581,10 +607,11 @@ response.addCookie(tokenCookie);
 
 ````
 
-
-
 ### Stockage dans le Web Storage
 
 Le token est renvoyé dans la response HTTP.
 
 Pour le renvoyer par la suite avec chaque requête, on utilise le paramètre *« Authorization »* du header HTTP. 
+
+
+

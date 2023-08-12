@@ -23,7 +23,10 @@ import java.util.*;
 @AllArgsConstructor
 @Table(name = "user")
 public class UserEntity implements Serializable, UserDetails {
-    // DECLARATION DES ATTRIBUTS
+
+    /* ************************************* */
+    /*      DECLARATION DES PROPRIETES       */
+    /* ************************************* */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // id auto-incrémente
     private Long id;

@@ -13,7 +13,10 @@ import java.util.Set;
 @Data
 @Table(name = "edibility")
 public class EdibilityEntity {
-    // DECLARATION DES ATTRIBUTS
+
+    /* ************************************* */
+    /*      DECLARATION DES PROPRIETES       */
+    /* ************************************* */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // id auto-incrémente
     private Long id;

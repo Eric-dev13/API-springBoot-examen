@@ -17,13 +17,13 @@ public class MushroomCrudController {
     // Via la constante (final) l'annotation @RequiredArgsConstructor Lombok va injecter le service dans le constructeur
     private final MushroomService mushroomService;
 
-    // GET - Récupère un tableau d'enregistrement trié par nom commun.
+    // GET - FIND ALL - Récupère un tableau d'enregistrement trié par nom commun.
     @GetMapping(name = "/")
     public Iterable<MushroomEntity> getAll() {
         return mushroomService.getAll();
     }
 
-    // GET : Afficher un utilisateur via son ID
+    // GET - FIND BY ID - Afficher un utilisateur via son ID
     @GetMapping("/{id}")
     public Optional<MushroomEntity> getById(@PathVariable("id") Long id) {
         return mushroomService.getById(id);
@@ -41,7 +41,7 @@ public class MushroomCrudController {
         return mushroomService.put(mushroomEntity);
     }
 
-    // PATCH : Mise à jour  partiel d'un enregistrement
+    // PATCH : Mise à jour partiel d'un enregistrement
     @PatchMapping("/{id}")
     public MushroomEntity patch(@PathVariable("id") final String id, @RequestBody final MushroomEntity mushroomEntity) {
         return mushroomService.patch(mushroomEntity);
@@ -53,6 +53,7 @@ public class MushroomCrudController {
         mushroomService.delete(id);
     }
 
+    // Inverse la valeur booléen du champ visibility
     @PatchMapping("/publier/{id}")
     public void invertPublish(@PathVariable("id") Long id) {
         mushroomService.invertPublish(id);

@@ -52,7 +52,6 @@ public class UserController {
         userService.delete(id);
     }
 
-
     /*
 
     // POST : Ajouter un compte utilisateur

@@ -21,10 +21,9 @@ import java.util.*;
     @NamedQuery(name = "MushroomEntity.findBySlug", query="SELECT m FROM MushroomEntity m WHERE m.slug=:slug")
 })
 public class MushroomEntity {
-
-    // =============================
-    // = DECLARATION DES ATTRIBUTS =
-    // =============================
+    /* ************************************* */
+    /*      DECLARATION DES PROPRIETES       */
+    /* ************************************* */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // id auto-incrémente
     private Long id;
@@ -71,26 +70,35 @@ public class MushroomEntity {
     @Column(name="slug", length =255, unique = true)
     private String slug;
 
-    // RELATIONS LAMELLA TYPE (cle étrangère est stockée ici)
+    /* ******************************************** */
+    /*          DECLARATION DES PROPRIETES          */
+    /*           RELATIONS / ASSOCIATIONS           */
+    /* ******************************************** */
+    // ASSOCIER AVEC L'ENTITEE LAMELLA TYPE (cle étrangère est stockée ici)
     @ManyToOne
     @JoinColumn(name = "lamellatype_id")
     private LamellatypeEntity lamellatype;
 
-    // RELATIONS EDIBILITY - (cle étrangère est stockée ici)
+    // ASSOCIER AVEC L'ENTITEE EDIBILITY - (cle étrangère est stockée ici)
     @ManyToOne
     @JoinColumn(name = "edibility_id")
     private EdibilityEntity edibility;
 
-    // RELATIONS LOCALNAME - mapping type: unidirectionnel (cle étrangère est stockée dans la table associée)
-    @OneToMany(orphanRemoval = true)
-    @JoinColumn(name = "mushroom_id")
+    // ASSOCIE AVEC L'ENTITEE LOCALNAME - mapping type: bidirectionnel - (cle étrangère est stockée dans la table associée)
+    // Configurée pour propager les opérations de persistance (CascadeType.PERSIST)et de suppression automatiquement des entités enfants lorsqu'elles sont dissociées de l'entité parente (orphanRemoval = true).
+    @OneToMany(mappedBy = "mushroomEntity", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private Set<LocalnameEntity> localnames = new LinkedHashSet<>();
 
-    // RELATIONS MEDIAS - mapping type: bidirectionnel - (cle étrangère est stockée dans la table associée)
-    @OneToMany(mappedBy = "mushroomEntity",cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
+    // ASSOCIE AVEC L'ENTITEE MEDIAS - mapping type: bidirectionnel - (cle étrangère est stockée dans la table associée)
+    // Configurée pour propager les opérations de persistance (CascadeType.PERSIST)et de suppression automatiquement des entités enfants lorsqu'elles sont dissociées de l'entité parente (orphanRemoval = true).
+    @OneToMany(mappedBy = "mushroomEntity", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<MediaEntity> medias = new ArrayList<>();
 
 
+
+    /* *************************************** */
+    /*             JPA PERSISTENCE             */
+    /* *************************************** */
     @PrePersist
     public void prePresist(){
         // Générer automatiquement un slug en utilisant l'identifiant unique avant la mise à jour de la base de données.

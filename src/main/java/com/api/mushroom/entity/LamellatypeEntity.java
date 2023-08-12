@@ -14,7 +14,9 @@ import java.util.Set;
 @Table(name = "lamellaType")
 public class LamellatypeEntity {
 
-    // DECLARATION DES ATTRIBUTS
+    /* ************************************* */
+    /*      DECLARATION DES PROPRIETES       */
+    /* ************************************* */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // id auto-incrémente
     private Long id;
@@ -22,22 +24,26 @@ public class LamellatypeEntity {
     @Column(name="created_at")
     private LocalDateTime createdAt;
 
-
     @Column(name="name")
     private String name;
 
     @Column(name="path")
     private String path;
 
-
+    /* ******************************************** */
+    /*          DECLARATION DES PROPRIETES          */
+    /*           RELATIONS / ASSOCIATIONS           */
+    /* ******************************************** */
     @OneToMany(mappedBy = "lamellatype", orphanRemoval = true)
     private Set<MushroomEntity> mushroom = new LinkedHashSet<>();
 
 
-    // METHODES pour stocker automatiquement la date de création de l'enregistrement en de base de données.
+    /* *************************************** */
+    /*             JPA PERSISTENCE             */
+    /* *************************************** */
+    // METHODES pour générer la date de création avant l'enregistrement en de base de données.
     @PrePersist
     public void prePresist(){
-        // Enregistre la date au moment de la création d'un enregistrement.
         this.createdAt = LocalDateTime.now();
     }
 
