@@ -30,12 +30,12 @@ public class UserService {
     }
 
     // POST : Ajouter un enregistrement
-    public UserEntity add(@RequestBody UserEntity userEntity){
+    public UserEntity add(UserEntity userEntity){
         return userEntityJpaRepository.save(userEntity);
     }
 
     // UPDATE : Mettre à jour un enregistrement
-    public UserEntity edit(@RequestBody UserEntity userEntity){
+    public UserEntity edit(UserEntity userEntity){
         return userEntityJpaRepository.save(userEntity);
     }
 

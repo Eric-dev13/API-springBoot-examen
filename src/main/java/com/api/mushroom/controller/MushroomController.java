@@ -19,7 +19,6 @@ public class MushroomController {
     // Via l'annotation @RequiredArgsConstructor Lombok va génèrer un constructeur avec un paramètre pour chaque constante (final)
     private final MushroomService mushroomService;
 
-
     // GET - Retourne un tableau d'objets - liste de tous les enregistrements validé par l'administrateur pour la publication.
     @GetMapping(name = "/")
     public Iterable<MushroomEntity> findAllByVisibility() {
@@ -37,11 +36,4 @@ public class MushroomController {
         return mushroomService.findBySlug(slug);
     }
 
-    /*
-    // GET - Retourne un tableau de tableau de 3 propriétés.
-    @GetMapping("/field-selected")
-    public List findAllByVisibilityWithTitleImageEdibility() {
-       return mushroomService.findAllByVisibilityWithTitleImageEdibility();
-    }
-    */
 }

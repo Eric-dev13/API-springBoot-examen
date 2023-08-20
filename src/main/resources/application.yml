@@ -30,7 +30,10 @@ spring:
     #	Sa valeur sera utilisée pour remplacer l' espace réservé @spring.profiles.active@ dans application.properties ou application.yml
     # active: @spring.profiles.active@
 
-
+  servlet:
+    multipart:
+      max-file-size: 15MB
+      max-request-size: 15MB
 
 ---
 # =================================

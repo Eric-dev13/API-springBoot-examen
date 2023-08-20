@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-@Data
+//@Data
 @Service
 public class MediaService {
 
@@ -29,12 +29,12 @@ public class MediaService {
     }
 
     // POST : Ajouter un enregistrement
-    public MediaEntity add(@RequestBody MediaEntity mediaEntity) {
+    public MediaEntity add(MediaEntity mediaEntity) {
         return mediaJpaRepository.save(mediaEntity);
     }
 
     // UPDATE : Mettre à jour un enregistrement
-    public MediaEntity edit(@RequestBody MediaEntity mediaEntity){
+    public MediaEntity edit(MediaEntity mediaEntity){
         return mediaJpaRepository.save(mediaEntity);
     }
 

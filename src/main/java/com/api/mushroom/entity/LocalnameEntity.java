@@ -34,9 +34,7 @@ public class LocalnameEntity {
     /* ******************************************** */
     /*                 CONSTRUCTEUR                 */
     /* ******************************************** */
-    public LocalnameEntity(){
-
-    }
+    public LocalnameEntity(){}
 
 
     /* ******************************************* */

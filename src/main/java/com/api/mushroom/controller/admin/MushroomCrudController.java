@@ -3,6 +3,7 @@ package com.api.mushroom.controller.admin;
 import com.api.mushroom.entity.MushroomEntity;
 import com.api.mushroom.service.MushroomService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -23,6 +24,12 @@ public class MushroomCrudController {
         return mushroomService.getAll();
     }
 
+/*    @GetMapping("/")
+    public ResponseEntity<Iterable<MushroomEntity>> getAll() {
+        Iterable<MushroomEntity> mushrooms = mushroomService.getAll();
+        return ResponseEntity.ok(mushrooms);
+    }*/
+
     // GET - FIND BY ID - Afficher un utilisateur via son ID
     @GetMapping("/{id}")
     public Optional<MushroomEntity> getById(@PathVariable("id") Long id) {
@@ -37,13 +44,13 @@ public class MushroomCrudController {
 
     // UPDATE : Mise à jour complète d'un enregistrement
     @PutMapping("/{id}")
-    public MushroomEntity put(@PathVariable("id") final String id, @RequestBody final MushroomEntity mushroomEntity) {
+    public MushroomEntity put(@PathVariable("id") Long id, @RequestBody final MushroomEntity mushroomEntity) {
         return mushroomService.put(mushroomEntity);
     }
 
     // PATCH : Mise à jour partiel d'un enregistrement
     @PatchMapping("/{id}")
-    public MushroomEntity patch(@PathVariable("id") final String id, @RequestBody final MushroomEntity mushroomEntity) {
+    public MushroomEntity patch(@PathVariable("id") Long id, @RequestBody final MushroomEntity mushroomEntity) {
         return mushroomService.patch(mushroomEntity);
     }
 
@@ -59,8 +66,5 @@ public class MushroomCrudController {
         mushroomService.invertPublish(id);
     }
 
-    @GetMapping("/test/{titre}")
-    public  Iterable<MushroomEntity> getSearch(@PathVariable("titre") String titre) {
-        return mushroomService.getSearch(titre);
-    }
+
 }

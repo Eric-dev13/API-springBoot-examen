@@ -40,7 +40,7 @@ public class UserCrudController {
 
     // UPDATE : Mettre à jour un enregistrement
     @PutMapping("/{id}")
-    public UserEntity edit(@PathVariable("id") final String id, @RequestBody final UserEntity userEntity) {
+    public UserEntity edit(@PathVariable("id") Long id, @RequestBody final UserEntity userEntity) {
         return userService.edit(userEntity);
     }
 

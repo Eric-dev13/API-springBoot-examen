@@ -51,27 +51,96 @@ Initialiser le projet avec le générateur https://start.spring.io/
 
 
 # STOCKAGE DES ASSETS
-
 Dans un projet Spring Boot, vous pouvez stocker les fichiers statiques, y compris les images, dans différents endroits en fonction de vos besoins spécifiques.
 
-Voici quelques options courantes pour stocker les assets dans un projet Spring Boot avec une API REST :
+1. Création d'un dossier `public` à la racine du projet pour les fichiers d'upload , celui-ci sera accessible sans restriction `http://localhost:8080/upload/`;.
 
-1. **Répertoire "src/main/resources/static" :** Dans un projet Spring Boot, vous pouvez placer les fichiers statiques tels que les images dans le répertoire "src/main/resources/static". Les fichiers dans ce répertoire sont accessibles publiquement par le serveur et peuvent être servis directement via l'URL. Par exemple, si vous avez un fichier "image.jpg" dans "src/main/resources/static/images", vous pouvez y accéder avec l'URL "http://localhost:8080/images/image.jpg".
+![dossier publique](assets.readme/public_assets.png)
 
-2. **Répertoire "src/main/resources/public" :** De la même manière que "src/main/resources/static", vous pouvez également placer les fichiers statiques dans le répertoire "src/main/resources/public". Les fichiers dans ce répertoire sont également accessibles publiquement par le serveur.
+2. Création d'un serveur de fichier accessible via une méthode GET. Le dossier `upload` est créé dans `src/main/resources`.
 
-3. **Répertoire externe configurable :** Si vous préférez stocker les fichiers statiques en dehors du répertoire du projet, vous pouvez configurer un répertoire externe dans votre application Spring Boot en utilisant des propriétés de configuration. Cela vous permettra de spécifier le chemin d'accès au répertoire où vous stockez les fichiers statiques dans votre application.
+![dossier protégé](assets.readme/private_assets.png)
 
-4. **Stockage dans le système de fichiers :** Pour une solution plus évolutive et flexible, vous pouvez utiliser un système de stockage de fichiers dédié, comme Amazon S3, Google Cloud Storage ou tout autre service de stockage cloud. Vous pouvez également utiliser des solutions de stockage sur site, comme NFS, CIFS, etc.
+Controller
+````java
 
-Dans tous les cas, assurez-vous que les fichiers statiques sont correctement configurés et accessibles publiquement par le serveur pour que les clients puissent y accéder via les URLs appropriées. Pensez également à configurer correctement les en-têtes de réponse HTTP pour la mise en cache, la compression, etc., selon les besoins de votre application.
+@RestController
+@RequiredArgsConstructor
+@CrossOrigin
+@RequestMapping("api/v1/file/upload")
+public class ImageController {
+
+   // Via l'annotation @RequiredArgsConstructor Lombok va générer un constructeur avec un paramètre pour chaque constante (final)
+   private final ImageService imageService;
+
+    /* Donc on n'a pas besoin d'injecter le service de cette autre manière
+    @Autowired
+    public ImageController(ImageService imageService) {
+        this.imageService = imageService;
+    }
+     */
+
+   // TELECHARGEMENT DE FICHIER: Cette méthode renvoi vers le client le fichier demandé.
+   // Est demandé en premiere paramètre le nom du sous-dossier d'upload (rubrique) et en deuxième paramètre le nom du fichier recherché.
+   // le serveur retourne la réponse avec les données de l'image et les en-têtes
+   @GetMapping("/{pathName}/{imageName}")
+   public ResponseEntity<byte[]> getImage(@PathVariable String pathName, @PathVariable String imageName) throws IOException {
+      return imageService.getImage(pathName, imageName);
+   }
+}
+````
+
+Service
+````java
+@Service
+public class ImageService {
+
+   public ResponseEntity<byte[]> getImage(String pathName, String imageName) throws IOException {
+      // Construire le chemin d'accès complet vers l'image demandée
+      String fullImagePath = "upload/" + pathName + "/" + imageName;
+
+      // Obtenir le chemin d'accès complet du fichier image depuis le répertoire src/main/resources
+      ClassPathResource classPathResource = new ClassPathResource(fullImagePath);
+      Path imageFilePath = classPathResource.getFile().toPath();
+
+      // Vérifier si le fichier existe
+      if (Files.exists(imageFilePath)) {
+         // Lire le contenu du fichier image
+         byte[] imageBytes = Files.readAllBytes(imageFilePath);
+
+         // Définir le type de contenu (Content-Type) de la réponse
+         String contentType = determineContentType(imageFilePath);
+
+         // Construire les en-têtes de la réponse avec le type de contenu
+         HttpHeaders headers = new HttpHeaders();
+         headers.setContentType(MediaType.valueOf(contentType));
+
+         // Retourner la réponse avec les données de l'image et les en-têtes
+         return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);
+      } else {
+         // Si le fichier image n'existe pas, retourner une réponse 404 (Non trouvé)
+         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+      }
+   }
+
+   // Méthode pour déterminer le type de contenu (Content-Type) de l'image
+   private String determineContentType(Path filePath) throws IOException {
+      String contentType;
+      try {
+         contentType = Files.probeContentType(filePath);
+      } catch (IOException e) {
+         // En cas d'erreur lors de la détermination du type de contenu, on utilise un type par défaut
+         contentType = "application/octet-stream";
+      }
+      return contentType;
+   }
+}
+
+````
 
 
-Dans le dossier src/main/resources, il y a :
 
-    Le dossier static qui permet de stocker tous les fichiers images, CSS, bref tous les fichiers qui ne fournissent pas un contenu dynamique (son utilisation n'est pas obligatoire).
-    Le dossier templates qui permet de stocker des fichiers web si on utilise le Framework Thymeleaf de Spring (Thymeleaf ne sera pas utilisé dans le cadre de ce projet).
-    Le fichier application.properties qui nous sera très utile pour configurer le projet. Pour le moment, il est vide, car je vais d'abord utiliser les configurations par défaut de Spring Boot.
+
 
 
 
@@ -612,6 +681,133 @@ response.addCookie(tokenCookie);
 Le token est renvoyé dans la response HTTP.
 
 Pour le renvoyer par la suite avec chaque requête, on utilise le paramètre *« Authorization »* du header HTTP. 
+
+
+## Création d'une réponse HTTP pour renvoyer vers le client le contenu d'une image à partir de l'API
+
+Les données de l'image sont renvoyées sous la forme d'un tableau de bytes (byte[]) dans le corps de la réponse HTTP. Voici comment cela fonctionne en détail :
+
+    Lecture du Contenu de l'Image :
+    Le code lit le contenu du fichier image à l'emplacement spécifié imageFilePath en utilisant Files.readAllBytes(imageFilePath). Cela renvoie un tableau de bytes contenant le contenu binaire de l'image.
+
+    Détermination du Type de Contenu (Content-Type) :
+    La méthode determineContentType(imageFilePath) est utilisée pour déterminer le type de contenu de l'image en fonction de son extension de fichier. Par exemple, si c'est une image JPEG, elle renverra "image/jpeg". Ceci est important pour définir correctement l'en-tête Content-Type de la réponse HTTP.
+
+    Construction des En-têtes de la Réponse :
+    Les en-têtes de la réponse HTTP sont configurés à l'aide de la classe HttpHeaders. L'en-tête Content-Type est configuré en fonction du type de contenu déterminé précédemment.
+
+    Création de la Réponse :
+    La classe ResponseEntity est utilisée pour encapsuler les données de l'image (imageBytes), les en-têtes (headers) et le statut (HttpStatus.OK) dans une réponse HTTP complète.
+
+    Renvoi de la Réponse :
+    La méthode retourne l'objet ResponseEntity contenant les données de l'image et les en-têtes. Cette réponse sera renvoyée au client, qui pourra alors afficher l'image.
+
+Lorsque le client reçoit la réponse, il peut extraire les données de l'image du corps de la réponse et les utiliser pour afficher l'image dans une balise img ou tout autre élément approprié.
+
+## RESPONSE
+
+### Envoie de la réponse via l'api au format texte.
+
+````java
+return ResponseEntity.ok().body("Données traitées avec succès!");
+````
+
+### Récupère et traite la réponse avec typescript au format texte.
+
+````javascript
+this.http.post(this.API_ADMIN_BASE_URL + "edibility/", formData, { responseType: 'text' }).subscribe(
+{
+   next: (response) => {
+     console.log('message: ', response);
+     // redirige vers la liste
+     this.router.navigate(["admin/comestibilite/liste"]);
+   },
+   error: (err) => console.error('Erreur lors du téléchargement du fichier.', err),
+   complete: () => console.log('Fichier téléchargé avec succès.')
+});
+````
+
+OU
+
+### Envoie de la réponse via l'api au format JSON.
+
+````java
+return ResponseEntity.ok("{\"message\": \"Données traitées avec succès!\"}");
+````
+
+### Récupère et traite la réponse avec typescript au format JSON.
+
+````javascript
+this.http.post(this.API_ADMIN_BASE_URL + "edibility/", formData).subscribe(
+ {
+   next: (response) => {
+     console.log('message: ', response.toString);
+     // redirige vers la liste
+     this.router.navigate(["admin/comestibilite/liste"]);
+   },
+   error: (err) => console.error('Erreur lors du téléchargement du fichier.', err),
+   complete: () => console.log('Fichier téléchargé avec succès.')
+ });
+````
+
+OU
+
+### Envoie de la réponse via l'api au format JSON.
+
+````java
+return ResponseEntity.ok()
+       .contentType(MediaType.APPLICATION_JSON)
+       .body("Données traitées avec succès!");
+````
+
+### Récupère et traite la réponse avec typescript au format JSON.
+
+````javascript
+// POST - Ajoute un nouvel enregistrement 
+if (this.selectedFile) {
+  const formData = new FormData();
+  formData.append('file', this.selectedFile);
+  formData.append('name', form.value.name);
+
+  console.log("formData: ", formData)
+
+  this.http.post(this.API_ADMIN_BASE_URL + "edibility/", formData).subscribe(
+    {
+      next: (response) => {
+        console.log('message: ', response);
+        // redirige vers la liste
+        this.router.navigate(["admin/comestibilite/liste"]);
+      },
+      error: (err) => console.error('Erreur lors du téléchargement du fichier.', err),
+      complete: () => console.log('Fichier téléchargé avec succès.')
+    });
+} else {
+  console.log('Le formulaire est invalide.');
+}
+````
+
+## REPOSITORY
+
+````java
+// Inverse la valeur booléen du champ visibility
+public void invertPublish(Long id){
+     mushroomJpaRepository.findById(id)
+     .map(mushroom -> {
+        boolean isVisible = mushroom.isVisibility();
+        mushroom.setVisibility(!isVisible);
+        return mushroomJpaRepository.save(mushroom);
+     });
+}
+````
+
+
+````java
+//  Si aucune entité EdibilityEntity n'est trouvée avec l'ID spécifié nne exception est lever si la valeur n'est pas présente dans l'optionnel (Optional), une NoSuchElementException sera levée avec le message d'erreur spécifié.
+
+EdibilityEntity edibilityEntity = edibilityJpaRepository.findById(id).orElseThrow(
+     () -> new NoSuchElementException("Aucune entité EdibilityEntity trouvée avec l'ID : " + id)
+);
+````
 
 
 

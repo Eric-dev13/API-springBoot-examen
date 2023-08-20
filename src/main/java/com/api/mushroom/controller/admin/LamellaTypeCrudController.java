@@ -1,5 +1,6 @@
 package com.api.mushroom.controller.admin;
 
+import com.api.mushroom.entity.EdibilityEntity;
 import com.api.mushroom.entity.LamellatypeEntity;
 import com.api.mushroom.service.LamellaTypeService;
 import lombok.RequiredArgsConstructor;
@@ -35,8 +36,14 @@ public class LamellaTypeCrudController {
 
     // UPDATE : Mettre à jour un enregistrement
     @PutMapping("/{id}")
-    public LamellatypeEntity edit(@PathVariable("id") final String id, @RequestBody final LamellatypeEntity lamellatypeEntity) {
-        return lamellaTypeService.edit(lamellatypeEntity);
+    public LamellatypeEntity put(@PathVariable("id") Long id, @RequestBody final LamellatypeEntity lamellatypeEntity) {
+        return lamellaTypeService.put(lamellatypeEntity);
+    }
+
+    // PATCH : Mise à jour partiel d'un enregistrement
+    @PatchMapping("/{id}")
+    public LamellatypeEntity patch(@PathVariable("id")  Long id, @RequestBody final LamellatypeEntity lamellatypeEntity) {
+        return lamellaTypeService.patch(lamellatypeEntity);
     }
 
     // DELETE : Supprimer un enregistrement

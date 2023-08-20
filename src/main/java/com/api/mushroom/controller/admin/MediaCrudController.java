@@ -11,6 +11,7 @@ import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
+@CrossOrigin
 @RequestMapping("api/v1/admin/media")
 public class MediaCrudController {
     // Via l'annotation @RequiredArgsConstructor Lombok va génèrer un constructeur avec un paramètre pour chaque constante (final)
@@ -36,14 +37,13 @@ public class MediaCrudController {
 
     // UPDATE : Mettre à jour un enregistrement
     @PutMapping("/{id}")
-    public MediaEntity edit(@PathVariable("id") final String id, @RequestBody final MediaEntity mediaEntity) {
+    public MediaEntity edit(@PathVariable("id") Long id, @RequestBody final MediaEntity mediaEntity) {
         return mediaService.edit(mediaEntity);
     }
 
     // DELETE : Supprimer un enregistrement
     @DeleteMapping("/{id}")
-
-    public void deleter(@PathVariable("id") Long id){
+    public void delete(@PathVariable("id") Long id){
         mediaService.delete(id);
     }
 

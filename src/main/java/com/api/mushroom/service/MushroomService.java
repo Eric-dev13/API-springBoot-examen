@@ -1,5 +1,6 @@
 package com.api.mushroom.service;
 
+import com.api.mushroom.entity.EdibilityEntity;
 import com.api.mushroom.entity.LocalnameEntity;
 import com.api.mushroom.entity.MediaEntity;
 import com.api.mushroom.entity.MushroomEntity;
@@ -20,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-@Data
+//@Data
 @RequiredArgsConstructor
 @Service
 public class MushroomService {
@@ -45,7 +46,7 @@ public class MushroomService {
     }
 
     // POST : Ajouter un enregistrement
-    public MushroomEntity add(@RequestBody MushroomEntity mushroomEntity) {
+    public MushroomEntity add(MushroomEntity mushroomEntity) {
         // Les opérations de persistance vont créer automatiquement les enregistrements dans les tables, il faut ajouter la cle étrangère pour la liaison.
         for (MediaEntity media : mushroomEntity.getMedias()) {
             // Renommer le fichier
@@ -68,12 +69,12 @@ public class MushroomService {
     }
 
     // UPDATE : Mettre à jour un enregistrement
-    public MushroomEntity put(@RequestBody MushroomEntity mushroomEntity){
+    public MushroomEntity put(MushroomEntity mushroomEntity){
         return mushroomJpaRepository.save(mushroomEntity);
     }
 
-    // UPDATE : Mettre à jour un enregistrement
-    public MushroomEntity patch(@RequestBody MushroomEntity mushroomEntity){
+    // PATCH : Mise à jour partiel d'un enregistrement
+    public MushroomEntity patch(MushroomEntity mushroomEntity){
         return mushroomJpaRepository.save(mushroomEntity);
     }
 

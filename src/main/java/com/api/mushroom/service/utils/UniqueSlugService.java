@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import java.util.UUID;
 
 
-@RequiredArgsConstructor
 @Service
 public class UniqueSlugService {
 
@@ -25,6 +24,6 @@ public class UniqueSlugService {
         // Bibliothèque simple et légère qui permet de générer des slugs à partir de chaînes de caractères.
         final Slugify slg = Slugify.builder().build();
         // on concatène le nom de l'espèce et le numero
-        return  slg.slugify(name + "-" + randomUniqueId);
+        return slg.slugify(name + "-" + randomUniqueId);
     }
 }
