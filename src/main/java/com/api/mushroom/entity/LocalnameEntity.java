@@ -1,9 +1,13 @@
 package com.api.mushroom.entity;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 
+@Data
 @Entity
 @Table(name = "localname")
 public class LocalnameEntity {
@@ -26,48 +30,12 @@ public class LocalnameEntity {
     /*           RELATIONS / ASSOCIATIONS           */
     /* ******************************************** */
     // RELATIONS MUSHROOM - mapping type: bidirectionnel
+    // Désactiver la génération des méthodes getter ou setter.
+    @Getter(AccessLevel.NONE)
+    // @Getter(onMethod_ = {})
     @ManyToOne
     @JoinColumn(name = "mushroom_id")
     private MushroomEntity mushroomEntity;
-
-
-    /* ******************************************** */
-    /*                 CONSTRUCTEUR                 */
-    /* ******************************************** */
-    public LocalnameEntity(){}
-
-
-    /* ******************************************* */
-    /*                   GETTERS                   */
-    /* ******************************************* */
-    public Long getId() {
-        return this.id;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return this.createdAt;
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-
-    /* ******************************************* */
-    /*                   SETTERS                   */
-    /* ******************************************* */
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-
-    public void setMushroomEntity(MushroomEntity mushroomEntity) {
-        this.mushroomEntity = mushroomEntity;
-    }
 
 
     /* *************************************** */
@@ -77,6 +45,4 @@ public class LocalnameEntity {
     public void prePresist(){
         this.createdAt = LocalDateTime.now();
     }
-
-
 }

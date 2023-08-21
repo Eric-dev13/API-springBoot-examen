@@ -45,7 +45,7 @@ public class EdibilityService {
         String newFilename = fileUploadService.fileUpload(file, "edibility/");
         EdibilityEntity edibilityEntity = new EdibilityEntity();
         edibilityEntity.setName(name);
-        edibilityEntity.setPath(newFilename);
+        edibilityEntity.setFilename(newFilename);
         edibilityJpaRepository.save(edibilityEntity);
         return ResponseEntity.ok("{\"message\": \"Données traitées avec succès!\"}");
     }
@@ -73,7 +73,7 @@ public class EdibilityService {
             // Copie le fichier image sur le serveur et retourne le nouveau nom du fichier.
             // Ajoute le nom nom dans la db
             String newFilename = fileUploadService.fileUpload(file, "edibility/");
-            edibilityEntity.setPath(newFilename);
+            edibilityEntity.setFilename(newFilename);
         }
 
         return edibilityJpaRepository.save(edibilityEntity);

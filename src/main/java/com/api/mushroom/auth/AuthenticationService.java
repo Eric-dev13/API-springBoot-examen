@@ -28,7 +28,7 @@ public class AuthenticationService {
                .firstname(request.getFirstname())
                .email(request.getEmail())
                .password(passwordEncoder.encode(request.getPassword()))
-               .avatar(request.getAvatar())
+               .filename(request.getAvatar())
                .isVerified(false)
                .build();
         userEntityJpaRepository.save(user);

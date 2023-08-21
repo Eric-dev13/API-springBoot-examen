@@ -24,7 +24,7 @@ public class EdibilityEntity {
     @Column(name="name")
     private String name;
 
-    @Column(name="path")
-    private String path;
+    @Column(name="filename")
+    private String filename;
 
 }

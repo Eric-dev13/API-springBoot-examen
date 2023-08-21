@@ -1,7 +1,7 @@
 --
 -- Déchargement des données de la table user
 --
-INSERT INTO user (id, avatar, created_at, email, firstname, is_verified, lastname, password, pseudo, role, updated_at) VALUES
+INSERT INTO user (id, filename, created_at, email, firstname, is_verified, lastname, password, pseudo, role, updated_at) VALUES
 (1, NULL, '2023-07-23 11:16:10.472996', 'lanzae32@gmail.com', NULL, b'0', NULL, '$2a$10$adXxyDL/K/4Lf2sx1syJqOKxWy0E714q9Ifna16sI/kbGyOd29y82', 'admin', 'ADMIN', NULL),
 (2, NULL, '2023-07-23 11:31:53.420574', 'usergmail.com', NULL, b'0', NULL, '$2a$10$RUvHLtjyVyU5Lj49T5vbVO9/S0Duz0MZPgDcjZGdMWFd8/RuMzfL6', 'user', 'USER', NULL);
 -- COMMIT;
@@ -9,7 +9,7 @@ INSERT INTO user (id, avatar, created_at, email, firstname, is_verified, lastnam
 --
 -- Déchargement des données de la table edibility
 --
-INSERT INTO edibility (id, name, path) VALUES 
+INSERT INTO edibility (id, name, filename) VALUES
 (1, 'Mortel', 'mortel.png'),
 (2, 'Toxique', 'toxique.png'),
 (3, 'A rejeter', 'rejeter.png'),
@@ -20,7 +20,7 @@ INSERT INTO edibility (id, name, path) VALUES
 --
 -- Déchargement des données de la table lamellatype
 --
-INSERT INTO lamella_type (id, name, path, created_at) VALUES
+INSERT INTO lamella_type (id, name, filename, created_at) VALUES
 (1, 'Adnées', 'adnees.png', '2021-12-04 11:30:15'),
 (2, 'Décurrentes', 'decurrentes.png', '2021-12-04 11:30:15'),
 (3, 'Echancrées', 'echancrees.png', '2021-12-04 11:30:15'),
@@ -75,7 +75,7 @@ INSERT INTO localname (id, mushroom_id, created_at, name) VALUES
 --
 -- Déchargement des données de la table media
 --
-INSERT INTO media (id, mushroom_id, created_at, name, path, updated_at) VALUES
+INSERT INTO media (id, mushroom_id, created_at, name, filename, updated_at) VALUES
 (16, 1, '2021-11-23 19:38:46', NULL, '619d434603bb8195867859.jpg', '2021-11-23 19:38:46'),
 (17, 1, '2021-11-23 19:38:46', NULL, '619d434606189839000481.jpg', '2021-11-23 19:38:46'),
 (18, 1, '2021-11-23 19:38:46', NULL, '619d434607188955443823.jpg', '2021-11-23 19:38:46'),

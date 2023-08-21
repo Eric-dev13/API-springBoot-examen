@@ -55,8 +55,8 @@ public class UserEntity implements Serializable, UserDetails {
     @Column(name = "password", length = 255)
     private String password;
 
-    @Column(name = "avatar", length = 255)
-    private String avatar;
+    @Column(name = "filename", length = 255)
+    private String filename;
 
     @Column(name = "is_verified")
     private Boolean isVerified;

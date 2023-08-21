@@ -27,8 +27,8 @@ public class LamellatypeEntity {
     @Column(name="name")
     private String name;
 
-    @Column(name="path")
-    private String path;
+    @Column(name="filename")
+    private String filename;
 
     /* ******************************************** */
     /*          DECLARATION DES PROPRIETES          */
