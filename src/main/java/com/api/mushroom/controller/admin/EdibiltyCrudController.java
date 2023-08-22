@@ -37,9 +37,10 @@ public class EdibiltyCrudController {
     }
 
 
+    // TODO : gerer la gestion de l'upload Form-data et des données textuelles au format JSON.
     @PostMapping(value = "/")
     public ResponseEntity<?> addEdibilityWithFile(@RequestParam("file") MultipartFile file,
-                                                      @RequestParam("name") String name) throws IOException {
+                                                  @RequestParam("name") String name) throws IOException {
        if (file != null) {
            return edibilityService.addEdibilityWithFile(file,name);
        }
@@ -62,6 +63,7 @@ public class EdibiltyCrudController {
     // DELETE : Supprimer un enregistrement
     @DeleteMapping("/{id}")
     public void deleter(@PathVariable("id") Long id){
+         // TODO : gerer la suppression des fichiers
         edibilityService.delete(id);
     }
 

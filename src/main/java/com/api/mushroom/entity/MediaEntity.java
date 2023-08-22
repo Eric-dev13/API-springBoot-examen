@@ -8,8 +8,10 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-@Data
+
 @Entity
+@Getter
+@Setter
 @Table(name = "media")
 public class MediaEntity {
 
@@ -18,6 +20,7 @@ public class MediaEntity {
     /* ************************************* */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // id auto-incrémente
+    @Setter(AccessLevel.NONE)
     private Long id;
 
     @Column(name="created_at")

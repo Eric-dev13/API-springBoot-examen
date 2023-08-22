@@ -1,10 +1,12 @@
 package com.api.mushroom.controller.admin;
 
+import com.api.mushroom.entity.EdibilityEntity;
 import com.api.mushroom.entity.MushroomEntity;
 import com.api.mushroom.service.MushroomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
 
@@ -41,6 +43,19 @@ public class MushroomCrudController {
     public MushroomEntity add(@RequestBody MushroomEntity mushroomEntity) {
         return mushroomService.add(mushroomEntity);
     }
+
+    @PostMapping("/add")
+    public MushroomEntity addNewMushroomWithFileUpolad(@RequestParam("file") MultipartFile file)
+    {
+        // upload du fichier
+/*        String newFilename = fileUploadService.fileUpload(file, "edibility/");
+        EdibilityEntity edibilityEntity = new EdibilityEntity();
+        edibilityEntity.setName(name);
+        edibilityEntity.setFilename(newFilename);
+        edibilityJpaRepository.save(edibilityEntity);*/
+        return mushroomService.addNewMushroomWithFileUpolad(file);
+    }
+
 
     // UPDATE : Mise à jour complète d'un enregistrement
     @PutMapping("/{id}")

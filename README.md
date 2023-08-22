@@ -809,5 +809,40 @@ EdibilityEntity edibilityEntity = edibilityJpaRepository.findById(id).orElseThro
 );
 ````
 
+## Envoie de plusieurs fichiers en en une seul requête
+
+ ### coté front
+
+````javascript
+const formData: FormData = new FormData();
+for (const file of files) {
+  formData.append('files', file);
+}
+
+const url = 'https://example.com/upload-multiple-files';
+this.http.post(url, formData).subscribe(response => {
+  console.log(response);
+});
+
+````
+
+### coté api
+
+````java
+@RestController
+@RequestMapping("/api")
+public class FileUploadController {
+
+    @PostMapping("/upload-multiple-files")
+    public ResponseEntity<String> uploadMultipleFiles(@RequestParam("files") List<MultipartFile> files) {
+        // Traitez les fichiers ici
+        for (MultipartFile file : files) {
+            // Traitez chaque fichier individuellement
+        }
+        return ResponseEntity.ok("Files uploaded successfully.");
+    }
+}
+
+````
 
 

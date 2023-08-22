@@ -2,13 +2,15 @@ package com.api.mushroom.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
-import lombok.Data;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-@Data
+
 @Entity
+@Getter
+@Setter
 @Table(name = "localname")
 public class LocalnameEntity {
 
@@ -17,6 +19,7 @@ public class LocalnameEntity {
     /* ************************************* */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Setter(AccessLevel.NONE)
     private Long id;
 
     @Column(name="created_at")
@@ -32,7 +35,6 @@ public class LocalnameEntity {
     // RELATIONS MUSHROOM - mapping type: bidirectionnel
     // Désactiver la génération des méthodes getter ou setter.
     @Getter(AccessLevel.NONE)
-    // @Getter(onMethod_ = {})
     @ManyToOne
     @JoinColumn(name = "mushroom_id")
     private MushroomEntity mushroomEntity;
@@ -45,4 +47,5 @@ public class LocalnameEntity {
     public void prePresist(){
         this.createdAt = LocalDateTime.now();
     }
+
 }
