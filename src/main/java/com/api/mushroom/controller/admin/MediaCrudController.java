@@ -39,9 +39,9 @@ public class MediaCrudController {
     }
 
     @PostMapping("/{id}")
-    public List<MediaEntity> addMediasWithFileUpolad( @PathVariable("id") Long id,
-                                                      @RequestParam("mediasNames") List<String> mediasNames,
-                                                      @RequestPart("mediasFiles") List<MultipartFile> mediasFiles ) throws IOException {
+    public List<MediaEntity> addMediasWithFileUpolad(@PathVariable("id") Long id,
+                                                     @RequestParam("mediasNames") List<String> mediasNames,
+                                                     @RequestPart("mediasFiles") List<MultipartFile> mediasFiles) throws IOException {
         return mediaService.addMediasWithFileUpolad(id, mediasNames, mediasFiles);
     }
 

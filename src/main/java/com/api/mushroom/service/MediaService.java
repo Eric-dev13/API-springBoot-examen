@@ -27,7 +27,7 @@ public class MediaService {
 
     private final MediaJpaRepository mediaJpaRepository;
     private final FileUploadService fileUploadService;
-    private final MushroomService mushroomService;
+    private final MushroomJpaRepository mushroomJpaRepository;
 
     // GET - Récupère un tableau d'enregistrement
     public Iterable<MediaEntity> getAll() {
@@ -45,27 +45,35 @@ public class MediaService {
     }
 
     // POST : Ajouter une collection de médias nom + fileUpload
-    @PostMapping("/add")
     public List<MediaEntity> addMediasWithFileUpolad(Long id, List<String> mediasNames, List<MultipartFile> mediasFiles) throws IOException {
-        // obtenir l'enregistrement mushroom
-        MushroomEntity mushroomEntity = mushroomService.getById(id).orElseThrow();
-        // Initialise une liste pour stocker tout les nouveaux enregistrements de médias
+        // Obtenir l'enregistrement champignon correspondant à l'ID fourni
+        MushroomEntity mushroomEntity  = mushroomJpaRepository.findById(id).orElseThrow();
+
+        // Initialise une liste pour stocker les nouvelles entités MediaEntity créées
         List <MediaEntity> mediaEntities = new ArrayList<>();
 
-        // upload des fichiers
+        // Parcourir chaque média à ajouter
         for (int i = 0; i < mediasNames.size(); i++) {
+            // Récupérer le nom du média et le fichier correspondant
             String mediaName = mediasNames.get(i);
             MultipartFile mediaFile = mediasFiles.get(i);
 
+            // Télécharger le fichier de média et obtenir le nouveau nom de fichier
             String newFilename = fileUploadService.fileUpload(mediaFile, "mushrooms/");
+
+            // Créer une nouvelle entité MediaEntity
             MediaEntity mediaEntity = new MediaEntity();
             mediaEntity.setName(mediaName);
             mediaEntity.setFilename(newFilename);
             mediaEntity.setMushroomEntity(mushroomEntity);
+
+            // Enregistrer la nouvelle entité MediaEntity dans la base de données
             mediaJpaRepository.save(mediaEntity);
+
+            // Ajouter la nouvelle entité MediaEntity à la liste des entités créées
             mediaEntities.add(mediaEntity);
         }
-        // retourne la liste des médias ajoutés dans la table médias.
+        // Retourner la liste des entités MediaEntity ajoutées dans la table des médias
         return mediaEntities;
     }
 

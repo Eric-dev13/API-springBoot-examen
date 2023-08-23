@@ -44,24 +44,20 @@ public class MushroomService {
 
     // POST : Ajouter un enregistrement
     public MushroomEntity add(MushroomEntity mushroomEntity) {
-        // Les opérations de persistance vont créer automatiquement les enregistrements dans les tables, il faut ajouter la cle étrangère pour la liaison.
-        for (MediaEntity media : mushroomEntity.getMedias()) {
-            // Renommer le fichier
-
-            // Upload le fichier
-
-            // Associe chaque média nouvellement crée à l'entité MushroomEntity (RENSIGNE LA CLE ETRANGERE)
-            media.setMushroomEntity(mushroomEntity);
-
-            // PERSISTE EN BASE DE DONNEE /
-            //mediaJpaRepository.save(media);
-        }
+//        // Les opérations de persistance vont créer automatiquement les enregistrements dans les tables, il faut ajouter la cle étrangère pour la liaison.
+//        for (MediaEntity media : mushroomEntity.getMedias()) {
+//            // Renommer le fichier
+//            // Upload le fichier
+//            // Associe chaque média nouvellement crée à l'entité MushroomEntity (RENSIGNE LA CLE ETRANGERE)
+//            media.setMushroomEntity(mushroomEntity);
+//            // PERSISTE EN BASE DE DONNEE /
+//            //mediaJpaRepository.save(media);
+//        }
         for (LocalnameEntity localname : mushroomEntity.getLocalnames()) {
             // Ici pas besoin de persister, car on a, définit, cascade = CascadeType.PERSIST dans MushroomEntity pour cette propriété.
             // Associe chaque enregistrement "nom local" nouvellement crée à l'entité MushroomEntity
             localname.setMushroomEntity(mushroomEntity);
         }
-
         return mushroomJpaRepository.save(mushroomEntity);
     }
 
