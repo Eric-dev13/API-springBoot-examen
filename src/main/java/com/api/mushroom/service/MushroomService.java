@@ -1,35 +1,31 @@
 package com.api.mushroom.service;
 
-import com.api.mushroom.entity.EdibilityEntity;
 import com.api.mushroom.entity.LocalnameEntity;
 import com.api.mushroom.entity.MediaEntity;
 import com.api.mushroom.entity.MushroomEntity;
 import com.api.mushroom.repository.MediaJpaRepository;
 import com.api.mushroom.repository.MushroomJpaRepository;
-import com.api.mushroom.service.dto.MushroomDTO;
+import com.api.mushroom.service.utils.FileUploadService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
-//@Data
 @RequiredArgsConstructor
 @Service
 public class MushroomService {
 
     private final MushroomJpaRepository mushroomJpaRepository; // Créer une instance de mushroomJpaRepository via le constructeur.
     private final EntityManager entityManager; // Créer une instance de l'EntityManager via le constructeur.
-    private final MediaJpaRepository mediaJpaRepository;  // Créer une instance de mediaJpaRepository via le constructeur.
+    private final MediaService mediaService;  // Créer une instance de MediaService via le constructeur.
+    private final FileUploadService fileUploadService;
+
 
     // GET - Récupère un tableau d'enregistrement trié par nom commun
     public Iterable<MushroomEntity> getAll() {
@@ -122,9 +118,23 @@ public class MushroomService {
         }
     }
 
-    public MushroomEntity addNewMushroomWithFileUpolad(MultipartFile file) {
-        return null;
-    }
+//    public MushroomEntity addNewMushroomWithFileUpolad(List<String> mediasNames, List<MultipartFile> mediasFiles) throws IOException {
+//        // upload du fichier
+//        // Traitez les noms et les fichiers ici
+//        /*for (int i = 0; i < mediasNames.size(); i++) {
+//            String mediaName = mediasNames.get(i);
+//            MultipartFile mediaFile = mediasFiles.get(i);
+//
+//            String newFilename = fileUploadService.fileUpload(mediaFile, "mushrooms/");
+//            MediaEntity mediaEntity = new MediaEntity();
+//            mediaEntity.setName(mediaName);
+//            mediaEntity.setFilename(newFilename);
+//            mediaEntity.setMushroomEntity();
+//            mediaService.add(mediaEntity);
+//        }*/
+//
+//        return null;
+//    }
 
 
 

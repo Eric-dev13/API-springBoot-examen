@@ -5,7 +5,10 @@ import com.api.mushroom.entity.MediaEntity;
 import com.api.mushroom.service.MediaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -33,6 +36,13 @@ public class MediaCrudController {
     @PostMapping("/")
     public MediaEntity add(@RequestBody MediaEntity mediaEntity) {
         return mediaService.add(mediaEntity);
+    }
+
+    @PostMapping("/{id}")
+    public List<MediaEntity> addMediasWithFileUpolad( @PathVariable("id") Long id,
+                                                      @RequestParam("mediasNames") List<String> mediasNames,
+                                                      @RequestPart("mediasFiles") List<MultipartFile> mediasFiles ) throws IOException {
+        return mediaService.addMediasWithFileUpolad(id, mediasNames, mediasFiles);
     }
 
     // UPDATE : Mettre à jour un enregistrement

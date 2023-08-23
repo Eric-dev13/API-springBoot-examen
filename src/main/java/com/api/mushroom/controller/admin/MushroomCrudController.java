@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -44,17 +46,11 @@ public class MushroomCrudController {
         return mushroomService.add(mushroomEntity);
     }
 
-    @PostMapping("/add")
-    public MushroomEntity addNewMushroomWithFileUpolad(@RequestParam("file") MultipartFile file)
-    {
-        // upload du fichier
-/*        String newFilename = fileUploadService.fileUpload(file, "edibility/");
-        EdibilityEntity edibilityEntity = new EdibilityEntity();
-        edibilityEntity.setName(name);
-        edibilityEntity.setFilename(newFilename);
-        edibilityJpaRepository.save(edibilityEntity);*/
-        return mushroomService.addNewMushroomWithFileUpolad(file);
-    }
+//    @PostMapping("/add")
+//    public MushroomEntity addNewMushroomWithFileUpolad(@RequestParam("mediasNames") List<String> mediasNames,
+//                                                       @RequestPart("mediasFiles") List<MultipartFile> mediasFiles) throws IOException {
+//        return mushroomService.addNewMushroomWithFileUpolad(mediasNames,mediasFiles);
+//    }
 
 
     // UPDATE : Mise à jour complète d'un enregistrement
