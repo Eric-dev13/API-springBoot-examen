@@ -1,19 +1,16 @@
 package com.api.mushroom.service;
 
 import com.api.mushroom.entity.LocalnameEntity;
-import com.api.mushroom.entity.MediaEntity;
 import com.api.mushroom.entity.MushroomEntity;
-import com.api.mushroom.repository.MediaJpaRepository;
+import com.api.mushroom.repository.LocalnameJpaRepository;
 import com.api.mushroom.repository.MushroomJpaRepository;
 import com.api.mushroom.service.utils.FileUploadService;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.NoResultException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,8 +20,9 @@ public class MushroomService {
 
     private final MushroomJpaRepository mushroomJpaRepository; // Créer une instance de mushroomJpaRepository via le constructeur.
     private final EntityManager entityManager; // Créer une instance de l'EntityManager via le constructeur.
-    private final MediaService mediaService;  // Créer une instance de MediaService via le constructeur.
     private final FileUploadService fileUploadService;
+
+    private final LocalnameJpaRepository localnameJpaRepository;
 
 
     // GET - Récupère un tableau d'enregistrement trié par nom commun
@@ -54,21 +52,91 @@ public class MushroomService {
 //            //mediaJpaRepository.save(media);
 //        }
         for (LocalnameEntity localname : mushroomEntity.getLocalnames()) {
-            // Ici pas besoin de persister, car on a, définit, cascade = CascadeType.PERSIST dans MushroomEntity pour cette propriété.
             // Associe chaque enregistrement "nom local" nouvellement crée à l'entité MushroomEntity
             localname.setMushroomEntity(mushroomEntity);
+            // PERSISTE EN BASE DE DONNEE - ici pas besoin de persister, car on a, définit, cascade = CascadeType.PERSIST dans MushroomEntity pour cette propriété.
+            // localnameJpaRepository.save(localname);
         }
         return mushroomJpaRepository.save(mushroomEntity);
     }
 
     // UPDATE : Mettre à jour un enregistrement
-    public MushroomEntity put(MushroomEntity mushroomEntity){
-        return mushroomJpaRepository.save(mushroomEntity);
+    public MushroomEntity put(Long id, MushroomEntity mushroomEntity){
+
+        MushroomEntity mushroomById = mushroomJpaRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Mushroom not found"));
+
+        mushroomById.setCommonname(mushroomEntity.getCommonname());
+        mushroomById.setLatinname(mushroomEntity.getLatinname());
+        mushroomById.setFlesh(mushroomEntity.getFlesh());
+        mushroomById.setHat(mushroomEntity.getHat());
+        mushroomById.setLamella(mushroomEntity.getLamella());
+        mushroomById.setFoot(mushroomEntity.getFoot());
+        mushroomById.setHabitat(mushroomEntity.getHabitat());
+        mushroomById.setComment(mushroomEntity.getComment());
+
+        if (mushroomEntity.getLamellatype() != null) {
+            mushroomById.setLamellatype(mushroomEntity.getLamellatype());
+        }
+
+        if (mushroomEntity.getEdibility() != null) {
+            mushroomById.setEdibility(mushroomEntity.getEdibility());
+        }
+
+        // traite un tableau
+//        if (mushroomEntity.getLocalnames() != null) {
+//            mushroomById.setLamellatype(mushroomEntity.getLamellatype());
+//        }
+
+       // On ne gere pas les médias ici
+
+        return mushroomJpaRepository.save(mushroomById);
     }
 
     // PATCH : Mise à jour partiel d'un enregistrement
-    public MushroomEntity patch(MushroomEntity mushroomEntity){
-        return mushroomJpaRepository.save(mushroomEntity);
+    public MushroomEntity patch(Long id, MushroomEntity mushroomEntity) {
+        MushroomEntity mushroomById = mushroomJpaRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Mushroom not found"));
+
+//        if (mushroomEntity.getCommonname() != null) {
+            mushroomById.setCommonname(mushroomEntity.getCommonname());
+//        }
+
+//        if (mushroomEntity.getLatinname() != null) {
+            mushroomById.setLatinname(mushroomEntity.getLatinname());
+//        }
+
+//        if (mushroomEntity.getFlesh() != null) {
+            mushroomById.setFlesh(mushroomEntity.getFlesh());
+//        }
+
+//        if (mushroomEntity.getHat() != null) {
+            mushroomById.setHat(mushroomEntity.getHat());
+//        }
+
+//        if (mushroomEntity.getLamella() != null) {
+            mushroomById.setLamella(mushroomEntity.getLamella());
+//        }
+
+//        if (mushroomEntity.getFoot() != null) {
+            mushroomEntity.setFoot(mushroomEntity.getFoot());
+//        }
+
+//        if (mushroomEntity.getHabitat() != null) {
+            mushroomById.setHabitat(mushroomEntity.getHabitat());
+//        }
+
+//        if (mushroomEntity.getComment() != null) {
+            mushroomById.setComment(mushroomEntity.getComment());
+//        }
+
+        if (mushroomEntity.getLamellatype() != null) {
+            mushroomById.setLamellatype(mushroomEntity.getLamellatype());
+        }
+
+        if (mushroomEntity.getEdibility() != null) {
+            mushroomById.setEdibility(mushroomEntity.getEdibility());
+        }
+
+        return mushroomJpaRepository.save(mushroomById);
     }
 
     // delete : Supprimer un enregistrement

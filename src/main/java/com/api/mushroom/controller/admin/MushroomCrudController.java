@@ -56,13 +56,13 @@ public class MushroomCrudController {
     // UPDATE : Mise à jour complète d'un enregistrement
     @PutMapping("/{id}")
     public MushroomEntity put(@PathVariable("id") Long id, @RequestBody final MushroomEntity mushroomEntity) {
-        return mushroomService.put(mushroomEntity);
+        return mushroomService.put(id, mushroomEntity);
     }
 
     // PATCH : Mise à jour partiel d'un enregistrement
     @PatchMapping("/{id}")
     public MushroomEntity patch(@PathVariable("id") Long id, @RequestBody final MushroomEntity mushroomEntity) {
-        return mushroomService.patch(mushroomEntity);
+        return mushroomService.patch(id, mushroomEntity);
     }
 
     // DELETE : Supprimer un enregistrement
