@@ -30,33 +30,49 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
           @NonNull HttpServletResponse response,
           @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
-        // Renvoi null ou la chaine permettant l'authentification d'un utilisateur(l'en-tête de requête HTTP 'Authorization')
+
+        // Récupère l'en-tête 'Authorization' de la requête)
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
         final String userEmail;
-        // Si l'utilisateur n'est pas authentifié (pas de jeton)
+
+        // Si l'en-tête 'Authorization' est absent ou ne commence pas par "Bearer "
         if(authHeader == null||!authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
-        // si jeton d'authentification on extrait le token du header
-        jwt = authHeader.substring(7); // retire les 7 premiere lettre qui correspond a "Bearer " pour n'obtenir que le token.
-        // on décode le token avec la SECRET_KEY (stockée en dur dans JwtService) pour recupèrer l'email de l'utilisateur authentifié
-        userEmail = jwtService.extractUsername(jwt); // On extrait les infos non sensibles qui permettent d'identifier le client.
+
+        // Extrait le token de l'en-tête en retirant les 7 premiers caractères ("Bearer ")
+        jwt = authHeader.substring(7);
+
+        // Extrait l'adresse e-mail de l'utilisateur à partir du token décode le token avec la SECRET_KEY (stockée en dur dans JwtService)
+        userEmail = jwtService.extractUsername(jwt);
+
+        // Vérification et configuration de l'authentification de Spring Security
         if(userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail); //
+            // Charge les détails de l'utilisateur à partir du service UserDetails
+            UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
+
+            // Vérifie si le token est valide pour l'utilisateur
             if(jwtService.isTokenValid(jwt, userDetails)) {
+                // Crée un jeton d'authentification Spring Security avec les détails de l'utilisateur
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails,
-                        null,
-                        userDetails.getAuthorities()
+                        null, // Les informations de mot de passe ne sont pas nécessaires car l'authentification est déjà effectuée.
+                        userDetails.getAuthorities() // Les rôles/permissions de l'utilisateur
                 );
+
+                // Ajoute les détails de l'authentification web (adresse IP, navigateur, etc.)
                 authToken.setDetails(
                         new WebAuthenticationDetailsSource().buildDetails(request)
                 );
+
+                // Configure l'authentification de Spring Security pour cet utilisateur
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         }
+
+        // Poursuit le traitement de la requête
         filterChain.doFilter(request, response);
     }
 }

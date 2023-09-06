@@ -5,7 +5,12 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import org.aspectj.util.LangUtil;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 
 
@@ -55,10 +60,22 @@ public class MediaEntity {
         // Stocker automatiquement la date de création de l'enregistrement en de base de données.
         this.createdAt = LocalDateTime.now();
     }
-
     @PreUpdate
     // METHODES pour stocker automatiquement la date de mise à jour de l'enregistrement dans la base de données.
     public void preUpdate() {
         this.updatedAt = LocalDateTime.now();
+    }
+
+    @PostRemove
+    public void fileDelete() {
+        // Récupérer le répertoire public absolu
+        Path publicDirectory = Paths.get(".", "public/upload/mushrooms").toAbsolutePath();
+        // Retourne l'acces au fichier
+        Path filepath = Paths.get(publicDirectory.toString(), this.filename);
+        try {
+            Files.delete(filepath);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

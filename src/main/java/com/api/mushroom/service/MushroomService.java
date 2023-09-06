@@ -96,37 +96,14 @@ public class MushroomService {
     public MushroomEntity patch(Long id, MushroomEntity mushroomEntity) {
         MushroomEntity mushroomById = mushroomJpaRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Mushroom not found"));
 
-//        if (mushroomEntity.getCommonname() != null) {
-            mushroomById.setCommonname(mushroomEntity.getCommonname());
-//        }
-
-//        if (mushroomEntity.getLatinname() != null) {
-            mushroomById.setLatinname(mushroomEntity.getLatinname());
-//        }
-
-//        if (mushroomEntity.getFlesh() != null) {
-            mushroomById.setFlesh(mushroomEntity.getFlesh());
-//        }
-
-//        if (mushroomEntity.getHat() != null) {
-            mushroomById.setHat(mushroomEntity.getHat());
-//        }
-
-//        if (mushroomEntity.getLamella() != null) {
-            mushroomById.setLamella(mushroomEntity.getLamella());
-//        }
-
-//        if (mushroomEntity.getFoot() != null) {
-            mushroomEntity.setFoot(mushroomEntity.getFoot());
-//        }
-
-//        if (mushroomEntity.getHabitat() != null) {
-            mushroomById.setHabitat(mushroomEntity.getHabitat());
-//        }
-
-//        if (mushroomEntity.getComment() != null) {
-            mushroomById.setComment(mushroomEntity.getComment());
-//        }
+        mushroomById.setCommonname(mushroomEntity.getCommonname());
+        mushroomById.setLatinname(mushroomEntity.getLatinname());
+        mushroomById.setFlesh(mushroomEntity.getFlesh());
+        mushroomById.setHat(mushroomEntity.getHat());
+        mushroomById.setLamella(mushroomEntity.getLamella());
+        mushroomEntity.setFoot(mushroomEntity.getFoot());
+        mushroomById.setHabitat(mushroomEntity.getHabitat());
+        mushroomById.setComment(mushroomEntity.getComment());
 
         if (mushroomEntity.getLamellatype() != null) {
             mushroomById.setLamellatype(mushroomEntity.getLamellatype());

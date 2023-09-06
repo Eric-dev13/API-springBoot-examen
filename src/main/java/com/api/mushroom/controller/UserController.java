@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "api/v1/user")
+@RequestMapping(value = "api/v1/test/user")
 @NamedQueries({ })
 public class UserController {
 
@@ -21,7 +21,6 @@ public class UserController {
 
 
     // GET - Récupère un tableau d'enregistrement
-    @Secured("ROLE_USER")
     @GetMapping("/")
      public Iterable<UserEntity> getAll(){
         // retourne la liste des utilisateurs

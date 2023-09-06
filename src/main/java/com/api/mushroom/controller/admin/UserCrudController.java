@@ -11,7 +11,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "api/v1/admin/user")
+@RequestMapping(value = "api/v1/user")
 public class UserCrudController {
 
     // Lombok va génèrer un constructeur avec un paramètre pour chaque constante (final)

@@ -8,17 +8,25 @@ import com.api.mushroom.security.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
 
     private final UserEntityJpaRepository userEntityJpaRepository;
-    private  final PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final UserDetailsService userDetailsService; // ++
 
     public AuthenticationResponse register(RegisterRequest request) {
        var user = UserEntity.builder()
@@ -46,11 +54,20 @@ public class AuthenticationService {
                     request.getPassword()
             )
         );
-        var user = userEntityJpaRepository.findByEmail(request.getEmail())
-                .orElseThrow();
+        var user = userEntityJpaRepository.findByEmail(request.getEmail()) .orElseThrow();
         var jwtToken = jwtService.generateToken(user);
+
+        Map<String, Object> userDetailsMap = new HashMap<>();
+        userDetailsMap.put("username", user.getUsername());
+        userDetailsMap.put("pseudo",  user.getPseudo());
+        userDetailsMap.put("roles",  user.getAuthorities());
+        userDetailsMap.put("firstname",  user.getFirstname());
+        userDetailsMap.put("lastname",  user.getFirstname());
+        userDetailsMap.put("filename",  user.getFilename());
+
         return AuthenticationResponse.builder()
                 .token(jwtToken)
+                .user(userDetailsMap)// ++
                 .build();
     }
 }

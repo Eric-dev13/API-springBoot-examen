@@ -2,9 +2,11 @@ package com.api.mushroom.controller.admin;
 
 import com.api.mushroom.entity.EdibilityEntity;
 import com.api.mushroom.entity.MushroomEntity;
+import com.api.mushroom.security.Role;
 import com.api.mushroom.service.MushroomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,6 +25,7 @@ public class MushroomCrudController {
     private final MushroomService mushroomService;
 
     // GET - FIND ALL - Récupère un tableau d'enregistrement trié par nom commun.
+    // @Secured("ADMIN")
     @GetMapping(name = "/")
     public Iterable<MushroomEntity> getAll() {
         return mushroomService.getAll();

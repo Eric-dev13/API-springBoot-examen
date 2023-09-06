@@ -2,10 +2,7 @@ package com.api.mushroom.entity;
 
 import com.api.mushroom.security.Role;
 import com.github.slugify.Slugify;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.GrantedAuthority;
@@ -16,8 +13,6 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 @Entity
-
-
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -37,15 +32,18 @@ public class UserEntity implements Serializable, UserDetails {
     @Column(name="updated_at")
     private LocalDateTime updatedAt;
 
+    @Getter
     @Column(name = "pseudo", length = 255, nullable = false)
     private String pseudo;
 
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @Getter
     @Column(name = "lastname", length = 255)
     private String lastname;
 
+    @Getter
     @Column(name = "firstname", length = 255)
     private String firstname;
 
@@ -55,11 +53,13 @@ public class UserEntity implements Serializable, UserDetails {
     @Column(name = "password", length = 255)
     private String password;
 
+    @Getter
     @Column(name = "filename", length = 255)
     private String filename;
 
     @Column(name = "is_verified")
     private Boolean isVerified;
+
 
 
     // METHODES pour stocker automatiquement la date de création de l'enregistrement en de base de données.

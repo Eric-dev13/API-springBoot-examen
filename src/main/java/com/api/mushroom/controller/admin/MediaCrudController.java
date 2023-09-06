@@ -38,7 +38,7 @@ public class MediaCrudController {
         return mediaService.add(mediaEntity);
     }
 
-    @PostMapping("/{id}")
+    @PostMapping("/{id}")  // ID de l'enregistrement champignon correspondant
     public List<MediaEntity> addMediasWithFileUpolad(@PathVariable("id") Long id,
                                                      @RequestParam("mediasNames") List<String> mediasNames,
                                                      @RequestPart("mediasFiles") List<MultipartFile> mediasFiles) throws IOException {
