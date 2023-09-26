@@ -16,7 +16,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @RestController
-@CrossOrigin
+//@CrossOrigin
 @RequestMapping("api/v1/admin/edibility")
 public class EdibiltyCrudController {
 

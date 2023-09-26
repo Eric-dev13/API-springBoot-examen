@@ -3,6 +3,7 @@ package com.api.mushroom.entity;
 
 import com.api.mushroom.service.utils.UniqueSlugService;
 import com.github.slugify.Slugify;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 import jakarta.persistence.*;
@@ -37,6 +38,7 @@ public class MushroomEntity {
     @Column(name="visibility",columnDefinition = "tinyint" )
     private boolean visibility;
 
+    @NotBlank(message = "Ce champ ne peux être laissé vide !")
     @Column(name="commonname", length = 255, nullable = false)
     private String commonname;
 

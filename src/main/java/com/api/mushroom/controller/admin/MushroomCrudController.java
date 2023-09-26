@@ -1,23 +1,17 @@
 package com.api.mushroom.controller.admin;
 
-import com.api.mushroom.entity.EdibilityEntity;
 import com.api.mushroom.entity.MushroomEntity;
-import com.api.mushroom.security.Role;
 import com.api.mushroom.service.MushroomService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.util.List;
 import java.util.Optional;
 
 
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin
+//@CrossOrigin
 @RequestMapping("api/v1/admin/mushroom")
 public class MushroomCrudController {
 
@@ -45,15 +39,13 @@ public class MushroomCrudController {
 
     // POST : Ajouter un enregistrement
     @PostMapping("/")
-    public MushroomEntity add(@RequestBody MushroomEntity mushroomEntity) {
+    public MushroomEntity add(@Valid @RequestBody MushroomEntity mushroomEntity, BindingResult result) {
+        if(result.hasErrors())
+        {
+            System.out.println("error");
+        }
         return mushroomService.add(mushroomEntity);
     }
-
-//    @PostMapping("/add")
-//    public MushroomEntity addNewMushroomWithFileUpolad(@RequestParam("mediasNames") List<String> mediasNames,
-//                                                       @RequestPart("mediasFiles") List<MultipartFile> mediasFiles) throws IOException {
-//        return mushroomService.addNewMushroomWithFileUpolad(mediasNames,mediasFiles);
-//    }
 
 
     // UPDATE : Mise à jour complète d'un enregistrement

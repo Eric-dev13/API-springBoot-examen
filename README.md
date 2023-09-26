@@ -382,6 +382,57 @@ Création de la couche DAO =repository
 
 
 
+## MapStruct : Mapper les données d'une couche à l'autre
+
+Le service ne connait pas le dto (donc on mappe le dto en service dans le controller ou le modelRepo en modelService dans le service)
+
+Controler: Dto => Service: modelService => RepositorymodelRepository (entity)
+
+#### Configuration de MapStruct `pom.xml`
+
+````
+<dependency>
+			<groupId>org.mapstruct</groupId>
+			<artifactId>mapstruct</artifactId>
+			<version>1.5.5.Final</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.mapstruct</groupId>
+			<artifactId>mapstruct-processor</artifactId>
+			<version>1.5.5.Final</version>
+		</dependency>
+````
+
+### Les models
+
+````
+````
+
+
+
+#### Créer l'interface de mappage
+
+````
+import com.api.mushroom.entity.UserEntity;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
+
+@Mapper
+public interface UserMapper {
+    UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
+    
+    //@Mapping(target = "role", ignore = true) // Ignore le champ email
+    UserGetDTO userEntityToUserGetDTO(UserEntity userEntity);
+}
+````
+
+
+
+
+
+
+
 # Requête SQL avec Spring Boot et JPA
 
 
@@ -462,7 +513,21 @@ public interface MushroomJpaRepository extends JpaRepository<MushroomEntity, Lon
 
 OU **SOLUTION N° 2**
 
-AVEC **l'EntityManager** DANS LE SERVICE SANS UITLISER LE REPOSITORY
+````
+Query<MushroomEntity> query = session.createNamedQuery("MushroomEntity.findAllIsVisibility", MushroomEntity.class);
+query.setParameter("visibility", true");
+MushroomEntity result = query.getSingleResult();
+````
+
+OU 
+
+````
+NativeQuery query = session.getNamedNativeQuery("MushroomEntity.findAllIsVisibility");
+query.setParameter("visibility", true");
+MushroomEntity result = (MushroomEntity) query.getSingleResult();
+````
+
+OU encore avec **l'EntityManager** dans le service sans utiliser l'interface repository
 
 SERVICE
 
@@ -473,9 +538,9 @@ public class MushroomService {
 	EntityManager entityManager; // Initialisez votre EntityManager 
 
 	List<MushroomEntity> mushroomsByVisibility = entityManager
-												.createNamedQuery("MushroomEntity.findAllIsVisibility")
-                                                     .setParameter("visibility", true)
-                                                     .getResultList();
+	  .createNamedQuery("MushroomEntity.findAllIsVisibility")
+      .setParameter("visibility", true)
+      .getResultList();
 }
 ````
 
@@ -521,7 +586,7 @@ REPOSITORY
 
 ---
 
-## Méthode pour modifier un enregistrement
+## Méthode pour inverser l'état d'une propriété
 
 ````
     // src/main/java/com/api/mushroom/controller/admin/MushroomCrudController.java
@@ -569,7 +634,6 @@ Les :params doivent porter le meme nom que les variables dans la methode du repo
 @Data
 @Table(name = "mushroom")
 @NamedQuery(name = "MushroomEntity.findAllByVisibility", query = "SELECT m FROM MushroomEntity m WHERE m.visibility = :visibility AND commonname = :nom " )
-
 public class MushroomEntity {
    ...
 }
@@ -689,16 +753,16 @@ Les données de l'image sont renvoyées sous la forme d'un tableau de bytes (byt
 
     Lecture du Contenu de l'Image :
     Le code lit le contenu du fichier image à l'emplacement spécifié imageFilePath en utilisant Files.readAllBytes(imageFilePath). Cela renvoie un tableau de bytes contenant le contenu binaire de l'image.
-
+    
     Détermination du Type de Contenu (Content-Type) :
     La méthode determineContentType(imageFilePath) est utilisée pour déterminer le type de contenu de l'image en fonction de son extension de fichier. Par exemple, si c'est une image JPEG, elle renverra "image/jpeg". Ceci est important pour définir correctement l'en-tête Content-Type de la réponse HTTP.
-
+    
     Construction des En-têtes de la Réponse :
     Les en-têtes de la réponse HTTP sont configurés à l'aide de la classe HttpHeaders. L'en-tête Content-Type est configuré en fonction du type de contenu déterminé précédemment.
-
+    
     Création de la Réponse :
     La classe ResponseEntity est utilisée pour encapsuler les données de l'image (imageBytes), les en-têtes (headers) et le statut (HttpStatus.OK) dans une réponse HTTP complète.
-
+    
     Renvoi de la Réponse :
     La méthode retourne l'objet ResponseEntity contenant les données de l'image et les en-têtes. Cette réponse sera renvoyée au client, qui pourra alors afficher l'image.
 
@@ -844,5 +908,4 @@ public class FileUploadController {
 }
 
 ````
-
 

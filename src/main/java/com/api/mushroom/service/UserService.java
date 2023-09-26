@@ -11,7 +11,6 @@ import java.util.Optional;
 
 @Data
 @RequiredArgsConstructor
-@Service
 public class UserService {
 
     // Via l'annotation @RequiredArgsConstructor Lombok va génèrer un constructeur avec un paramètre pour chaque constante (final)

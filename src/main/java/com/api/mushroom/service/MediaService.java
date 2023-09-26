@@ -25,7 +25,6 @@ import java.util.Optional;
 @Service
 public class MediaService {
 
-
     private final MediaJpaRepository mediaJpaRepository;
     private final FileUploadService fileUploadService;
     private final MushroomJpaRepository mushroomJpaRepository;
@@ -59,7 +58,7 @@ public class MediaService {
             String mediaName = mediasNames.get(i);
             MultipartFile mediaFile = mediasFiles.get(i);
 
-            // Télécharger le fichier de média et obtenir le nouveau nom de fichier
+            // Télécharger le fichier de média et obtient le nouveau nom de fichier
             String newFilename = fileUploadService.fileUpload(mediaFile, "mushrooms/");
 
             // Créer une nouvelle entité MediaEntity

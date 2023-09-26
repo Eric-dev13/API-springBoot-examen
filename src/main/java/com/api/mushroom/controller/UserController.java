@@ -13,43 +13,42 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping(value = "api/v1/test/user")
-@NamedQueries({ })
 public class UserController {
-
-    // Lombok va génèrer un constructeur avec un paramètre pour chaque constante (final)
-    private final UserService userService;
-
-
-    // GET - Récupère un tableau d'enregistrement
-    @GetMapping("/")
-     public Iterable<UserEntity> getAll(){
-        // retourne la liste des utilisateurs
-        return userService.getAll();
-     }
-
-    // GET - Récupère un enregistrement par l'ID
-    @GetMapping("/{id}")
-    public Optional<UserEntity> getById(@PathVariable("id") Long id) {
-        return userService.getById(id);
-    }
-
-    // POST : Ajouter un enregistrement
-    @PostMapping("/")
-    public UserEntity add(@RequestBody UserEntity userEntity) {
-        return userService.add(userEntity);
-    }
-
-    // UPDATE : Mettre à jour un enregistrement
-    @PutMapping("/{id}")
-    public UserEntity edit(@PathVariable("id") final String id, @RequestBody final UserEntity userEntity) {
-        return userService.edit(userEntity);
-    }
-
-    // DELETE : Supprimer un enregistrement
-    @DeleteMapping("/{id}")
-    public void deleter(@PathVariable("id") Long id){
-        userService.delete(id);
-    }
+//
+//    // Lombok va génèrer un constructeur avec un paramètre pour chaque constante (final)
+//    private final UserService userService;
+//
+//
+//    // GET - Récupère un tableau d'enregistrement
+//    @GetMapping("/")
+//     public Iterable<UserEntity> getAll(){
+//        // retourne la liste des utilisateurs
+//        return userService.getAll();
+//     }
+//
+//    // GET - Récupère un enregistrement par l'ID
+//    @GetMapping("/{id}")
+//    public Optional<UserEntity> getById(@PathVariable("id") Long id) {
+//        return userService.getById(id);
+//    }
+//
+//    // POST : Ajouter un enregistrement
+//    @PostMapping("/")
+//    public UserEntity add(@RequestBody UserEntity userEntity) {
+//        return userService.add(userEntity);
+//    }
+//
+//    // UPDATE : Mettre à jour un enregistrement
+//    @PutMapping("/{id}")
+//    public UserEntity edit(@PathVariable("id") final String id, @RequestBody final UserEntity userEntity) {
+//        return userService.edit(userEntity);
+//    }
+//
+//    // DELETE : Supprimer un enregistrement
+//    @DeleteMapping("/{id}")
+//    public void deleter(@PathVariable("id") Long id){
+//        userService.delete(id);
+//    }
 
     /*
 

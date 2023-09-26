@@ -43,7 +43,8 @@ SecurityConfiguration {
 
                 .requestMatchers("/api/v1/admin/**").authenticated()
                 // Sécurise la route pour les utilisateurs avec le rôle ADMIN (utilise le nom du rôle en tant que chaîne)
-                //.requestMatchers("/api/v1/admin/**").hasRole(Role.ADMIN.name())
+                //.requestMatchers("/api/v1/admin").hasRole("ADMIN")
+                //.requestMatchers("api/v1/user").hasRole("USER")
                 // Autorise toutes les autres requêtes sans nécessiter d'authentification.
                 .anyRequest().permitAll()
             .and()

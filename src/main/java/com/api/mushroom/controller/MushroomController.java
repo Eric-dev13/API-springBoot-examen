@@ -5,6 +5,7 @@ import com.api.mushroom.entity.MushroomEntity;
 import com.api.mushroom.service.MushroomService;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin
+//@CrossOrigin
 @RequestMapping("api/v1/mushroom")
 public class MushroomController {
 
@@ -20,8 +21,9 @@ public class MushroomController {
     private final MushroomService mushroomService;
 
     // GET - Retourne un tableau d'objets - liste de tous les enregistrements validé par l'administrateur pour la publication.
-    @GetMapping(name = "/")
-    public Iterable<MushroomEntity> findAllByVisibility() {
+    @GetMapping
+    //@PreAuthorize("hasAuthority('ADMIN')")
+    public List<MushroomEntity> findAllByVisibility() {
         return mushroomService.findAllByVisibility(true);
     }
 

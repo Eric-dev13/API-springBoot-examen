@@ -13,9 +13,5 @@ que les exceptions DataAccessException qui se produisent au niveau de cette inte
 @Repository
 public interface UserEntityJpaRepository extends JpaRepository<UserEntity, Long> {
     Optional<UserEntity>findByEmail(String email);
-    /*
-    @Query(" select u from UserEntity u " +
-            " where u.username = ?1")
-    Optional<UserEntity> findUserWithName(String username);
-     */
+
 }

@@ -1,4 +1,4 @@
-package com.api.mushroom.controller;
+package com.api.mushroom.controller.testing;
 
 
 import com.api.mushroom.service.utils.FileUploadService;
@@ -16,7 +16,6 @@ import java.nio.file.Paths;
 
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin
 @RequestMapping("api/v1/upload")
 public class FileUploadController {
 

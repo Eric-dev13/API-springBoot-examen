@@ -26,9 +26,11 @@ public class UserEntity implements Serializable, UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY) // id auto-incrémente
     private Long id;
 
+    @Getter
     @Column(name="created_at")
     private LocalDateTime createdAt;
 
+    @Getter
     @Column(name="updated_at")
     private LocalDateTime updatedAt;
 
@@ -47,6 +49,7 @@ public class UserEntity implements Serializable, UserDetails {
     @Column(name = "firstname", length = 255)
     private String firstname;
 
+    //@Getter
     @Column(name = "email", length = 255, unique = true)
     private String email;
 
@@ -59,7 +62,6 @@ public class UserEntity implements Serializable, UserDetails {
 
     @Column(name = "is_verified")
     private Boolean isVerified;
-
 
 
     // METHODES pour stocker automatiquement la date de création de l'enregistrement en de base de données.
@@ -79,6 +81,7 @@ public class UserEntity implements Serializable, UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));
     }
+
 
     @Override
     public String getPassword(){
