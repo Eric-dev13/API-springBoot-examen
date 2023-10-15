@@ -17,6 +17,4 @@ public class UserGetDTO {
     private String firstname;
     private String email;
     private String filename;
-
-
 }

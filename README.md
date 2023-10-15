@@ -154,43 +154,74 @@ Dans le contexte de Spring Security (la gestion de la sécurité dans les applic
 
 ![](.\assets.readme\authorizationfilter.png)
 
-```java
-http
-    .authorizeHttpRequests((authorize) -> authorize
-        .requestMatchers("/resource/**").hasAuthority("USER")
-        .anyRequest().authenticated()
-    )
-```
+
+
+### Restreindre l'accès à certaines routes en fonction des ROLES
 
 ```java
-http
-    .authorizeHttpRequests((authorize) -> authorize
-        .requestMatchers(HttpMethod.GET).hasAuthority("read")
-        .requestMatchers(HttpMethod.POST).hasAuthority("write")
-        .anyRequest().denyAll()
-    )
+.authorizeHttpRequests(a -> {
+                // Sécurise la route pour les utilisateurs avec le rôle ADMIN
+                a.requestMatchers("/api/v1/admin/**").hasAuthority("ADMIN");
+                // Sécurise la route pour les utilisateurs avec le rôle USER
+                a.requestMatchers("/api/v1/user/**").hasAuthority("USER");
+                // Autorise toutes les autres requêtes sans nécessiter d'authentification.
+                a.anyRequest().permitAll();
+            });
 ```
+
+
+
+Exemple de configuration
 
 ````
-import static jakarta.servlet.DispatcherType.*;
+public class
+SecurityConfiguration {
 
-import static org.springframework.security.authorization.AuthorizationManagers.allOf;
-import static org.springframework.security.authorization.AuthorityAuthorizationManager.hasAuthority;
-import static org.springframework.security.authorization.AuthorityAuthorizationManager.hasRole;
+    private  final JwtAuthenticationFilter jwtAuthFilter;
+    private final AuthenticationProvider authenticationProvider;
 
-@Bean
-SecurityFilterChain web(HttpSecurity http) throws Exception {
-	http
-		// ...
-		.authorizeHttpRequests(authorize -> authorize                                  (1)
-            .dispatcherTypeMatchers(FORWARD, ERROR).permitAll() (2)
-			.requestMatchers("/static/**", "/signup", "/about").permitAll()         (3)
-			.requestMatchers("/admin/**").hasRole("ADMIN")                             (4)
-			.requestMatchers("/db/**").access(allOf(hasAuthority('db'), hasRole('ADMIN')))   (5)
-			.anyRequest().denyAll()                                                (6)
-		);
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+        
+            // Indique que ce HttpSecurity s’applique uniquement aux URL commençant /api/.
+            .securityMatcher("/api/**")
+            
+            // Active la configuration de CORS pour gérer les requêtes depuis des origines différentes.
+            .cors()
+            
+            .and()
+            
+            // Désactive la protection CSRF qui est généralement désactivée pour les API.
+            .csrf().disable()
+            
+            // Définit les règles d'autorisation pour les requêtes
+            // Configure la gestion des sessions.
+            .sessionManagement()
+            //  Définit la politique de création de sessions comme étant sans état (stateless), ce qui est courant pour les API REST utilisant des tokens d'authentification.
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            
+            .and()
+            
+            // Configure le fournisseur d'authentification que vous avez défini ailleurs dans votre code.
+            .authenticationProvider(authenticationProvider)
+            
+            // Ajoute un filtre personnalisé (jwtAuthFilter) avant le filtre UsernamePasswordAuthenticationFilter, qui gère l'authentification basée sur les noms d'utilisateur et les mots de passe.
+            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+            
+            .authorizeHttpRequests(a -> {
+                // Sécurise la route pour les utilisateurs authentifiés
+                //.requestMatchers("/api/v1/admin/**").authenticated()
+                // Sécurise la route pour les utilisateurs avec le rôle ADMIN
+                a.requestMatchers("/api/v1/admin/**").hasAuthority("ADMIN");
+                // Sécurise la route pour les utilisateurs avec le rôle USER
+                a.requestMatchers("/api/v1/user/**").hasAuthority("USER");
+                // Autorise toutes les autres requêtes sans nécessiter d'authentification.
+                a.anyRequest().permitAll();
+            });
 
-	return http.build();
+        return http.build();
+    }
 }
 ````
 
@@ -304,7 +335,7 @@ https://docs.spring.io/spring-security/reference/servlet/exploits/csrf.html#serv
 
 
 
-### Cors
+### CORS
 
 La méthode cors()  ajoutera le CorsFilter fourni par Spring au contexte de l'application, en contournant les vérifications d'autorisation pour les requêtes OPTIONS.
 
@@ -320,15 +351,37 @@ La méthode cors()  ajoutera le CorsFilter fourni par Spring au contexte de l'ap
     }
 ````
 
-#### Configuration CORS globale
-````java
-@Override
-public void addCorsMappings(CorsRegistry registry) {
-registry.addMapping("/**");
+#### Ajouter une configuration cors
+
+````
+@Configuration
+public class CorsConfig {
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+            registry.addMapping("/**")
+                    .allowedOrigins("http://localhost:4200") //l'URL du frontend Angular
+                    .allowedMethods("GET", "POST", "PUT", "DELETE")
+                    .allowedHeaders("*");
+            }
+        };
+    }
 }
 ````
 
-#### @CrossOrigin sur la méthode du contrôleur
+#### OU utiliser les annotation sur la classe ou méthode du contrôleur (@CrossOrigin )
+
+````java
+@RestController
+@RequiredArgsConstructor
+++ @CrossOrigin
+@RequestMapping("api/v1/admin/mushroom")
+public class MushroomCrudController {
+   ...
+}
+````
 
 ````java
    public class MushroomCrudController {
@@ -343,17 +396,47 @@ registry.addMapping("/**");
     }
 ````
 
-#### @CrossOrigin sur une méthode de gestionnaire annoté @RequestMapping
 
-````java
-@RestController
-@RequiredArgsConstructor
-++ @CrossOrigin
-@RequestMapping("api/v1/admin/mushroom")
-public class MushroomCrudController {
-   ...
+
+### GESTION DES ROLES
+
+
+
+````
+++ @PreAuthorize("hasAuthority('ADMIN')")
+@GetMapping("/{id}")
+public ResponseEntity<DvdGetDto> findById(@PathVariable("id") Long id) throws DvdNotFoundException 	{
+	...
 }
 ````
+
+OU BIEN
+
+````
+@Configuration
+@EnableWebSecurity
+@EnableMethodSecurity
+++ @EnableGlobalMethodSecurity(
+        prePostEnabled = true,
+        securedEnabled = true,
+        jsr250Enabled = true)
+        
+````
+
+````
+++ @Secured("ADMIN")
+@GetMapping("/{id}")
+public ResponseEntity<DvdGetDto> findById(@PathVariable("id") Long id) throws DvdNotFoundException 	{
+	...
+}
+````
+
+````
+@AuthenticationPrincipal : Cette annotation permet d'injecter l'utilisateur actuellement authentifié en tant qu'argument d'une méthode. Vous pouvez ensuite accéder aux détails de l'utilisateur pour prendre des décisions basées sur son rôle ou ses autorisations.
+
+````
+
+
 
 ### Configuration de spring boot
 
@@ -392,19 +475,108 @@ Controler: Dto => Service: modelService => RepositorymodelRepository (entity)
 
 ````
 <dependency>
-			<groupId>org.mapstruct</groupId>
-			<artifactId>mapstruct</artifactId>
-			<version>1.5.5.Final</version>
-		</dependency>
+    <groupId>org.mapstruct</groupId>
+    <artifactId>mapstruct</artifactId>
+    <version>1.5.5.Final</version>
+</dependency>
 
-		<dependency>
-			<groupId>org.mapstruct</groupId>
-			<artifactId>mapstruct-processor</artifactId>
-			<version>1.5.5.Final</version>
-		</dependency>
+<dependency>
+    <groupId>org.mapstruct</groupId>
+    <artifactId>mapstruct-processor</artifactId>
+    <version>1.5.5.Final</version>
+</dependency>
+
+...
+
+<build>
+    <plugins>
+        <plugin>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+            <configuration>
+                <excludes>
+                    <exclude>
+                        <groupId>org.projectlombok</groupId>
+                        <artifactId>lombok</artifactId>
+                    </exclude>
+                </excludes>
+            </configuration>
+        </plugin>
+        <!--	plug-in MapStruct	-->
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>${maven-compiler-plugin.version}</version>
+            <configuration>
+                <release>${java.version}</release>
+                <annotationProcessorPaths>
+                    <path>
+                        <groupId>org.mapstruct</groupId>
+                        <artifactId>mapstruct-processor</artifactId>
+                        <version>1.5.5.Final</version>
+                    </path>
+                    <path>
+                        <groupId>org.projectlombok</groupId>
+                        <artifactId>lombok</artifactId>
+                        <version>${lombok.version}</version>
+                    </path>
+                    <path>
+                        <groupId>org.projectlombok</groupId>
+                        <artifactId>lombok-mapstruct-binding</artifactId>
+                        <version>0.2.0</version>
+                    </path>
+                </annotationProcessorPaths>
+            </configuration>
+        </plugin>
+        <!--			-->
+    </plugins>
+</build>
 ````
 
-### Les models
+### Le UserGetDto (Controller)
+
+````
+// src/main/java/com/api/mushroom/controller/user/UserGetDTO.java
+
+@Data
+@NoArgsConstructor
+public class UserGetDTO {
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+    private String pseudo;
+    private Collection<? extends GrantedAuthority> authorities;
+    private String lastname;
+    private String firstname;
+    private String email;
+    private String filename;
+}
+````
+
+### Le UserGetDtoMapper
+
+````
+// src/main/java/com/api/mushroom/controller/user/UserGetDtoMapper.java
+
+package com.api.mushroom.controller.user;
+
+import com.api.mushroom.service.user.UserServiceModel;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
+
+@Mapper
+public interface UserGetDtoMapper {
+    UserGetDtoMapper INSTANCE = Mappers.getMapper(UserGetDtoMapper.class);
+
+    UserGetDTO userServiceModelToUserGetDTO(UserServiceModel userServiceModel);
+    UserServiceModel UserGetDTOToUserServiceModel(UserGetDTO userGetDTO);
+}
+````
+
+
+
+
+
+### Le  UserServiceModel 
 
 ````
 ````
@@ -427,7 +599,9 @@ public interface UserMapper {
 }
 ````
 
+#### Compiler avec maven, mapStruct va générer les classes de mapper dans le dossier Target
 
+ `clean package`
 
 
 
@@ -686,6 +860,108 @@ En résumé, `orphanRemoval = true` se concentre sur la gestion des entités enf
 
 @PatchMapping("/{id}"): Pour effectuer une mise à jour partielle de l'entité.
 
+
+
+## ReponseEntity
+
+`ResponseEntity` est une classe de Spring Framework qui permet de personnaliser la réponse HTTP renvoyée par votre contrôleur. Elle offre de nombreuses façons de personnaliser la réponse en fonction de vos besoins. Voici quelques-unes des principales façons d'utiliser `ResponseEntity` :
+
+1. **Réponse avec un objet et un code d'état :**
+   
+   ```java
+   ResponseEntity<MyObject> responseEntity = ResponseEntity.ok(myObject);
+   ```
+
+   Vous pouvez utiliser `ResponseEntity.ok(objet)` pour renvoyer un objet avec un code d'état `200 OK`.
+
+2. **Réponse avec un code d'état sans contenu :**
+
+   ```java
+   ResponseEntity<Void> responseEntity = ResponseEntity.noContent().build();
+   ```
+
+   Vous pouvez utiliser `ResponseEntity.noContent()` pour renvoyer une réponse sans contenu avec un code d'état `204 No Content`.
+
+3. **Réponse avec un code d'état personnalisé :**
+
+   ```java
+   ResponseEntity<String> responseEntity = ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erreur de validation");
+   ```
+
+   Vous pouvez utiliser `ResponseEntity.status(code d'état)` pour définir un code d'état personnalisé et un corps de réponse.
+
+4. **Réponse avec des en-têtes personnalisés :**
+
+   ```java
+   HttpHeaders headers = new HttpHeaders();
+   headers.add("Custom-Header", "Valeur personnalisée");
+   ResponseEntity<String> responseEntity = new ResponseEntity<>("Contenu", headers, HttpStatus.OK);
+   ```
+
+   Vous pouvez utiliser `ResponseEntity` avec des en-têtes personnalisés en créant un objet `HttpHeaders` et en le passant comme troisième argument.
+
+5. **Réponse avec une redirection :**
+
+   ```java
+   HttpHeaders headers = new HttpHeaders();
+   headers.setLocation(new URI("/nouvelle-page"));
+   ResponseEntity<Void> responseEntity = new ResponseEntity<>(headers, HttpStatus.FOUND);
+   ```
+
+   Vous pouvez utiliser `ResponseEntity` pour effectuer une redirection en définissant un en-tête `Location` et en utilisant le code d'état approprié, par exemple, `HttpStatus.FOUND` (code 302).
+
+6. **Réponse avec une erreur et un message d'erreur :**
+
+   ```java
+   ResponseEntity<String> responseEntity = ResponseEntity.status(HttpStatus.NOT_FOUND).body("Ressource introuvable");
+   ```
+
+   Vous pouvez utiliser `ResponseEntity` pour renvoyer une réponse d'erreur avec un code d'état approprié et un message d'erreur.
+
+7. **Réponse avec un type générique :**
+
+   ```java
+   ResponseEntity<?> responseEntity = ResponseEntity.ok().build();
+   ```
+
+   Vous pouvez utiliser `ResponseEntity` avec un type générique non spécifié (`?`) pour renvoyer une réponse de type générique. Cela peut être utile lorsque vous ne connaissez pas à l'avance le type de réponse.
+
+8. **Réponse avec un flux de données :**
+
+   ```java
+   InputStream inputStream = new FileInputStream("fichier.pdf");
+   HttpHeaders headers = new HttpHeaders();
+   headers.setContentType(MediaType.APPLICATION_PDF);
+   ResponseEntity<byte[]> responseEntity = new ResponseEntity<>(IOUtils.toByteArray(inputStream), headers, HttpStatus.OK);
+   ```
+
+   Vous pouvez utiliser `ResponseEntity` pour renvoyer un flux de données, par exemple, un fichier PDF. Vous pouvez spécifier le type MIME approprié dans les en-têtes.
+
+9. **Réponse avec des cookies :**
+
+   ```java
+   HttpHeaders headers = new HttpHeaders();
+   headers.add(HttpHeaders.SET_COOKIE, "nom=John; Path=/; Secure; HttpOnly");
+   ResponseEntity<String> responseEntity = new ResponseEntity<>("Contenu", headers, HttpStatus.OK);
+   ```
+
+   Vous pouvez utiliser `ResponseEntity` pour renvoyer des cookies dans les en-têtes de la réponse.
+
+10. **Réponse avec des en-têtes CORS pour l'API RESTful :**
+
+    ```java
+    HttpHeaders headers = new HttpHeaders();
+    headers.add(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "*");
+    headers.add(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS, "GET, POST, PUT, DELETE, OPTIONS");
+    ResponseEntity<String> responseEntity = new ResponseEntity<>("Contenu", headers, HttpStatus.OK);
+    ```
+
+    Vous pouvez utiliser `ResponseEntity` pour ajouter des en-têtes CORS (Cross-Origin Resource Sharing) pour autoriser les requêtes provenant de domaines différents dans une API RESTful.
+
+Ces exemples illustrent quelques-unes des nombreuses façons dont vous pouvez personnaliser la réponse HTTP à l'aide de `ResponseEntity` dans Spring Framework. En fonction de vos besoins spécifiques, vous pouvez utiliser différentes méthodes de création de `ResponseEntity` pour adapter la réponse à votre cas d'utilisation.
+
+
+
 # A TRIER
 
 ## Crud
@@ -747,84 +1023,10 @@ Le token est renvoyé dans la response HTTP.
 Pour le renvoyer par la suite avec chaque requête, on utilise le paramètre *« Authorization »* du header HTTP. 
 
 
-## Création d'une réponse HTTP pour renvoyer vers le client le contenu d'une image à partir de l'API
 
-Les données de l'image sont renvoyées sous la forme d'un tableau de bytes (byte[]) dans le corps de la réponse HTTP. Voici comment cela fonctionne en détail :
+## Upload de fichiers
 
-    Lecture du Contenu de l'Image :
-    Le code lit le contenu du fichier image à l'emplacement spécifié imageFilePath en utilisant Files.readAllBytes(imageFilePath). Cela renvoie un tableau de bytes contenant le contenu binaire de l'image.
-    
-    Détermination du Type de Contenu (Content-Type) :
-    La méthode determineContentType(imageFilePath) est utilisée pour déterminer le type de contenu de l'image en fonction de son extension de fichier. Par exemple, si c'est une image JPEG, elle renverra "image/jpeg". Ceci est important pour définir correctement l'en-tête Content-Type de la réponse HTTP.
-    
-    Construction des En-têtes de la Réponse :
-    Les en-têtes de la réponse HTTP sont configurés à l'aide de la classe HttpHeaders. L'en-tête Content-Type est configuré en fonction du type de contenu déterminé précédemment.
-    
-    Création de la Réponse :
-    La classe ResponseEntity est utilisée pour encapsuler les données de l'image (imageBytes), les en-têtes (headers) et le statut (HttpStatus.OK) dans une réponse HTTP complète.
-    
-    Renvoi de la Réponse :
-    La méthode retourne l'objet ResponseEntity contenant les données de l'image et les en-têtes. Cette réponse sera renvoyée au client, qui pourra alors afficher l'image.
-
-Lorsque le client reçoit la réponse, il peut extraire les données de l'image du corps de la réponse et les utiliser pour afficher l'image dans une balise img ou tout autre élément approprié.
-
-## RESPONSE
-
-### Envoie de la réponse via l'api au format texte.
-
-````java
-return ResponseEntity.ok().body("Données traitées avec succès!");
-````
-
-### Récupère et traite la réponse avec typescript au format texte.
-
-````javascript
-this.http.post(this.API_ADMIN_BASE_URL + "edibility/", formData, { responseType: 'text' }).subscribe(
-{
-   next: (response) => {
-     console.log('message: ', response);
-     // redirige vers la liste
-     this.router.navigate(["admin/comestibilite/liste"]);
-   },
-   error: (err) => console.error('Erreur lors du téléchargement du fichier.', err),
-   complete: () => console.log('Fichier téléchargé avec succès.')
-});
-````
-
-OU
-
-### Envoie de la réponse via l'api au format JSON.
-
-````java
-return ResponseEntity.ok("{\"message\": \"Données traitées avec succès!\"}");
-````
-
-### Récupère et traite la réponse avec typescript au format JSON.
-
-````javascript
-this.http.post(this.API_ADMIN_BASE_URL + "edibility/", formData).subscribe(
- {
-   next: (response) => {
-     console.log('message: ', response.toString);
-     // redirige vers la liste
-     this.router.navigate(["admin/comestibilite/liste"]);
-   },
-   error: (err) => console.error('Erreur lors du téléchargement du fichier.', err),
-   complete: () => console.log('Fichier téléchargé avec succès.')
- });
-````
-
-OU
-
-### Envoie de la réponse via l'api au format JSON.
-
-````java
-return ResponseEntity.ok()
-       .contentType(MediaType.APPLICATION_JSON)
-       .body("Données traitées avec succès!");
-````
-
-### Récupère et traite la réponse avec typescript au format JSON.
+Les données de l'image sont renvoyées sous la forme d'un tableau de bytes (byte[]) dans le corps de la réponse HTTP. Voici comment cela fonctionne en détail :Récupère et traite la réponse avec typescript au format JSON.
 
 ````javascript
 // POST - Ajoute un nouvel enregistrement 
@@ -850,6 +1052,47 @@ if (this.selectedFile) {
 }
 ````
 
+
+
+## Upload multiple en une seul requête
+
+ ### coté front
+
+````javascript
+const formData: FormData = new FormData();
+for (const file of files) {
+  formData.append('files', file);
+}
+
+const url = 'https://example.com/upload-multiple-files';
+this.http.post(url, formData).subscribe(response => {
+  console.log(response);
+});
+````
+
+### coté api
+
+````java
+@RestController
+@RequestMapping("/api")
+public class FileUploadController {
+
+    @PostMapping("/upload-multiple-files")
+    public ResponseEntity<String> uploadMultipleFiles(@RequestParam("files") List<MultipartFile> files) {
+        // Traitez les fichiers ici
+        for (MultipartFile file : files) {
+            // Traitez chaque fichier individuellement
+        }
+        return ResponseEntity.ok("Files uploaded successfully.");
+    }
+}
+
+````
+
+
+
+
+
 ## REPOSITORY
 
 ````java
@@ -873,39 +1116,35 @@ EdibilityEntity edibilityEntity = edibilityJpaRepository.findById(id).orElseThro
 );
 ````
 
-## Envoie de plusieurs fichiers en en une seul requête
 
- ### coté front
 
-````javascript
-const formData: FormData = new FormData();
-for (const file of files) {
-  formData.append('files', file);
-}
-
-const url = 'https://example.com/upload-multiple-files';
-this.http.post(url, formData).subscribe(response => {
-  console.log(response);
-});
+## Exemple de code
 
 ````
-
-### coté api
-
-````java
-@RestController
-@RequestMapping("/api")
-public class FileUploadController {
-
-    @PostMapping("/upload-multiple-files")
-    public ResponseEntity<String> uploadMultipleFiles(@RequestParam("files") List<MultipartFile> files) {
-        // Traitez les fichiers ici
-        for (MultipartFile file : files) {
-            // Traitez chaque fichier individuellement
+    // Inverse la valeur booléen du champ visibility
+    public boolean invertPublish(Long id){
+        Optional<MushroomEntity> mushroomEntity = mushroomJpaRepository.findById(id);
+        if (mushroomEntity.isPresent()){
+            MushroomEntity mushroom = mushroomEntity.get();
+            boolean isVisible = mushroom.isVisibility();
+            mushroom.setVisibility(!isVisible);
+            MushroomEntity updatedMushroom = mushroomJpaRepository.save(mushroom);
+            return updatedMushroom != null; // on sait que != null car .isPresent() est true
         }
-        return ResponseEntity.ok("Files uploaded successfully.");
+        return false;
     }
-}
 
+AUTRE METHODE
+
+    public boolean invertPublish1(Long id){
+        return mushroomJpaRepository.findById(id)
+                .map(mushroom -> {
+                    boolean isVisible = mushroom.isVisibility();
+                    mushroom.setVisibility(!isVisible);
+                    MushroomEntity updatedMushroom = mushroomJpaRepository.save(mushroom);
+                    return updatedMushroom != null;
+                })
+                .orElse(false);
+    }
 ````
 

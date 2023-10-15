@@ -81,8 +81,12 @@ public class EdibilityService {
 
 
     // delete : Supprimer un enregistrement
-    public void delete(Long id) {
-        edibilityJpaRepository.deleteById(id);
+    public boolean delete(Long id) {
+        if(edibilityJpaRepository.existsById(id)){
+            edibilityJpaRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 
 

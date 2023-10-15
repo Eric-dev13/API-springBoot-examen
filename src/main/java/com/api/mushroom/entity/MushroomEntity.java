@@ -7,19 +7,24 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDateTime;
 import java.util.*;
 
+@Getter
+@Setter
 @Entity
 @Data
 @Table(name = "mushroom")
 @NamedQueries({
-    @NamedQuery(name = "MushroomEntity.findAllByVisibility", query = "SELECT m FROM MushroomEntity m WHERE m.visibility = :visibility ORDER BY commonname"),
-    @NamedQuery(name = "MushroomEntity.findAllTitleImageEdibilityByVisibility", query = "SELECT m.commonname as commonname, m.medias as medias, m.edibility as edibility FROM MushroomEntity m WHERE m.visibility = :visibility"),
-    @NamedQuery(name = "MushroomEntity.findBySlug", query="SELECT m FROM MushroomEntity m WHERE m.slug=:slug")
+        @NamedQuery(name = "MushroomEntity.findAllByVisibility", query = "SELECT m FROM MushroomEntity m WHERE m.visibility = :visibility ORDER BY commonname"),
+        @NamedQuery(name = "MushroomEntity.findAllTitleImageEdibilityByVisibility", query = "SELECT m.commonname as commonname, m.medias as medias, m.edibility as edibility FROM MushroomEntity m WHERE m.visibility = :visibility"),
+        @NamedQuery(name = "MushroomEntity.findBySlug", query = "SELECT m FROM MushroomEntity m WHERE m.slug=:slug"),
 })
 public class MushroomEntity {
     /* ************************************* */
@@ -89,7 +94,7 @@ public class MushroomEntity {
     // ASSOCIE AVEC L'ENTITEE LOCALNAME - mapping type: bidirectionnel - (cle étrangère est stockée dans la table associée)
     // Configurée pour propager les opérations de persistance (CascadeType.PERSIST)et de suppression automatiquement des entités enfants lorsqu'elles sont dissociées de l'entité parente (orphanRemoval = true).
     @OneToMany(mappedBy = "mushroomEntity", cascade = CascadeType.PERSIST, orphanRemoval = true)
-    private Set<LocalnameEntity> localnames = new LinkedHashSet<>();
+    private List<LocalnameEntity> localnames = new ArrayList<>();
 
     // ASSOCIE AVEC L'ENTITEE MEDIAS - mapping type: bidirectionnel - (cle étrangère est stockée dans la table associée)
     // Configurée pour propager les opérations de persistance (CascadeType.PERSIST)et de suppression automatiquement des entités enfants lorsqu'elles sont dissociées de l'entité parente (orphanRemoval = true).

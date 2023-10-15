@@ -21,6 +21,9 @@ public class EdibilityEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY) // id auto-incrémente
     private Long id;
 
+    @Column(name="created_at")
+    private LocalDateTime createdAt;
+
     @Column(name="name")
     private String name;
 

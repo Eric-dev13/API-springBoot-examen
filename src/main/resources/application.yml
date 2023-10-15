@@ -45,26 +45,28 @@ spring:
     activate:
       on-profile: dev
 
-  # ============================================
+  # ==============================================
   # = CONFIGURATION DE LA SOURCE DE DONNEE MySQL =
-  # ============================================
+  # ==============================================
   datasource:
     url: jdbc:mysql://localhost:3306/mushroom
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
-    initialization-mode: always
+    #  exécute le fichier data.sql lors du démarrage de votre application: always / never
+    # initialization-mode: always
+    #  spécifiez le chemin du fichier data.sql dans l'application Spring Boot
+    # data: classpath:database.sql
 
   # ===========================================================
   # = CONFIGURATION DES PROPRIETES JPA (Java Persistence API) =
   # ===========================================================
   jpa:
     hibernate:
-      ddl-auto: create-drop     # Hibernate va créer le schéma de base de données à partir des entités annotées. À la fin de l'application, le schéma sera supprimé.
+      ddl-auto: update # create-drop # Hibernate va créer le schéma de base de données à partir des entités annotées. À la fin de l'application, le schéma sera supprimé.
       # ddl-auto: create        # Hibernate va créer le schéma de base de données à partir des entités annotées. Si des tables existent déjà, elles seront supprimées et recréées.
       # ddl-auto: none          # Aucune action DDL automatique ne sera effectuée par Hibernate. Cela signifie que vous devez gérer manuellement la création et la mise à jour des schémas de base de données.
-      # ddl-auto
-      # Hibernate va mettre à jour le schéma de base de données pour refléter les changements apportés aux entités annotées. Cela peut inclure la création de nouvelles tables, l'ajout de nouvelles colonnes, etc. Les données existantes ne seront pas supprimées.
+      # ddl-auto update         # Hibernate va mettre à jour le schéma de base de données pour refléter les changements apportés aux entités annotées. Cela peut inclure la création de nouvelles tables, l'ajout de nouvelles colonnes, etc. Les données existantes ne seront pas supprimées.
       # ddl-auto: validate      # Hibernate va valider le schéma de base de données par rapport aux entités annotées, mais aucune modification ne sera apportée à la base de données.
 
     # Pour générer la base de données et y ajouter un jeu de données à partir d'un script (src/main/resources/data.sql) avec les commandes SQL d'insertion des données.
@@ -79,16 +81,12 @@ spring:
       hibernate:
         # Pour embellir
         format_sql: true
-        #database: mysql
-        #database-plateform:
 
 
-  # Veuillez noter que pour toute initialisation basée sur un script, c’est-à-dire l’insertion de données via des données.sql
-    # ou la création de schéma via un schéma.sql, nous devons définir la propriété ci-dessous:
+  #  Exécute l’insertion de données via le fichier data.sql lors du démarrage de votre application: always / never
   sql:
     init:
-      mode: always
-
+      mode: never
 
 ---
 # ==============================

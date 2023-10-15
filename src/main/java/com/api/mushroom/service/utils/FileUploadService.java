@@ -65,7 +65,7 @@ public class FileUploadService {
         return contentType;
     }
 
-    public String fileUpload(MultipartFile file, String parentPath) throws IOException {
+    public String fileUpload(MultipartFile file, String childPath) throws IOException {
         /* ***************************************************** */
         /*         GENERER UN NOM UNIQUE POUR LE FICHIER         */
         /* ***************************************************** */
@@ -103,14 +103,14 @@ public class FileUploadService {
         Path publicDirectory = Paths.get(".", "public/upload").toAbsolutePath();
 
         // Créer le chemin complet du sous-dossier à l'intérieur du répertoire public
-        Path subDirectory = Paths.get(publicDirectory.toString(), parentPath);
+        Path subDirectory = Paths.get(publicDirectory.toString(), childPath);
 
         // Si le sous-dossier n'existe pas, le créer
         if (!Files.exists(subDirectory)) {
             Files.createDirectories(subDirectory);
         }
 
-        // Créer le chemin complet du fichier à enregistrer dans le sous-dossier su répertoire public
+        // Créer le chemin complet du fichier à enregistrer dans le sous-dossier du répertoire public
         Path filepath = Paths.get(subDirectory.toString(), slugifyOriginalFilename + '.' + fileExtension);
 
         // Lire le contenu du fichier en bytes
@@ -124,7 +124,7 @@ public class FileUploadService {
             e.printStackTrace();
         }
 
-        // Le fichier a été enregistré avec succès, retourner le nom du fichier pour le stocker dans la base de données
+        // Le fichier a été enregistré avec succès, retourner le nouveau nom du fichier pour le stocker dans la base de données
         return slugifyOriginalFilename + '.' + fileExtension;
 
     }

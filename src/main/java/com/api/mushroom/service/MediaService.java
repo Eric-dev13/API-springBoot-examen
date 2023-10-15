@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-//@Data
 @Service
 public class MediaService {
 
@@ -45,7 +44,7 @@ public class MediaService {
     }
 
     // POST : Ajouter une collection de médias nom + fileUpload
-    public List<MediaEntity> addMediasWithFileUpolad(Long id, List<String> mediasNames, List<MultipartFile> mediasFiles) throws IOException {
+    public List<MediaEntity> addMediasWithFileUpoladAndName(Long id, List<String> mediasNames, List<MultipartFile> mediasFiles) throws IOException {
         // Obtenir l'enregistrement champignon correspondant à l'ID fourni
         MushroomEntity mushroomEntity  = mushroomJpaRepository.findById(id).orElseThrow();
 
@@ -77,13 +76,49 @@ public class MediaService {
         return mediaEntities;
     }
 
+    // POST : Ajouter une collection de médias nom + fileUpload
+    public List<MediaEntity> addMediasWithFileUpolad(Long id, List<MultipartFile> mediasFiles) throws IOException {
+        // Obtenir l'enregistrement champignon correspondant à l'ID fourni
+        MushroomEntity mushroomEntity  = mushroomJpaRepository.findById(id).orElseThrow();
+
+        // Initialise une liste pour stocker les nouvelles entités MediaEntity créées
+        List <MediaEntity> mediaEntities = new ArrayList<>();
+
+        // Parcourir chaque média à ajouter
+        for (MultipartFile mediaFile : mediasFiles) {
+//            if(mediaFile.isPresent()) {
+                // Télécharger le fichier de média et obtient le nouveau nom de fichier
+                String newFilename = fileUploadService.fileUpload(mediaFile, "mushrooms/");
+
+                // Créer une nouvelle entité MediaEntity
+                MediaEntity mediaEntity = new MediaEntity();
+                mediaEntity.setFilename(newFilename);
+                mediaEntity.setMushroomEntity(mushroomEntity);
+
+                // Enregistrer la nouvelle entité MediaEntity dans la base de données
+                mediaJpaRepository.save(mediaEntity);
+
+                // Ajouter la nouvelle entité MediaEntity à la liste des entités créées
+                mediaEntities.add(mediaEntity);
+//            }
+        }
+        // Retourner la liste des entités MediaEntity ajoutées dans la table des médias
+        return mediaEntities;
+    }
+
+
     // UPDATE : Mettre à jour un enregistrement
     public MediaEntity edit(MediaEntity mediaEntity){
         return mediaJpaRepository.save(mediaEntity);
     }
 
+
     // delete : Supprimer un enregistrement
-    public void delete(Long id) {
-        mediaJpaRepository.deleteById(id);
+    public boolean delete(Long id) {
+        if(mediaJpaRepository.existsById(id)){
+            mediaJpaRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 }

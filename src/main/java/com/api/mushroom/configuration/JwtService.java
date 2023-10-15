@@ -17,7 +17,10 @@ import java.util.function.Function;
 
 @Service
 public class JwtService {
-    // https://www.allkeysgenerator.com/Random/Security-Encryption-Key-Generator.aspx
+     /*
+    Garantit l'intégrité des tokens et empêche leur falsification.
+    Cette clé de 256 bits est considérée comme très robuste en termes de sécurité, offrant une forte protection contre les attaques par force brute et les tentatives de craquage de la clé. Elle est généralement utilisée pour sécuriser des systèmes sensibles, tels que la génération et la validation de tokens JWT (JSON Web Tokens), comme dans votre exemple.
+    * */
     private static final String SECRET_KEY = "72357538782F4125442A472D4B6150645367566B597033733676397924422645";
 
     public String extractUsername(String token) {
@@ -43,7 +46,7 @@ public class JwtService {
                 .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24)) // jeton valide 24 h
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
     }

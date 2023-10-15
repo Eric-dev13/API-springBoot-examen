@@ -21,7 +21,6 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
-
     private final UserEntityJpaRepository userEntityJpaRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
@@ -43,6 +42,7 @@ public class AuthenticationService {
 
         return AuthenticationResponse.builder()
                 .token(jwtToken)
+                .user(userDetailMap(user))// ++
                 .build();
     }
 
@@ -56,17 +56,18 @@ public class AuthenticationService {
         var user = userEntityJpaRepository.findByEmail(request.getEmail()) .orElseThrow();
         var jwtToken = jwtService.generateToken(user);
 
+        return AuthenticationResponse.builder()
+                .token(jwtToken)
+                .user(userDetailMap(user))// ++
+                .build();
+    }
+
+    public Map<String, Object> userDetailMap(UserEntity user){
         Map<String, Object> userDetailsMap = new HashMap<>();
         userDetailsMap.put("username", user.getUsername());
         userDetailsMap.put("pseudo",  user.getPseudo());
         userDetailsMap.put("roles",  user.getAuthorities());
-        userDetailsMap.put("firstname",  user.getFirstname());
-        userDetailsMap.put("lastname",  user.getFirstname());
         userDetailsMap.put("filename",  user.getFilename());
-
-        return AuthenticationResponse.builder()
-                .token(jwtToken)
-                .user(userDetailsMap)// ++
-                .build();
+        return userDetailsMap;
     }
 }

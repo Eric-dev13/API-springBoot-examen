@@ -1,45 +1,46 @@
 package com.api.mushroom.service.user;
 
-import com.api.mushroom.controller.user.UserDTO;
-import com.api.mushroom.controller.user.UserGetDTO;
 import com.api.mushroom.entity.UserEntity;
 import com.api.mushroom.repository.UserEntityJpaRepository;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Optional;
 
+@Data
 @RequiredArgsConstructor
-@Service
 public class UserService {
 
+    // Via l'annotation @RequiredArgsConstructor Lombok va génèrer un constructeur avec un paramètre pour chaque constante (final)
+    // DAO : Data Acces Object permet de communiquer avec la DB
     private final UserEntityJpaRepository userEntityJpaRepository;
 
-    public UserServiceModel getCurrentUser(String email) {
-        Optional<UserEntity> user = userEntityJpaRepository.findByEmail(email);
-        if(user.isEmpty()) {
-            // L'Optional est vide, l'utilisateur n'a pas été trouvé
-            return null;
-        }
 
-        // MAPPAGE AVEC MapStruct
-        return UserServiceMapper.INSTANCE.userEntityToUserServiceMapper(user.get());
+    // GET - Récupère un tableau d'enregistrement
+    public Iterable<UserEntity> getAll(){
+        return userEntityJpaRepository.findAll();
     }
 
-    public UserServiceModel update(Long id, UserServiceModel userServiceModel) {
-
-        Optional<UserEntity> userEntity = userEntityJpaRepository.findById(id);
-
-        if (userEntity.isEmpty()) {
-            // L'Optional est vide, l'utilisateur n'a pas été trouvé
-            return null;
-        }
-
-
-
-        //userEntityJpaRepository.save();
-        // MAPPAGE AVEC MapStruct
-        //return UserServiceMapper.INSTANCE.userEntityToUserServiceMapper(user.get());
-        return null;
+    // GET - Récupère un enregistrement par l'ID
+    public Optional<UserEntity> getById(Long id){
+        return userEntityJpaRepository.findById(id);
     }
+
+    // POST : Ajouter un enregistrement
+    public UserEntity add(UserEntity userEntity){
+        return userEntityJpaRepository.save(userEntity);
+    }
+
+    // UPDATE : Mettre à jour un enregistrement
+    public UserEntity edit(UserEntity userEntity){
+        return userEntityJpaRepository.save(userEntity);
+    }
+
+    // delete : Supprimer un enregistrement
+    public void delete(Long id) {
+        userEntityJpaRepository.deleteById(id);
+    }
+
 }

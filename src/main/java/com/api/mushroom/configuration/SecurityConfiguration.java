@@ -25,7 +25,6 @@ SecurityConfiguration {
     private  final JwtAuthenticationFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
 
-
     // https://docs.spring.io/spring-security/reference/servlet/authorization/authorize-http-requests.html#migrate-authorize-requests
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -38,25 +37,26 @@ SecurityConfiguration {
             // Désactive la protection CSRF (Cross-Site Request Forgery), qui est généralement désactivée pour les API.
             .csrf().disable()
             // Définit les règles d'autorisation pour les requêtes
-            .authorizeHttpRequests()
-                // Sécurise la route pour les utilisateurs authentifiés
-
-                .requestMatchers("/api/v1/admin/**").authenticated()
-                // Sécurise la route pour les utilisateurs avec le rôle ADMIN (utilise le nom du rôle en tant que chaîne)
-                //.requestMatchers("/api/v1/admin").hasRole("ADMIN")
-                //.requestMatchers("api/v1/user").hasRole("USER")
-                // Autorise toutes les autres requêtes sans nécessiter d'authentification.
-                .anyRequest().permitAll()
-            .and()
             // Configure la gestion des sessions.
             .sessionManagement()
-                //  Définit la politique de création de sessions comme étant sans état (stateless), ce qui est courant pour les API REST utilisant des tokens d'authentification.
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                // Configure le fournisseur d'authentification que vous avez défini ailleurs dans votre code.
-                .authenticationProvider(authenticationProvider)
-                // Ajoute un filtre personnalisé (jwtAuthFilter) avant le filtre UsernamePasswordAuthenticationFilter, qui gère l'authentification basée sur les noms d'utilisateur et les mots de passe.
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+            //  Définit la politique de création de sessions comme étant sans état (stateless), ce qui est courant pour les API REST utilisant des tokens d'authentification.
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and()
+            // Configure le fournisseur d'authentification que vous avez défini ailleurs dans votre code.
+            .authenticationProvider(authenticationProvider)
+            // Ajoute un filtre personnalisé (jwtAuthFilter) avant le filtre UsernamePasswordAuthenticationFilter, qui gère l'authentification basée sur les noms d'utilisateur et les mots de passe.
+            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+            .authorizeHttpRequests(a -> {
+                // Sécurise la route pour les utilisateurs authentifiés
+                //.requestMatchers("/api/v1/admin/**").authenticated()
+                // Sécurise la route pour les utilisateurs avec le rôle ADMIN
+                a.requestMatchers("/api/v1/admin/**").hasAuthority("ADMIN");
+                // Sécurise la route pour les utilisateurs avec le rôle USER
+                a.requestMatchers("/api/v1/user/**").hasAuthority("USER");
+                // Autorise toutes les autres requêtes sans nécessiter d'authentification.
+                a.anyRequest().permitAll();
+            });
+
         return http.build();
     }
 

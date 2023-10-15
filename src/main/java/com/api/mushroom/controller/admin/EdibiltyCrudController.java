@@ -8,6 +8,7 @@ import com.api.mushroom.service.utils.FileUploadService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,7 +17,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @RestController
-//@CrossOrigin
+//@PreAuthorize("hasAuthority('ADMIN')")
 @RequestMapping("api/v1/admin/edibility")
 public class EdibiltyCrudController {
 
@@ -25,7 +26,7 @@ public class EdibiltyCrudController {
 
 
     // GET - Récupère un tableau d'enregistrement
-    @GetMapping(name = "/")
+    @GetMapping
     public Iterable<EdibilityEntity> getAll() {
         return edibilityService.getAll();
     }
@@ -38,7 +39,7 @@ public class EdibiltyCrudController {
 
 
     // TODO : gerer la gestion de l'upload Form-data et des données textuelles au format JSON.
-    @PostMapping(value = "/")
+    @PostMapping
     public ResponseEntity<?> addEdibilityWithFile(@RequestParam("file") MultipartFile file,
                                                   @RequestParam("name") String name) throws IOException {
        if (file != null) {
@@ -47,12 +48,12 @@ public class EdibiltyCrudController {
        return null;
     }
 
-    // PATCH : Mise à jour partiel d'un enregistrement
-    @PatchMapping("/{id}")
-    public EdibilityEntity patch(@PathVariable("id") Long id, @RequestParam("file") MultipartFile file,
-                                  @RequestParam("name") String name) throws IOException {
-            return edibilityService.patch(id, file, name);
-    }
+//    // PATCH : Mise à jour partiel d'un enregistrement
+//    @PatchMapping("/{id}")
+//    public EdibilityEntity patch(@PathVariable("id") Long id, @RequestParam("file") MultipartFile file,
+//                                  @RequestParam("name") String name) throws IOException {
+//            return edibilityService.patch(id, file, name);
+//    }
 
     // UPDATE : Mettre à jour un enregistrement
     @PutMapping("/{id}")
@@ -62,16 +63,9 @@ public class EdibiltyCrudController {
 
     // DELETE : Supprimer un enregistrement
     @DeleteMapping("/{id}")
-    public void deleter(@PathVariable("id") Long id){
+    public boolean deleter(@PathVariable("id") Long id){
          // TODO : gerer la suppression des fichiers
-        edibilityService.delete(id);
+        return edibilityService.delete(id);
     }
 
-    /*
-    // POST : Ajouter un enregistrement
-    @PostMapping("/")
-    public EdibilityEntity add(@RequestBody EdibilityEntity edibilityEntity) throws IOException {
-        return edibilityService.add(edibilityEntity);
-    }
-    */
 }

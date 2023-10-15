@@ -43,8 +43,12 @@ public class LamellaTypeService {
     }
 
     // delete : Supprimer un enregistrement
-    public void delete(Long id) {
-        lamellaTypeJpaRepository.deleteById(id);
+    public boolean delete(Long id) {
+        if(lamellaTypeJpaRepository.existsById(id)) {
+            lamellaTypeJpaRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 
 }

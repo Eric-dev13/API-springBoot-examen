@@ -10,6 +10,8 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.NoResultException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
@@ -18,19 +20,18 @@ import java.util.Optional;
 @Service
 public class MushroomService {
 
-    private final MushroomJpaRepository mushroomJpaRepository; // Créer une instance de mushroomJpaRepository via le constructeur.
-    private final EntityManager entityManager; // Créer une instance de l'EntityManager via le constructeur.
+    private final MushroomJpaRepository mushroomJpaRepository; // Créer une instance de mushroomJpaRepository
+    private final EntityManager entityManager; // Créer une instance de l'EntityManager
+
     private final FileUploadService fileUploadService;
 
     private final LocalnameJpaRepository localnameJpaRepository;
 
+    /* --------------------------------------------------------------- */
+    /*                          ROUTE - PUBLIQUE                       */
+    /* --------------------------------------------------------------- */
 
-    // GET - Récupère un tableau d'enregistrement trié par nom commun
-    public Iterable<MushroomEntity> getAll() {
-        return mushroomJpaRepository.findAll(Sort.by(Sort.Direction.ASC, "commonname"));
-    }
-
-    // GET - Retourne un tableau d'objets - liste de tous les enregistrements validés par l'administrateur pour la publication.
+    // GET - Retourne un tableau d'objets - liste de tous les enregistrements validés par l'administrateur.
     public List<MushroomEntity> findAllByVisibility(boolean isVisible) {
         return mushroomJpaRepository.findAllByVisibility(isVisible);
     }
@@ -38,6 +39,17 @@ public class MushroomService {
     // GET - Récupère un enregistrement par l'ID
     public Optional<MushroomEntity> getById(Long id){
         return mushroomJpaRepository.findById(id);
+    }
+
+
+    /* --------------------------------------------------------------- */
+    /*                          ROUTE - SECURISER                      */
+    /* --------------------------------------------------------------- */
+
+
+    // GET - Récupère un tableau d'enregistrement trié par nom commun
+    public Iterable<MushroomEntity> getAll() {
+        return mushroomJpaRepository.findAll(Sort.by(Sort.Direction.ASC, "commonname"));
     }
 
     // POST : Ajouter un enregistrement
@@ -88,64 +100,73 @@ public class MushroomService {
 //        }
 
        // On ne gere pas les médias ici
-
         return mushroomJpaRepository.save(mushroomById);
     }
 
-    // PATCH : Mise à jour partiel d'un enregistrement
-    public MushroomEntity patch(Long id, MushroomEntity mushroomEntity) {
-        MushroomEntity mushroomById = mushroomJpaRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Mushroom not found"));
 
-        mushroomById.setCommonname(mushroomEntity.getCommonname());
-        mushroomById.setLatinname(mushroomEntity.getLatinname());
-        mushroomById.setFlesh(mushroomEntity.getFlesh());
-        mushroomById.setHat(mushroomEntity.getHat());
-        mushroomById.setLamella(mushroomEntity.getLamella());
-        mushroomEntity.setFoot(mushroomEntity.getFoot());
-        mushroomById.setHabitat(mushroomEntity.getHabitat());
-        mushroomById.setComment(mushroomEntity.getComment());
-
-        if (mushroomEntity.getLamellatype() != null) {
-            mushroomById.setLamellatype(mushroomEntity.getLamellatype());
+    public boolean delete(Long id) {
+        if(mushroomJpaRepository.existsById(id)) {
+            mushroomJpaRepository.deleteById(id);
+            return true;
         }
-
-        if (mushroomEntity.getEdibility() != null) {
-            mushroomById.setEdibility(mushroomEntity.getEdibility());
-        }
-
-        return mushroomJpaRepository.save(mushroomById);
+        return false;
     }
 
-    // delete : Supprimer un enregistrement
-    public void delete(Long id) {
-        mushroomJpaRepository.deleteById(id);
-    }
 
     // Inverse la valeur booléen du champ visibility
-    public void invertPublish(Long id){
-        mushroomJpaRepository.findById(id)
-            .map(mushroom -> {
-                boolean isVisible = mushroom.isVisibility();
-                mushroom.setVisibility(!isVisible);
-                return mushroomJpaRepository.save(mushroom);
-            });
+    public boolean invertPublish(Long id){
+        Optional<MushroomEntity> mushroomEntity = mushroomJpaRepository.findById(id);
+        if (mushroomEntity.isPresent()){
+            MushroomEntity mushroom = mushroomEntity.get();
+            boolean isVisible = mushroom.isVisibility();
+            mushroom.setVisibility(!isVisible);
+            MushroomEntity updatedMushroom = mushroomJpaRepository.save(mushroom);
+            return updatedMushroom != null; // on sait que != null car .isPresent() est true
+        }
+        return false;
     }
 
-    //TEST
-    public List<MushroomEntity> getSearch(String titre) {
-        return mushroomJpaRepository.getSearch(titre);
-    }
+//    public boolean invertPublish1(Long id){
+//        return mushroomJpaRepository.findById(id)
+//                .map(mushroom -> {
+//                    boolean isVisible = mushroom.isVisibility();
+//                    mushroom.setVisibility(!isVisible);
+//                    MushroomEntity updatedMushroom = mushroomJpaRepository.save(mushroom);
+//                    return updatedMushroom != null;
+//                })
+//                .orElse(false);
+//    }
 
-/* ----------------------------------------------------------------------------------------------------------------------- */
 
-    // GET - Retourne une liste de tableau de 3 propriétés.
-    public List findAllByVisibilityWithTitleImageEdibility () {
-        return entityManager
-                .createNamedQuery("MushroomEntity.findAllTitleImageEdibilityByVisibility")
-                .setParameter("visibility", true)
-                .getResultList();
-    }
 
+    // PATCH : Mise à jour partiel d'un enregistrement
+//    public MushroomEntity patch(Long id, MushroomEntity mushroomEntity) {
+//        MushroomEntity mushroomById = mushroomJpaRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Mushroom not found"));
+//
+//        mushroomById.setCommonname(mushroomEntity.getCommonname());
+//        mushroomById.setLatinname(mushroomEntity.getLatinname());
+//        mushroomById.setFlesh(mushroomEntity.getFlesh());
+//        mushroomById.setHat(mushroomEntity.getHat());
+//        mushroomById.setLamella(mushroomEntity.getLamella());
+//        mushroomEntity.setFoot(mushroomEntity.getFoot());
+//        mushroomById.setHabitat(mushroomEntity.getHabitat());
+//        mushroomById.setComment(mushroomEntity.getComment());
+//
+//        if (mushroomEntity.getLamellatype() != null) {
+//            mushroomById.setLamellatype(mushroomEntity.getLamellatype());
+//        }
+//
+//        if (mushroomEntity.getEdibility() != null) {
+//            mushroomById.setEdibility(mushroomEntity.getEdibility());
+//        }
+//
+//        return mushroomJpaRepository.save(mushroomById);
+//    }
+
+
+
+
+    /* --------------------------------------------------------------------------------------------- */
     public Optional<MushroomEntity> findBySlug(String slug){
         try {
             MushroomEntity result = entityManager
@@ -159,56 +180,19 @@ public class MushroomService {
         }
     }
 
-//    public MushroomEntity addNewMushroomWithFileUpolad(List<String> mediasNames, List<MultipartFile> mediasFiles) throws IOException {
-//        // upload du fichier
-//        // Traitez les noms et les fichiers ici
-//        /*for (int i = 0; i < mediasNames.size(); i++) {
-//            String mediaName = mediasNames.get(i);
-//            MultipartFile mediaFile = mediasFiles.get(i);
-//
-//            String newFilename = fileUploadService.fileUpload(mediaFile, "mushrooms/");
-//            MediaEntity mediaEntity = new MediaEntity();
-//            mediaEntity.setName(mediaName);
-//            mediaEntity.setFilename(newFilename);
-//            mediaEntity.setMushroomEntity();
-//            mediaService.add(mediaEntity);
-//        }*/
-//
-//        return null;
+    public List<MushroomEntity> getSearch(String titre) {
+        return mushroomJpaRepository.getSearch(titre);
+    }
+    /* --------------------------------------------------------------------------------------------- */
+
+    // GET - Retourne une liste de tableau de 3 propriétés.
+//    public List findAllByVisibilityWithTitleImageEdibility () {
+//        return entityManager
+//                .createNamedQuery("MushroomEntity.findAllTitleImageEdibilityByVisibility")
+//                .setParameter("visibility", true)
+//                .getResultList();
 //    }
 
 
 
-
-    /*
-    // Exemple avec mappage des données (forunit par le DAO: MushroomJpaRepository)  vers un objet DTO.
-    public MushroomDTO getMushroomById(Long id) {
-        MushroomEntity mushroomEntity = mushroomJpaRepository.findById(id).orElse(null);
-        return convertToDTO(mushroomEntity);
-    }
-
-    // Autres méthodes pour effectuer des opérations métier avec les utilisateurs
-    // ...
-
-    private MushroomDTO convertToDTO(MushroomEntity mushroomEntity) {
-        // instancie un nouvel mushroomDTO pour chaque objet renvoyé par le DAO.
-        MushroomDTO mushroomDTO = new MushroomDTO();
-
-        mushroomDTO.setComment(mushroomEntity.getComment());
-        mushroomDTO.setId(mushroomEntity.getId());
-        mushroomDTO.setCreatedAt(mushroomEntity.getCreatedAt());
-        mushroomDTO.setUpdatedAt(mushroomEntity.getUpdatedAt());
-        //mushroomDTO.setVisibility(mushroomEntity.getVisibility());
-        mushroomDTO.setCommonname(mushroomEntity.getCommonname());
-        mushroomDTO.setLatinname(mushroomEntity.getLatinname());
-        mushroomDTO.setHat(mushroomEntity.getHat());
-        mushroomDTO.setLamella(mushroomEntity.getLamella());
-        mushroomDTO.setFoot(mushroomEntity.getFoot());
-        mushroomDTO.setHabitat(mushroomEntity.getHabitat());
-        mushroomDTO.setComment(mushroomEntity.getComment());
-        mushroomDTO.setSlug(mushroomEntity.getSlug());
-
-        return mushroomDTO;
-    }
-     */
 }

@@ -20,8 +20,11 @@ l'annotation @Repository sur l'interface indique à Spring que cette interface e
 public interface MushroomJpaRepository extends JpaRepository<MushroomEntity, Long> {
 
     // Retourne la liste des champignons validé par l'admin ordonnée par nom commun
-    // @Query("SELECT m FROM MushroomEntity m WHERE m.visibility = :visibility ORDER BY commonname")
     List<MushroomEntity> findAllByVisibility(boolean visibility);
+
+
+//    @Query("UPDATE Mushroom m SET m.visibility = NOT m.visibility WHERE m.id = :id")
+//    int invertVisibility(@Param("id") Long id);
 
 
     // TEST

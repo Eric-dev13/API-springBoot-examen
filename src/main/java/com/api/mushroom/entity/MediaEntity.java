@@ -31,9 +31,6 @@ public class MediaEntity {
     @Column(name="created_at")
     private LocalDateTime createdAt;
 
-    @Column(name="updated_at")
-    private LocalDateTime updatedAt;
-
     @Column(name="name")
     private String name;
 
@@ -59,11 +56,6 @@ public class MediaEntity {
     public void prePresist(){
         // Stocker automatiquement la date de création de l'enregistrement en de base de données.
         this.createdAt = LocalDateTime.now();
-    }
-    @PreUpdate
-    // METHODES pour stocker automatiquement la date de mise à jour de l'enregistrement dans la base de données.
-    public void preUpdate() {
-        this.updatedAt = LocalDateTime.now();
     }
 
     @PostRemove

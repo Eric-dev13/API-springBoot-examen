@@ -4,20 +4,21 @@ import com.api.mushroom.entity.EdibilityEntity;
 import com.api.mushroom.entity.LamellatypeEntity;
 import com.api.mushroom.service.LamellaTypeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
-//@CrossOrigin
+//@PreAuthorize("hasAuthority('ADMIN')")
 @RequestMapping("api/v1/admin/lamellaType")
 public class LamellaTypeCrudController {
     // Via l'annotation @RequiredArgsConstructor Lombok va génèrer un constructeur avec un paramètre pour chaque constante (final)
     private final LamellaTypeService lamellaTypeService;
 
     // GET - Récupère un tableau d'enregistrement
-    @GetMapping(name = "/")
+    @GetMapping
     public Iterable<LamellatypeEntity> getAll() {
         return lamellaTypeService.getAll();
     }
@@ -29,7 +30,7 @@ public class LamellaTypeCrudController {
     }
 
     // POST : Ajouter un enregistrement
-    @PostMapping("/")
+    @PostMapping
     public LamellatypeEntity add(@RequestBody LamellatypeEntity lamellatypeEntity) {
         return lamellaTypeService.add(lamellatypeEntity);
     }
@@ -40,15 +41,10 @@ public class LamellaTypeCrudController {
         return lamellaTypeService.put(lamellatypeEntity);
     }
 
-    // PATCH : Mise à jour partiel d'un enregistrement
-    @PatchMapping("/{id}")
-    public LamellatypeEntity patch(@PathVariable("id")  Long id, @RequestBody final LamellatypeEntity lamellatypeEntity) {
-        return lamellaTypeService.patch(lamellatypeEntity);
-    }
 
     // DELETE : Supprimer un enregistrement
     @DeleteMapping("/{id}")
-    public void deleter(@PathVariable("id") Long id){
-        lamellaTypeService.delete(id);
+    public boolean deleter(@PathVariable("id") Long id){
+        return lamellaTypeService.delete(id);
     }
 }

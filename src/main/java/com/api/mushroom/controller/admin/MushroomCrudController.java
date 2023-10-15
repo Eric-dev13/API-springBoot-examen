@@ -4,6 +4,9 @@ import com.api.mushroom.entity.MushroomEntity;
 import com.api.mushroom.service.MushroomService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
@@ -11,7 +14,7 @@ import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
-//@CrossOrigin
+//@PreAuthorize("hasAuthority('ADMIN')")
 @RequestMapping("api/v1/admin/mushroom")
 public class MushroomCrudController {
 
@@ -19,34 +22,27 @@ public class MushroomCrudController {
     private final MushroomService mushroomService;
 
     // GET - FIND ALL - Récupère un tableau d'enregistrement trié par nom commun.
-    // @Secured("ADMIN")
-    @GetMapping(name = "/")
+    @GetMapping
     public Iterable<MushroomEntity> getAll() {
         return mushroomService.getAll();
     }
 
-/*    @GetMapping("/")
-    public ResponseEntity<Iterable<MushroomEntity>> getAll() {
-        Iterable<MushroomEntity> mushrooms = mushroomService.getAll();
-        return ResponseEntity.ok(mushrooms);
-    }*/
-
-    // GET - FIND BY ID - Afficher un utilisateur via son ID
+    // GET - FIND BY ID
     @GetMapping("/{id}")
     public Optional<MushroomEntity> getById(@PathVariable("id") Long id) {
         return mushroomService.getById(id);
     }
 
-    // POST : Ajouter un enregistrement
-    @PostMapping("/")
-    public MushroomEntity add(@Valid @RequestBody MushroomEntity mushroomEntity, BindingResult result) {
-        if(result.hasErrors())
-        {
-            System.out.println("error");
+    // POST
+    @PostMapping
+    public ResponseEntity<?> add(@RequestBody MushroomEntity mushroomEntity) {
+        try {
+            MushroomEntity mushroom = mushroomService.add(mushroomEntity);
+            return ResponseEntity.status(HttpStatus.CREATED).body(mushroom); // 201 Created en cas de succès
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erreur lors de l'ajout : " + e.getMessage()); // 500 Internal Server Error en cas d'erreur.
         }
-        return mushroomService.add(mushroomEntity);
     }
-
 
     // UPDATE : Mise à jour complète d'un enregistrement
     @PutMapping("/{id}")
@@ -54,23 +50,25 @@ public class MushroomCrudController {
         return mushroomService.put(id, mushroomEntity);
     }
 
-    // PATCH : Mise à jour partiel d'un enregistrement
-    @PatchMapping("/{id}")
-    public MushroomEntity patch(@PathVariable("id") Long id, @RequestBody final MushroomEntity mushroomEntity) {
-        return mushroomService.patch(id, mushroomEntity);
+    // Inverse la valeur booléen du champ visibility
+    @PutMapping("/publier/{id}")
+    public ResponseEntity<Boolean> invertPublish(@PathVariable("id") Long id) {
+        boolean isUpdated = mushroomService.invertPublish(id);
+        if(isUpdated){
+            return ResponseEntity.ok(true); // 200 en cas de succès
+        } else {
+            return ResponseEntity.notFound().build(); // 404 Not Found en cas d'erreur.
+        }
     }
 
     // DELETE : Supprimer un enregistrement
     @DeleteMapping("/{id}")
-    public void deleter(@PathVariable("id") Long id){
-        mushroomService.delete(id);
+    public boolean delete(@PathVariable("id") Long id){
+        return mushroomService.delete(id);
     }
 
-    // Inverse la valeur booléen du champ visibility
-    @PatchMapping("/publier/{id}")
-    public void invertPublish(@PathVariable("id") Long id) {
-        mushroomService.invertPublish(id);
-    }
+
+
 
 
 }
