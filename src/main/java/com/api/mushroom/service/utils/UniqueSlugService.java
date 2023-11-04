@@ -17,7 +17,7 @@ public class UniqueSlugService {
         // Générer un identifiant universellement unique.
         UUID uniqueID = UUID.randomUUID();
         String uniqueIDToStr = uniqueID.toString();
-        // Supprime les tirets de l'identifiant universellement uniques convertit en chaine de caractère avec la méthode replace.
+        // Supprime les tirets de l'identifiant universel unique convertit en chaine de caractère avec la méthode replace.
         String searchString = "-";
         String replacementString = "";
         String randomUniqueId = uniqueIDToStr.replace(searchString, replacementString);

@@ -1,23 +1,16 @@
 package com.api.mushroom.entity;
 
 
-import com.api.mushroom.service.utils.UniqueSlugService;
 import com.github.slugify.Slugify;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
-
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.web.bind.annotation.RequestBody;
-
 import java.time.LocalDateTime;
 import java.util.*;
 
-@Getter
-@Setter
+/**
+ *
+ */
 @Entity
 @Data
 @Table(name = "mushroom")
@@ -43,7 +36,7 @@ public class MushroomEntity {
     @Column(name="visibility",columnDefinition = "tinyint" )
     private boolean visibility;
 
-    @NotBlank(message = "Ce champ ne peux être laissé vide !")
+    @NotBlank(message = "Ce champ est obligatoire !")
     @Column(name="commonname", length = 255, nullable = false)
     private String commonname;
 

@@ -17,8 +17,7 @@ public class ForumService {
     /*                          ROUTE - PUBLIQUE                       */
     /* --------------------------------------------------------------- */
     public List<ForumSubjectEntity> findAll() {
-        List<ForumSubjectEntity> forumSubjectEntities =  forumSubjectJpaRepository.findAll();
-        return forumSubjectEntities;
+        return forumSubjectJpaRepository.findAll();
 }
 
     public ForumSubjectEntity findById(Long id) {

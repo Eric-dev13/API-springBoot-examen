@@ -2,6 +2,7 @@ package com.api.mushroom.entity;
 
 import com.api.mushroom.security.Role;
 import com.github.slugify.Slugify;
+import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -41,6 +42,8 @@ public class UserEntity implements Serializable, UserDetails {
     @Column(name = "email", length = 255, unique = true)
     private String email;
 
+    // @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}$", message = "Huit caractère au minimum, au moins une lettre majuscule et une lettre minuscule et un chiffre")
+    @Setter
     @Column(name = "password", length = 255)
     private String password;
 
@@ -83,6 +86,7 @@ public class UserEntity implements Serializable, UserDetails {
     private List<ForumSubjectEntity> forumSubjectEntities = new ArrayList<>();
 
     @Setter
+    @Getter // ! redondant sans mapper dans un dto
     @OneToMany(mappedBy = "userEntity", orphanRemoval = true)
 //    @OrderBy("order.createdAt.DESC")
     private List<ForumCommentaryEntity> forumCommentaryEntities = new ArrayList<>();

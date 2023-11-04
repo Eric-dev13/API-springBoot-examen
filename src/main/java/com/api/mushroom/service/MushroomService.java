@@ -22,9 +22,7 @@ public class MushroomService {
 
     private final MushroomJpaRepository mushroomJpaRepository; // Créer une instance de mushroomJpaRepository
     private final EntityManager entityManager; // Créer une instance de l'EntityManager
-
     private final FileUploadService fileUploadService;
-
     private final LocalnameJpaRepository localnameJpaRepository;
 
     /* --------------------------------------------------------------- */
@@ -45,8 +43,6 @@ public class MushroomService {
     /* --------------------------------------------------------------- */
     /*                          ROUTE - SECURISER                      */
     /* --------------------------------------------------------------- */
-
-
     // GET - Récupère un tableau d'enregistrement trié par nom commun
     public Iterable<MushroomEntity> getAll() {
         return mushroomJpaRepository.findAll(Sort.by(Sort.Direction.ASC, "commonname"));
@@ -78,7 +74,8 @@ public class MushroomService {
         MushroomEntity mushroomById = mushroomJpaRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Mushroom not found"));
 
         mushroomById.setCommonname(mushroomEntity.getCommonname());
-        mushroomById.setLatinname(mushroomEntity.getLatinname());
+
+
         mushroomById.setFlesh(mushroomEntity.getFlesh());
         mushroomById.setHat(mushroomEntity.getHat());
         mushroomById.setLamella(mushroomEntity.getLamella());

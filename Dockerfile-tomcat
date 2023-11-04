@@ -1,7 +1,8 @@
+# Utilisation de l'image Tomcat officielle comme base
 FROM openjdk:17
 
-# Define environment variables
-ENV SPRING_OUTPUT_ANSI_ENABLED=ALWAYS \JAVA_OPTS=""
+# Copier le fichier WAR de l'application dans le répertoire webapps de Tomcat
+COPY ./target/api.mushroom-0.0.1-SNAPSHOT.war /usr/local/tomcat/webapps/
 
 # Set the working directory to /app
 WORKDIR /app
@@ -10,10 +11,7 @@ WORKDIR /app
 ADD target/*.jar app.war
 
 # Make port 8080 available to the world outside this container
-EXPOSE 8080
-
-# Copier le fichier WAR dans le conteneur
-# COPY api.mushroom-0.0.1-SNAPSHOT.war /app/api.war
+# EXPOSE 8080
 
 # Commande par défaut à exécuter
 CMD ["java", "-jar", "/app/app.war"]

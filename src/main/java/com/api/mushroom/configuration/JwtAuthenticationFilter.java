@@ -36,42 +36,45 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String jwt;
         final String userEmail;
 
-        // Si l'en-tête 'Authorization' est absent ou ne commence pas par "Bearer "
-        if(authHeader == null||!authHeader.startsWith("Bearer ")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        // Extrait le token de l'en-tête en retirant les 7 premiers caractères ("Bearer ")
-        jwt = authHeader.substring(7);
-
-        // Extrait l'adresse e-mail de l'utilisateur à partir du token décode le token avec la SECRET_KEY (stockée en dur dans JwtService)
-        userEmail = jwtService.extractUsername(jwt);
-
-        // Vérification et configuration de l'authentification de Spring Security
-        if(userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            // Charge les détails de l'utilisateur à partir du service UserDetails
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
-
-            // Vérifie si le token est valide pour l'utilisateur
-            if(jwtService.isTokenValid(jwt, userDetails)) {
-                // Crée un jeton d'authentification Spring Security avec les détails de l'utilisateur
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        userDetails,
-                        null, // Les informations de mot de passe ne sont pas nécessaires car l'authentification est déjà effectuée.
-                        userDetails.getAuthorities() // Les rôles/permissions de l'utilisateur
-                );
-
-                // Ajoute les détails de l'authentification web (adresse IP, navigateur, etc.)
-                authToken.setDetails(
-                        new WebAuthenticationDetailsSource().buildDetails(request)
-                );
-
-                // Configure l'authentification de Spring Security pour cet utilisateur
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+        try {
+            // Si l'en-tête 'Authorization' est absent ou ne commence pas par "Bearer "
+            if(authHeader == null||!authHeader.startsWith("Bearer ")) {
+                filterChain.doFilter(request, response);
+                return;
             }
-        }
 
+            // Extrait le token de l'en-tête en retirant les 7 premiers caractères ("Bearer ")
+            jwt = authHeader.substring(7);
+
+            // Extrait l'adresse e-mail de l'utilisateur à partir du token décode le token avec la SECRET_KEY (stockée en dur dans JwtService)
+            userEmail = jwtService.extractUsername(jwt);
+
+            // Vérification et configuration de l'authentification de Spring Security
+            if(userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                // Charge les détails de l'utilisateur à partir du service UserDetails
+                UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
+
+                // Vérifie si le token est valide pour l'utilisateur
+                if(jwtService.isTokenValid(jwt, userDetails)) {
+                    // Crée un jeton d'authentification Spring Security avec les détails de l'utilisateur
+                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                            userDetails,
+                            null, // Les informations de mot de passe ne sont pas nécessaires car l'authentification est déjà effectuée.
+                            userDetails.getAuthorities() // Les rôles/permissions de l'utilisateur
+                    );
+
+                    // Ajoute les détails de l'authentification web (adresse IP, navigateur, etc.)
+                    authToken.setDetails(
+                            new WebAuthenticationDetailsSource().buildDetails(request)
+                    );
+
+                    // Configure l'authentification de Spring Security pour cet utilisateur
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                }
+            }
+        } catch (Exception e) {
+            logger.info("Trying parse token but failed");
+        }
         // Poursuit le traitement de la requête
         filterChain.doFilter(request, response);
     }

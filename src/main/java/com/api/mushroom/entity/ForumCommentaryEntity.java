@@ -32,7 +32,7 @@ public class ForumCommentaryEntity {
     /*          DECLARATION DES PROPRIETES          */
     /*           RELATIONS / ASSOCIATIONS           */
     /* ******************************************** */
-    @Getter(AccessLevel.NONE)
+    // @Getter(AccessLevel.NONE) // ! redondant sans mapper dans un dto
     @ManyToOne
     @JoinColumn(name = "user_id")
     private UserEntity userEntity;

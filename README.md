@@ -528,62 +528,53 @@ Controler: Dto => Service: modelService => RepositorymodelRepository (entity)
                 </annotationProcessorPaths>
             </configuration>
         </plugin>
-        <!--			-->
+        <!--  plug-in MapStruc  -->
     </plugins>
 </build>
 ````
 
-### Le UserGetDto (Controller)
+
+
+### Création de INTREFACE du MAPPER
+
+
+
+#### Avec l'assistant intelliJ
 
 ````
-// src/main/java/com/api/mushroom/controller/user/UserGetDTO.java
+package com.api.mushroom.controller.forum;
 
-@Data
-@NoArgsConstructor
-public class UserGetDTO {
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-    private String pseudo;
-    private Collection<? extends GrantedAuthority> authorities;
-    private String lastname;
-    private String firstname;
-    private String email;
-    private String filename;
-}
-````
+import com.api.mushroom.entity.ForumSubjectEntity;
+import org.mapstruct.*;
 
-### Le UserGetDtoMapper
+@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
+public interface ForumSubjectEntityMapper {
 
-````
-// src/main/java/com/api/mushroom/controller/user/UserGetDtoMapper.java
+    ForumSubjectEntity toEntity(ForumSubjectDto forumSubjectDto);
 
-package com.api.mushroom.controller.user;
+    @AfterMapping
+    default void linkForumCommentaryEntities(@MappingTarget ForumSubjectEntity forumSubjectEntity) {
+        forumSubjectEntity.getForumCommentaryEntities().forEach(forumCommentaryEntity -> forumCommentaryEntity.setForumSubjectEntity(forumSubjectEntity));
+    }
 
-import com.api.mushroom.service.user.UserServiceModel;
-import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
+    // mappe userEntity en ForumUserDto dont les 2 objet sont décris
+    @Mapping(source = "userEntity", target = "user")
+    ForumSubjectDto toDto(ForumSubjectEntity forumSubjectEntity);
 
-@Mapper
-public interface UserGetDtoMapper {
-    UserGetDtoMapper INSTANCE = Mappers.getMapper(UserGetDtoMapper.class);
-
-    UserGetDTO userServiceModelToUserGetDTO(UserServiceModel userServiceModel);
-    UserServiceModel UserGetDTOToUserServiceModel(UserGetDTO userGetDTO);
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    ForumSubjectEntity partialUpdate(ForumSubjectDto forumSubjectDto, @MappingTarget ForumSubjectEntity forumSubjectEntity);
 }
 ````
 
 
 
+#### A partir de la documentation officielle
 
+**Ignorer** une ou plusieurs propriétés.
 
-### Le  UserServiceModel 
+**Modifier le nom** d' une ou plusieurs propriétés.
 
-````
-````
-
-
-
-#### Créer l'interface de mappage
+**Cibler**  une ou plusieurs propriétés.
 
 ````
 import com.api.mushroom.entity.UserEntity;
@@ -594,7 +585,9 @@ import org.mapstruct.factory.Mappers;
 public interface UserMapper {
     UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
     
-    //@Mapping(target = "role", ignore = true) // Ignore le champ email
+    @Mapping(target = "role", ignore = true) // Ignore la propriété email
+    @Mapping(source = "email", target = "mail") // Modifier le nom de la propriété email
+    @Mapping(source = "email", target = "email") // Cibler une propriétés.
     UserGetDTO userEntityToUserGetDTO(UserEntity userEntity);
 }
 ````

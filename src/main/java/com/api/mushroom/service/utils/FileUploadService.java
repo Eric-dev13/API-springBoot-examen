@@ -24,7 +24,6 @@ public class FileUploadService {
 
     private final UniqueSlugService uniqueSlugService;
 
-
     public ResponseEntity<byte[]> getImage(String pathName, String imageName) throws IOException {
         // Construire le chemin d'accès complet vers l'image demandée
         String fullImagePath = "upload/" + pathName + "/" + imageName;

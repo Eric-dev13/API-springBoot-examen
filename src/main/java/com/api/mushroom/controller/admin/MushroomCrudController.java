@@ -2,17 +2,19 @@ package com.api.mushroom.controller.admin;
 
 import com.api.mushroom.entity.MushroomEntity;
 import com.api.mushroom.service.MushroomService;
+import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 
+
 @RestController
+//@Validated // validator
 @RequiredArgsConstructor
 //@PreAuthorize("hasAuthority('ADMIN')")
 @RequestMapping("api/v1/admin/mushroom")
@@ -33,9 +35,24 @@ public class MushroomCrudController {
         return mushroomService.getById(id);
     }
 
+    /**
+     * @Valid : déclenche la validation des données
+     * @param mushroomEntity
+     * @return
+     */
+    @PostMapping("/validator")
+    public ResponseEntity<?> addtest(@Valid @RequestBody MushroomEntity mushroomEntity) {
+        try {
+            MushroomEntity mushroom = mushroomService.add(mushroomEntity);
+            return ResponseEntity.status(HttpStatus.CREATED).body(mushroom); // 201 Created en cas de succès
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erreur lors de l'ajout : " + e.getMessage()); // 500 Internal Server Error en cas d'erreur.
+        }
+    }
+
     // POST
     @PostMapping
-    public ResponseEntity<?> add(@RequestBody MushroomEntity mushroomEntity) {
+    public ResponseEntity<?> add(@Valid @RequestBody MushroomEntity mushroomEntity) {
         try {
             MushroomEntity mushroom = mushroomService.add(mushroomEntity);
             return ResponseEntity.status(HttpStatus.CREATED).body(mushroom); // 201 Created en cas de succès
@@ -46,7 +63,7 @@ public class MushroomCrudController {
 
     // UPDATE : Mise à jour complète d'un enregistrement
     @PutMapping("/{id}")
-    public MushroomEntity put(@PathVariable("id") Long id, @RequestBody final MushroomEntity mushroomEntity) {
+    public MushroomEntity put(@PathVariable("id") Long id, @Valid @RequestBody MushroomEntity mushroomEntity) {
         return mushroomService.put(id, mushroomEntity);
     }
 
@@ -66,9 +83,5 @@ public class MushroomCrudController {
     public boolean delete(@PathVariable("id") Long id){
         return mushroomService.delete(id);
     }
-
-
-
-
 
 }
