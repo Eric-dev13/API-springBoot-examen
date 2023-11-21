@@ -4,14 +4,12 @@ import com.api.mushroom.controller.forum.dto.ForumSubjectDto;
 import com.api.mushroom.controller.forum.dto.ForumSubjectPaginatorDto;
 import com.api.mushroom.controller.forum.mapper.ForumSubjectEntityMapper;
 import com.api.mushroom.entity.ForumSubjectEntity;
-import com.api.mushroom.entity.MushroomEntity;
 import com.api.mushroom.service.forum.ForumService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,18 +36,22 @@ public class ForumController {
         try {
             List<ForumSubjectEntity> forumSubjectEntities;
 
+            // Vérifie si les paramètres limit et offset sont fournis
             if (limit == null) {
+                // Si non, récupère toutes les entités (peut être lourd si beaucoup d'entités)
                 forumSubjectEntities = forumService.findAll();
             } else {
+                // Si oui, récupère les entités paginées
                 forumSubjectEntities = forumService.findAllPaginate(limit, offset);
             }
 
-            // Mapping
+            // Mapping des entités vers des DTO
             List<ForumSubjectDto> forumSubjectDtos = forumSubjectEntities.stream().map(forumSubjectEntityMapper::toDto).collect(Collectors.toList());
 
-            // Count the total number of visible mushrooms
-            Long totalForumSubject = forumService.countAllVisibleMushrooms();
+            // Compter le nombre total de sujets de forum
+            Long totalForumSubject = forumService.countAllForumSubject();
 
+            // Créer un objet DTO pour les sujets de forum paginés
             ForumSubjectPaginatorDto forumSubjectsPaginate = new ForumSubjectPaginatorDto(
                     forumSubjectDtos,
                     totalForumSubject
@@ -58,7 +60,7 @@ public class ForumController {
             return ResponseEntity.ok(forumSubjectsPaginate);
 
         } catch (Exception e) {
-            // En cas d'erreur lors de l'écriture du fichier, afficher la trace d'erreur
+            // Si une exception est levée, renvoyer une réponse 404
             return ResponseEntity.notFound().build();
         }
     }
