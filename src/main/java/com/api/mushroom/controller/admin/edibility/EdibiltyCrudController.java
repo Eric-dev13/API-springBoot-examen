@@ -1,14 +1,9 @@
-package com.api.mushroom.controller.admin;
+package com.api.mushroom.controller.admin.edibility;
 
 import com.api.mushroom.entity.EdibilityEntity;
-import com.api.mushroom.entity.MushroomEntity;
-import com.api.mushroom.repository.EdibilityJpaRepository;
 import com.api.mushroom.service.EdibilityService;
-import com.api.mushroom.service.utils.FileUploadService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 

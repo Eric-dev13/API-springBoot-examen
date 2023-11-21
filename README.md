@@ -1141,3 +1141,77 @@ AUTRE METHODE
     }
 ````
 
+
+
+## Validation des champs 
+
+Ajouter la dépendance
+
+```
+# pom.xml
+...
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-validation</artifactId>
+    <version>3.1.5</version>
+</dependency>
+...
+```
+
+```
+// entity
+...
+@NotBlank(message = "Ce champ est obligatoire !")
+@Column(name="commonname", length = 255, nullable = false)
+private String commonname;
+...
+```
+
+A partir de la si les contraintes ne sont pas respectés l'api renvoie une erreur 400
+
+Pour capturer les message associés :
+
+Méthode n°1 
+
+```
+@PostMapping("/validator")
+public boolean add(@Valid @RequestBody MushroomEntity mushroomEntity, BindingResult result) {
+    // ++ arg function : BindingResult result
+    if (result.hasErrors()) {
+        // Il y a des erreurs de validation
+        List<FieldError> fieldErrors = result.getFieldErrors();
+        for (FieldError fieldError : fieldErrors) {
+            System.out.println("Champ : " + fieldError.getField());
+            System.out.println("Message d'erreur : " + fieldError.getDefaultMessage());
+        }
+    }
+```
+
+````
+// Retour console
+
+Champ : commonname
+Message d'erreur : Ce champ est obligatoire !
+````
+
+Méthode n°2
+
+```
+// 
+
+@ControllerAdvice
+@RestController
+public class GlobalExceptionHandler {
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getAllErrors().forEach((error) -> {
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            errors.put(fieldName, errorMessage);
+        });
+
+        return errors;
+    }
+```

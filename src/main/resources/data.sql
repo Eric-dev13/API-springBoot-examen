@@ -1,9 +1,9 @@
 --
--- Déchargement des données de la table user
+-- Déchargement des données de la table user password: Azerty-12
 --
 INSERT INTO user (id, filename, created_at, email, firstname, is_verified, lastname, password, pseudo, role, updated_at) VALUES
-(1,'61c6411de4211620488497.png', '2023-10-07 11:16:10.472996', 'lanzae32@gmail.com', 'Eric', b'0', 'Lanza', '$2a$10$adXxyDL/K/4Lf2sx1syJqOKxWy0E714q9Ifna16sI/kbGyOd29y82', 'Eric', 'ADMIN', NULL),
-(2, '61b2f10973d82626462629.png', '2023-10-07 11:31:53.420574', 'albert@gmail.com', 'Albert', b'0', 'Einstein', '$2a$10$RUvHLtjyVyU5Lj49T5vbVO9/S0Duz0MZPgDcjZGdMWFd8/RuMzfL6', 'Al', 'USER', NULL);
+(1,'61c6411de4211620488497.png', '2023-10-07 11:16:10.472996', 'lanzae32@gmail.com', 'Eric', b'0', 'Lanza', '$2a$10$kLc7BnGmiSEcYdEU6EiLtOkSo2syOZn0a1Z.jhBWspPkCLzvNVRlS', 'Eric', 'ADMIN', NULL),
+(2, '61b2f10973d82626462629.png', '2023-10-07 11:31:53.420574', 'albert@gmail.com', 'Albert', b'0', 'Einstein', '$2a$10$kLc7BnGmiSEcYdEU6EiLtOkSo2syOZn0a1Z.jhBWspPkCLzvNVRlS', 'Al', 'USER', NULL);
 -- COMMIT;
 
 --

@@ -1,13 +1,14 @@
 package com.api.mushroom.exception;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,6 +23,8 @@ import java.util.Map;
 @ControllerAdvice
 @RestController
 public class GlobalExceptionHandler {
+
+    // gère les Exceptions lié à spring-boot-starter-validation
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex) {
@@ -31,9 +34,25 @@ public class GlobalExceptionHandler {
             String errorMessage = error.getDefaultMessage();
             errors.put(fieldName, errorMessage);
         });
-
         return errors;
     }
 
+    // Gere l'erreur remonté depuis AuthenticationService vers la classe d'exception CustomValidationException
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(CustomValidationException.class)
+    public Map<String, String> handleCustomValidationException(CustomValidationException ex) {
+        return ex.getError();
+    }
+
+//    @ExceptionHandler(AccessDeniedException.class)
+//    public ResponseEntity<Object> handleAccessDeniedException(AccessDeniedException ex) {
+//        // Enregistrez l'erreur dans un fichier journal
+//        System.out.println(ex.getMessage());
+//
+//        // Afficher une page d'erreur personnalisée
+//        return ResponseEntity
+//                .status(HttpStatus.FORBIDDEN)
+//                .body("erreur");
+//    }
 
 }

@@ -1,8 +1,6 @@
 package com.api.mushroom.entity;
 
 import com.api.mushroom.security.Role;
-import com.github.slugify.Slugify;
-import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,6 +13,7 @@ import java.util.*;
 
 @Entity
 @Builder
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "user")
@@ -26,70 +25,58 @@ public class UserEntity implements Serializable, UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // id auto-incrémente
-    @Getter
     private Long id;
 
-    @Getter
+
     @Column(name="created_at")
     private LocalDateTime createdAt;
 
-    @Getter
-    @Setter
+
     @Column(name="updated_at")
     private LocalDateTime updatedAt;
 
-    @Setter
+
     @Column(name = "email", length = 255, unique = true)
     private String email;
 
-    // @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}$", message = "Huit caractère au minimum, au moins une lettre majuscule et une lettre minuscule et un chiffre")
-    @Setter
+
     @Column(name = "password", length = 255)
     private String password;
 
-    @Getter
-    @Setter
+
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @Getter
-    @Setter
+
     @Column(name = "pseudo", length = 255, nullable = false)
     private String pseudo;
 
-    @Getter
-    @Setter
+
     @Column(name = "lastname", length = 255)
     private String lastname;
 
-    @Getter
-    @Setter
+
     @Column(name = "firstname", length = 255)
     private String firstname;
 
-    @Getter
-    @Setter
     @Column(name = "filename", length = 255)
     private String filename;
 
     @Column(name = "is_verified")
-    private Boolean isVerified;
-
+    private boolean isVerified;
 
     /* ******************************************** */
     /*          DECLARATION DES PROPRIETES          */
     /*           RELATIONS / ASSOCIATIONS           */
     /* ******************************************** */
 
-    @Setter
-    @OneToMany(mappedBy = "userEntity", orphanRemoval = true)
-    private List<ForumSubjectEntity> forumSubjectEntities = new ArrayList<>();
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
+    private List<ForumSubjectEntity> forumSubjects = new ArrayList<>();
 
-    @Setter
-    @Getter // ! redondant sans mapper dans un dto
-    @OneToMany(mappedBy = "userEntity", orphanRemoval = true)
+
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
 //    @OrderBy("order.createdAt.DESC")
-    private List<ForumCommentaryEntity> forumCommentaryEntities = new ArrayList<>();
+    private List<ForumCommentaryEntity> forumCommentaries = new ArrayList<>();
 
 
 

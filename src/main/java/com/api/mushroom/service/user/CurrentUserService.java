@@ -15,17 +15,18 @@ public class CurrentUserService {
 
     private final UserEntityJpaRepository userEntityJpaRepository;
 
+    private final UserServiceMapper userServiceMapper;
+
     public UserServiceModel getCurrentUser(String email) {
 
         Optional<UserEntity> user = userEntityJpaRepository.findByEmail(email);
 
-        if(user.isEmpty()) {
-            // L'Optional est vide, l'utilisateur n'a pas été trouvé
-            return null;
+        if(user.isPresent()) {
+            // MAPPAGE AVEC MapStruct
+            return userServiceMapper.userEntityToUserServiceModel(user.get());
         }
-
-        // MAPPAGE AVEC MapStruct
-        return UserServiceMapper.INSTANCE.userEntityToUserServiceMapper(user.get());
+        // L'Optional est vide, l'utilisateur n'a pas été trouvé
+        return null;
     }
 
     public boolean updateCurrentUser(UserServiceModel userServiceModel) {
@@ -38,13 +39,13 @@ public class CurrentUserService {
 
         if (userEntity.isPresent()) {
             UserEntity currentUser = userEntity.get();
-            currentUser.setPseudo(userServiceModel.getPseudo());
+            currentUser.setPseudo(userServiceModel.pseudo());
 
-            currentUser.setLastname(userServiceModel.getLastname());
-            currentUser.setFirstname(userServiceModel.getFirstname());
+            currentUser.setLastname(userServiceModel.lastname());
+            currentUser.setFirstname(userServiceModel.firstname());
 
-            if (userServiceModel.getFilename().isPresent()) {
-                currentUser.setFilename(userServiceModel.getFilename().get());
+            if (!userServiceModel.filename().isBlank()) {
+                currentUser.setFilename(userServiceModel.filename());
             }
 
             UserEntity user = userEntityJpaRepository.save(currentUser);

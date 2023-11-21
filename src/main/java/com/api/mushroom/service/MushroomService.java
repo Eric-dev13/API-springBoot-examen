@@ -10,8 +10,6 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.NoResultException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
@@ -29,9 +27,19 @@ public class MushroomService {
     /*                          ROUTE - PUBLIQUE                       */
     /* --------------------------------------------------------------- */
 
-    // GET - Retourne un tableau d'objets - liste de tous les enregistrements validés par l'administrateur.
-    public List<MushroomEntity> findAllByVisibility(boolean isVisible) {
-        return mushroomJpaRepository.findAllByVisibility(isVisible);
+    // GET - Retourne une partie des fiches descriptives marqués comme visible.
+    public List<MushroomEntity> findAllByVisibility() {
+        return mushroomJpaRepository.findAllByVisibility();
+    }
+
+    // GET - Retourne une partie des fiches descriptives marqués comme visible.
+    public List<MushroomEntity> findAllByVisibilityPaginate(Long limit, Long offset) {
+        return mushroomJpaRepository.findAllByVisibilityPaginate(limit, offset);
+    }
+
+    // Retourne le nombre d'enregistrement de la table marqués comme visible.
+    public Long countAllVisibleMushrooms() {
+        return mushroomJpaRepository.countAllVisibleMushrooms();
     }
 
     // GET - Récupère un enregistrement par l'ID
@@ -44,8 +52,17 @@ public class MushroomService {
     /*                          ROUTE - SECURISER                      */
     /* --------------------------------------------------------------- */
     // GET - Récupère un tableau d'enregistrement trié par nom commun
-    public Iterable<MushroomEntity> getAll() {
-        return mushroomJpaRepository.findAll(Sort.by(Sort.Direction.ASC, "commonname"));
+    public List<MushroomEntity> findAll() {
+        return mushroomJpaRepository.findAll();
+    }
+
+    public List<MushroomEntity> findAllPaginate(Long limit, Long offset) {
+        return mushroomJpaRepository.findAllPaginate(limit, offset);
+    }
+
+    // Retourne le nombre d'enregistrement de la table.
+    public Long countAllMushrooms() {
+        return mushroomJpaRepository.countAllMushrooms();
     }
 
     // POST : Ajouter un enregistrement
@@ -61,7 +78,7 @@ public class MushroomService {
 //        }
         for (LocalnameEntity localname : mushroomEntity.getLocalnames()) {
             // Associe chaque enregistrement "nom local" nouvellement crée à l'entité MushroomEntity
-            localname.setMushroomEntity(mushroomEntity);
+            localname.setMushroom(mushroomEntity);
             // PERSISTE EN BASE DE DONNEE - ici pas besoin de persister, car on a, définit, cascade = CascadeType.PERSIST dans MushroomEntity pour cette propriété.
             // localnameJpaRepository.save(localname);
         }
@@ -74,7 +91,6 @@ public class MushroomService {
         MushroomEntity mushroomById = mushroomJpaRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Mushroom not found"));
 
         mushroomById.setCommonname(mushroomEntity.getCommonname());
-
 
         mushroomById.setFlesh(mushroomEntity.getFlesh());
         mushroomById.setHat(mushroomEntity.getHat());
@@ -177,9 +193,9 @@ public class MushroomService {
         }
     }
 
-    public List<MushroomEntity> getSearch(String titre) {
-        return mushroomJpaRepository.getSearch(titre);
-    }
+//    public List<MushroomEntity> getSearch(String titre) {
+//        return mushroomJpaRepository.getSearch(titre);
+//    }
     /* --------------------------------------------------------------------------------------------- */
 
     // GET - Retourne une liste de tableau de 3 propriétés.

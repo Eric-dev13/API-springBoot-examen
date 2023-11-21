@@ -35,6 +35,6 @@ public class ForumCategory {
     @JoinTable(name = "ForumCategory_forumSubjectEntities",
             joinColumns = @JoinColumn(name = "forumCategory_id"),
             inverseJoinColumns = @JoinColumn(name = "forumSubjectEntities_id"))
-    private Set<ForumSubjectEntity> forumSubjectEntities = new LinkedHashSet<>();
+    private Set<ForumSubjectEntity> forumSubjects = new LinkedHashSet<>();
 
 }

@@ -1,4 +1,4 @@
-package com.api.mushroom.controller.admin;
+package com.api.mushroom.controller.admin.lamellaType;
 
 import com.api.mushroom.entity.EdibilityEntity;
 import com.api.mushroom.entity.LamellatypeEntity;

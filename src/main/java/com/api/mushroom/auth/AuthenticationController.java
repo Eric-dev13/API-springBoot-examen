@@ -1,5 +1,6 @@
 package com.api.mushroom.auth;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -9,9 +10,10 @@ import org.springframework.web.bind.annotation.*;
  */
 @RequiredArgsConstructor
 @RestController
-@CrossOrigin
+//@CrossOrigin
 @RequestMapping("/api/v1/auth")
-public class AuthenticationController {
+public class
+AuthenticationController {
 
     private final AuthenticationService authenticationService;
 
@@ -22,9 +24,7 @@ public class AuthenticationController {
      * @return Réponse ResponseEntity avec le corps contenant l'objet AuthenticationResponse si l'enregistrement est réussi.
      */
     @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponse> register(
-            @RequestBody RegisterRequest request
-    ) {
+    public ResponseEntity<AuthenticationResponse> register(@Valid @RequestBody RegisterRequest request) {
         // Appelle la méthode register() du service d'authentification pour effectuer l'enregistrement.
         return ResponseEntity.ok(authenticationService.register(request));
     }
@@ -36,9 +36,7 @@ public class AuthenticationController {
      * @return Réponse ResponseEntity avec le corps contenant l'objet AuthenticationResponse si l'authentification est réussie.
      */
     @PostMapping("/authenticate")
-    public ResponseEntity<AuthenticationResponse> authenticate(
-            @RequestBody AuthenticationRequest request
-    ) {
+    public ResponseEntity<AuthenticationResponse> authenticate(@Valid @RequestBody AuthenticationRequest request) {
         // Appelle la méthode authenticate() du service d'authentification pour effectuer l'authentification.
         return ResponseEntity.ok(authenticationService.authenticate(request));
     }

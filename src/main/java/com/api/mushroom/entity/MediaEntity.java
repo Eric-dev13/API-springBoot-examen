@@ -2,10 +2,8 @@ package com.api.mushroom.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-import org.aspectj.util.LangUtil;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -46,7 +44,7 @@ public class MediaEntity {
     // Désactiver la génération des méthodes getter ou setter.
     @Getter(AccessLevel.NONE)
     @JoinColumn(name = "mushroom_id")
-    private MushroomEntity mushroomEntity;
+    private MushroomEntity mushroom;
 
 
     /* *************************************** */

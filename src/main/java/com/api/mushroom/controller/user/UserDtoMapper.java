@@ -1,37 +1,24 @@
 package com.api.mushroom.controller.user;
 
 import com.api.mushroom.service.user.UserServiceModel;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Named;
-import org.mapstruct.factory.Mappers;
+import org.mapstruct.*;
 
-import java.util.Optional;
-
-@Mapper
+/***
+ * si une propriété dans l'objet source n'est pas mappée (ayant le meme nom et le meme type) à une propriété dans l'objet cible, MapStruct l'ignorera et la valeur existante de la propriété cible sera préservée.
+ */
+@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
 public interface UserDtoMapper {
-    UserDtoMapper INSTANCE = Mappers.getMapper(UserDtoMapper.class);
+    UserServiceModel userProfilDtoToUserServiceModel(CurrentUserProfilDto currentUserProfilDto);
 
-    // POST ET PUT
-    @Mapping(source = "filename", target = "filename", qualifiedByName = "typeToOptional")
-    UserServiceModel UserDTOToUserServiceModel(UserDTO userDTO);
-
-    // GET ALL et GET ONE
-    @Mapping(source = "filename", target = "filename", qualifiedByName = "optionalToType")
-    UserGetDTO userServiceModelToUserGetDTO(UserServiceModel userServiceModel);
-
-    //     UserDTO userServiceModelToUserDTO(UserServiceModel userServiceModel);
+    UserServiceModel currentUserUpdateDtoToUserServiceModel(CurrentUserUpdateDto currentUserUpdateDto);
 
 
-    // METHODE DE TRANSTYPAGE
-    @Named("optionalToType")
-    default <T> T optionalToType(Optional<T> source) throws Exception {
-        return source.orElse(null);
-    }
+    CurrentUserProfilDto userServiceModelToUserProfilDto(UserServiceModel userServiceModel);
 
-    @Named("typeToOptional")
-    default <T> Optional<T> typeToOptional(T source) throws Exception {
-        return Optional.ofNullable(source);
-    }
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    CurrentUserProfilDto partialUpdate(UserServiceModel userServiceModel, @MappingTarget CurrentUserProfilDto currentUserProfilDto);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    CurrentUserUpdateDto partialUpdate(UserServiceModel userServiceModel, @MappingTarget CurrentUserUpdateDto currentUserUpdateDto);
 
 }

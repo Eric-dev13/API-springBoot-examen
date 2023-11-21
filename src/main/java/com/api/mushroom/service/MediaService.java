@@ -5,17 +5,11 @@ import com.api.mushroom.entity.MushroomEntity;
 import com.api.mushroom.repository.MediaJpaRepository;
 import com.api.mushroom.repository.MushroomJpaRepository;
 import com.api.mushroom.service.utils.FileUploadService;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -64,7 +58,7 @@ public class MediaService {
             MediaEntity mediaEntity = new MediaEntity();
             mediaEntity.setName(mediaName);
             mediaEntity.setFilename(newFilename);
-            mediaEntity.setMushroomEntity(mushroomEntity);
+            mediaEntity.setMushroom(mushroomEntity);
 
             // Enregistrer la nouvelle entité MediaEntity dans la base de données
             mediaJpaRepository.save(mediaEntity);
@@ -93,7 +87,7 @@ public class MediaService {
                 // Créer une nouvelle entité MediaEntity
                 MediaEntity mediaEntity = new MediaEntity();
                 mediaEntity.setFilename(newFilename);
-                mediaEntity.setMushroomEntity(mushroomEntity);
+                mediaEntity.setMushroom(mushroomEntity);
 
                 // Enregistrer la nouvelle entité MediaEntity dans la base de données
                 mediaJpaRepository.save(mediaEntity);

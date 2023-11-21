@@ -3,6 +3,7 @@ package com.api.mushroom.auth;
 
 import com.api.mushroom.configuration.JwtService;
 import com.api.mushroom.entity.UserEntity;
+import com.api.mushroom.exception.CustomValidationException;
 import com.api.mushroom.repository.UserEntityJpaRepository;
 import com.api.mushroom.security.Role;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +24,11 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
 
     public AuthenticationResponse register(RegisterRequest request) {
+        // verifie si l'adresse mail existe
+        Optional<UserEntity> userEntity = userEntityJpaRepository.findByEmail(request.getEmail());
+        if(userEntity.isPresent()) {
+            throw new CustomValidationException("email", "Un compte avec cette adresse e-mail existe déjà");
+        }
        var user = UserEntity.builder()
                .pseudo(request.getPseudo())
                .role(Role.USER)
@@ -32,7 +39,7 @@ public class AuthenticationService {
                .filename(request.getAvatar())
                .isVerified(false)
                .build();
-        userEntityJpaRepository.save(user);
+            userEntityJpaRepository.save(user);
         var jwtToken = jwtService.generateToken(user);
 
         return AuthenticationResponse.builder()
@@ -42,19 +49,19 @@ public class AuthenticationService {
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
-        authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(
-                    request.getEmail(),
-                    request.getPassword()
-            )
-        );
-        var user = userEntityJpaRepository.findByEmail(request.getEmail()) .orElseThrow();
-        var jwtToken = jwtService.generateToken(user);
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.getEmail(),
+                            request.getPassword()
+                    )
+            );
+            var user = userEntityJpaRepository.findByEmail(request.getEmail()).orElseThrow();
+            var jwtToken = jwtService.generateToken(user);
 
-        return AuthenticationResponse.builder()
-                .token(jwtToken)
-                .user(userDetailMap(user))// ++
-                .build();
+            return AuthenticationResponse.builder()
+                    .token(jwtToken)
+                    .user(userDetailMap(user))// ++
+                    .build();
     }
 
     public Map<String, Object> userDetailMap(UserEntity user){

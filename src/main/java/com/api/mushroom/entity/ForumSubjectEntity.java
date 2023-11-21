@@ -1,10 +1,7 @@
 package com.api.mushroom.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -45,14 +42,14 @@ public class ForumSubjectEntity {
     /* ******************************************** */
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private UserEntity userEntity;
+    private UserEntity user;
 
-    @ManyToMany(mappedBy = "forumSubjectEntities")
+    @ManyToMany(mappedBy = "forumSubjects")
     private Set<ForumCategory> forumCategories = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "forumSubjectEntity", orphanRemoval = true)
+    @OneToMany(mappedBy = "forumSubject", orphanRemoval = true)
     // @OrderBy("order.createdAt DESC")
-    private List<ForumCommentaryEntity> forumCommentaryEntities = new ArrayList<>();
+    private List<ForumCommentaryEntity> forumCommentaries = new ArrayList<>();
 
     /* *************************************** */
     /*             JPA PERSISTENCE             */

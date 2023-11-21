@@ -17,14 +17,12 @@ public interface ForumSubjectEntityMapper {
 
     @AfterMapping
     default void linkForumCommentaryEntities(@MappingTarget ForumSubjectEntity forumSubjectEntity) {
-        forumSubjectEntity.getForumCommentaryEntities().forEach(forumCommentaryEntity -> forumCommentaryEntity.setForumSubjectEntity(forumSubjectEntity));
+        forumSubjectEntity.getForumCommentaries().forEach(forumCommentaryEntity -> forumCommentaryEntity.setForumSubject(forumSubjectEntity));
     }
 
     @Mappings({
-        // mappe userEntity en ForumUserDto dont les 2 objet sont décris
-        @Mapping(source = "userEntity", target = "user"),
-        //@Mapping(source = "forumCommentaryEntities", target = "comments"),
-        @Mapping(source = "forumCommentaryEntities", target = "comments", qualifiedByName = "filterCommentaryEntities")
+        // mappe userEntity en ForumUserDto dont les 2 objets sont décris
+        @Mapping(source = "forumCommentaries", target = "comments", qualifiedByName = "filterCommentaryEntities")
     })
     ForumSubjectDto toDto(ForumSubjectEntity forumSubjectEntity);
 
@@ -42,7 +40,7 @@ public interface ForumSubjectEntityMapper {
                 .collect(Collectors.toList());
     }
 
-    @Mapping(source = "userEntity", target = "userCommentaryEditor")
+    @Mapping(source = "user", target = "userCommentaryEditor")
     ForumCommentaryDto mapCommentaryEntity(ForumCommentaryEntity commentaryEntity);
 
 }

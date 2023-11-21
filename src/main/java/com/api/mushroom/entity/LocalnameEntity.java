@@ -37,7 +37,7 @@ public class LocalnameEntity {
     @Getter(AccessLevel.NONE)
     @ManyToOne
     @JoinColumn(name = "mushroom_id")
-    private MushroomEntity mushroomEntity;
+    private MushroomEntity mushroom;
 
 
     /* *************************************** */

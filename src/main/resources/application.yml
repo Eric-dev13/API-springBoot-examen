@@ -9,12 +9,25 @@ server:
 # ======================================
 # = CONFIGURATION DE LA JOURNALISATION =
 # ======================================
+#  Garantit l'intégrité des tokens et empêche leur falsification.
+#  Cette clé de 256 bits est considérée comme très robuste en termes de sécurité, offrant une forte protection contre les attaques par force brute et les tentatives de craquage de la clé. Elle est généralement utilisée pour sécuriser des systèmes sensibles, tels que la génération et la validation de tokens JWT (JSON Web Tokens), comme dans votre exemple.
+#"${jwt.signing.secret-key}" = signingKey
+jwt:
+  signing:
+    secret-key: 72357538782F4125442A472D4B6150645367566B597033733676397924422645
+
+# ======================================
+# = CONFIGURATION DE LA JOURNALISATION =
+# ======================================
 logging:
   level:
     # Permet de voir dans la console le port utilisé par Tomcat au démarrage
     org.springframework.boot.web.embedded.tomcat: INFO
+    # Niveau de journalisation pour l'ensemble de l'application
     root: INFO
+    # Configuration spécifique pour une classe ou un package
     com.api: DEBUG
+  file: /log/myapp.log
 
 # =============================
 # = DEFINIR PLUSIEURS PROFILS =
@@ -27,13 +40,13 @@ spring:
     # profil a charger par défaut defini dans application.yml
     active: dev
     # Profil Maven : peut être activé via la propriété de configuration spring.profiles.active
-    #	Sa valeur sera utilisée pour remplacer l' espace réservé @spring.profiles.active@ dans application.properties ou application.yml
+    #	Sa valeur sera utilisée pour remplacer l'espace réservé @spring.profiles.active@ dans application.properties ou application.yml
     # active: @spring.profiles.active@
 
   servlet:
     multipart:
-      max-file-size: 5MB
-      max-request-size: 15MB
+      max-file-size: 10MB
+      max-request-size: 10MB
 
 ---
 # =================================
@@ -49,10 +62,6 @@ spring:
     user:
       failedLoginAttempts: 3
       accountLockDuration: 5m
-
-  mvc:
-    throw-exception-if-no-handler-found: true
-    throw-exception-if-no-mapping-found: true
 
   # ==============================================
   # = CONFIGURATION DE LA SOURCE DE DONNEE MySQL =

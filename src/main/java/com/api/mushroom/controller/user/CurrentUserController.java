@@ -3,6 +3,7 @@ package com.api.mushroom.controller.user;
 import com.api.mushroom.service.user.CurrentUserService;
 import com.api.mushroom.service.user.UserServiceModel;
 import com.api.mushroom.service.utils.FileUploadService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -15,7 +16,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "api/v1/user")
+@RequestMapping(value = "api/v1/current-user")
 public class CurrentUserController {
 
     // Lombok va génèrer un constructeur avec un paramètre pour chaque constante (final)
@@ -23,9 +24,11 @@ public class CurrentUserController {
 
     private final FileUploadService fileUploadService;
 
+    private final UserDtoMapper userDtoMapper;
 
+    // Récupération du profil de l'utilisateur courant
     @GetMapping
-    public ResponseEntity<UserGetDTO> getCurrentUser(Authentication authentication) {
+    public ResponseEntity<CurrentUserProfilDto> getCurrentUser(Authentication authentication) {
 
         // Récupérer l'email de l'utilisateur courant
         String email = authentication.getName();
@@ -33,54 +36,43 @@ public class CurrentUserController {
         // Récupère l'utilisateur courant
         UserServiceModel userServiceModel = currentUserService.getCurrentUser(email);
 
-        if(userServiceModel == null){
+        if (userServiceModel == null) {
             // Si userServiceModel est null, renvoyer une ResponseEntity avec un code 404 Not Found
             return ResponseEntity.notFound().build();
         }
 
         // MAPPAGE AVEC MapStruct
-//        UserGetDTO userGetDTO = UserGetDtoMapper.INSTANCE.userServiceModelToUserGetDTO(userServiceModel);
-        UserGetDTO userGetDTO = UserDtoMapper.INSTANCE.userServiceModelToUserGetDTO(userServiceModel);
+        CurrentUserProfilDto currentUserProfilDto = userDtoMapper.userServiceModelToUserProfilDto(userServiceModel);
 
         // Créer et renvoyer une ResponseEntity avec le UserGetDTO en tant que corps
-        return ResponseEntity.ok(userGetDTO);
+        return ResponseEntity.ok(currentUserProfilDto);
 
     }
 
+    // Modification du profil de l'utilisateur courant
     @PutMapping
-    public boolean updateCurrentUser(@RequestParam("pseudo") String pseudo,
-                                     @RequestParam("lastname") String lastname,
-                                     @RequestParam("firstname") String firstname,
-                                     @RequestPart("filename") Optional<MultipartFile> filename
-                                     ) throws IOException {
-
+    public boolean updateCurrentUser(@RequestParam(name = "pseudo",  required = true) String pseudo,
+                                     @RequestParam(name = "lastname", required = true) String lastname,
+                                     @RequestParam(name = "firstname", required = true) String firstname,
+                                     @RequestPart(name = "filename", required = false) Optional<MultipartFile> filename
+    ) throws IOException {
         String newFilename = "";
 
-        if(filename.isPresent()) {
+        if (filename.isPresent()) {
             // Télécharger le fichier de média et obtient le nouveau nom de fichier
             newFilename = fileUploadService.fileUpload(filename.get(), "user/");
         }
 
-                UserDTO userDTO = new UserDTO(pseudo,lastname,firstname,newFilename);
+        CurrentUserUpdateDto currentUserUpdateDto = new CurrentUserUpdateDto(
+                pseudo,
+                lastname,
+                firstname,
+                newFilename);
 
-            // MAPPAGE AVEC MapStruct
-            UserServiceModel userServiceModel = UserDtoMapper.INSTANCE.UserDTOToUserServiceModel(userDTO);
+        UserServiceModel userServiceModel = userDtoMapper.currentUserUpdateDtoToUserServiceModel(currentUserUpdateDto);
 
-            // Persistence DB
-            return currentUserService.updateCurrentUser(userServiceModel);
-
-
+        // Persistence DB
+        return currentUserService.updateCurrentUser(userServiceModel);
     }
-
-//    @PutMapping
-//    public boolean updateCurrentUser(@RequestBody UserDTO userDTO){
-//
-//        // MAPPAGE AVEC MapStruct
-//        UserServiceModel userServiceModel = UserDtoMapper.INSTANCE.UserDTOToUserServiceModel(userDTO);
-//
-//        // Récupère l'utilisateur courant
-//        return currentUserService.updateCurrentUser(userServiceModel);
-//
-//    }
 
 }

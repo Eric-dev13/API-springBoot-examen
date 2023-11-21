@@ -1,35 +1,38 @@
 package com.api.mushroom.service.user;
 
+import com.api.mushroom.entity.ForumCommentaryEntity;
+import com.api.mushroom.entity.ForumSubjectEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class UserServiceModel {
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-    private String pseudo;
-    private Collection<? extends GrantedAuthority> authorities;
-    private String lastname;
-    private String firstname;
-    private String email;
-    private Optional<String> filename;
+public record UserServiceModel (
+     Long id,
+     LocalDateTime createdAt,
+     LocalDateTime updatedAt,
+     String email,
+     String pseudo,
+     String lastname,
+     String firstname,
+     Collection<? extends GrantedAuthority> authorities,
+     String filename,
+     boolean isVerified,
+     List<ForumSubjectModel> forumSubjects,
+     List<ForumCommentaryModel> forumCommentaries
+){ }
 
-    // PUT
-    public UserServiceModel(String pseudo, String lastname, String firstname, Optional<String> filename) {
-        this.pseudo = pseudo;
-        this.lastname = lastname;
-        this.firstname = firstname;
-        this.filename = filename;
-    }
-}
+
+
+
+
+
 
 
 

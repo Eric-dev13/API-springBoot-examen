@@ -3,6 +3,7 @@ package com.api.mushroom.configuration;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -29,7 +30,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
           @NonNull HttpServletRequest request,
           @NonNull HttpServletResponse response,
           @NonNull FilterChain filterChain
-    ) throws ServletException, IOException {
+    ) throws ServletException, IOException
+    {
 
         // Récupère l'en-tête 'Authorization' de la requête)
         final String authHeader = request.getHeader("Authorization");
@@ -73,7 +75,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 }
             }
         } catch (Exception e) {
-            logger.info("Trying parse token but failed");
+            logger.info("Une erreur est survenu au cours de l'analyse du token : " + e.getMessage());
         }
         // Poursuit le traitement de la requête
         filterChain.doFilter(request, response);

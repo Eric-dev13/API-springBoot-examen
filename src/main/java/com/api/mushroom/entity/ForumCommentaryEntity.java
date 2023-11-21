@@ -35,12 +35,12 @@ public class ForumCommentaryEntity {
     // @Getter(AccessLevel.NONE) // ! redondant sans mapper dans un dto
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private UserEntity userEntity;
+    private UserEntity user;
 
     @Getter(AccessLevel.NONE)
     @ManyToOne
     @JoinColumn(name = "forum_subject_id")
-    private ForumSubjectEntity forumSubjectEntity;
+    private ForumSubjectEntity forumSubject;
 
 
 }

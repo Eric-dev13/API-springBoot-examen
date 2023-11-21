@@ -1,4 +1,4 @@
-package com.api.mushroom.controller.admin;
+package com.api.mushroom.controller.admin.media;
 
 
 import com.api.mushroom.entity.MediaEntity;
