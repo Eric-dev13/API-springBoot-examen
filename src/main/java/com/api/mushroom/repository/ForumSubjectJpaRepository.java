@@ -14,5 +14,5 @@ public interface ForumSubjectJpaRepository extends JpaRepository<ForumSubjectEnt
     List<ForumSubjectEntity> findPaginate(Long limit, Long offset);
 
     @Query("SELECT COUNT(f) FROM ForumSubjectEntity f")
-    Long countAllVisibleMushrooms();
+    Long countAllForumSubject();
 }

@@ -29,13 +29,9 @@ public class ForumService {
         return forumSubjectJpaRepository.findById(id).orElse(null);
     }
 
-    public Long countAllVisibleMushrooms() {
-        return forumSubjectJpaRepository.countAllVisibleMushrooms();
+    public Long countAllForumSubject() {
+        return forumSubjectJpaRepository.countAllForumSubject();
     }
-
-
-
-
 
     /* --------------------------------------------------------------- */
     /*                          ROUTE - SECURISER                      */
