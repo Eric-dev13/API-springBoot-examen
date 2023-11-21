@@ -5,6 +5,7 @@ import com.api.mushroom.entity.MushroomEntity;
 import com.api.mushroom.repository.MushroomJpaRepository;
 import com.api.mushroom.service.MushroomService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +20,7 @@ public class MushroomController {
     // Via l'annotation @RequiredArgsConstructor Lombok va génèrer un constructeur avec un paramètre pour chaque constante (final)
     private final MushroomService mushroomService;
 
-    private  final MushroomEntityMapper mushroomEntityMapper;
+    private final MushroomEntityMapper mushroomEntityMapper;
 
     private final MushroomJpaRepository mushroomJpaRepository;
 
@@ -32,31 +33,38 @@ public class MushroomController {
 
     @GetMapping()
     public ResponseEntity<MushroomsPaginatorDto> findAllByVisibilityPaginate(
-            @RequestParam(name = "limit", required = false)  Long limit,
+            @RequestParam(name = "limit", required = false) Long limit,
             @RequestParam(name = "offset", required = false) Long offset
     ) {
 
-        List<MushroomEntity> mushroomEntities;
+        try {
+            // Récupérer la liste des champignons en fonction de leur visibilité
+            List<MushroomEntity> mushroomEntities;
 
-        if (limit == null) {
-            mushroomEntities =  mushroomService.findAllByVisibility();
-        } else {
-            mushroomEntities = mushroomService.findAllByVisibilityPaginate(limit, offset);
+            if (limit == null) {
+                mushroomEntities = mushroomService.findAllByVisibility();
+            } else {
+                mushroomEntities = mushroomService.findAllByVisibilityPaginate(limit, offset);
+            }
+
+            // // Mapper les entités vers des DTO
+            List<MushroomGetDto> mushroomGetDtos = mushroomEntities.stream().map(mushroomEntityMapper::toDto).collect(Collectors.toList());
+
+            // Compter le nombre total de champignons visibles
+            Long totalMushrooms = mushroomService.countAllVisibleMushrooms();
+
+            // Créer un objet DTO pour les champignons paginés
+            MushroomsPaginatorDto mushroomsPaginate = new MushroomsPaginatorDto(
+                    mushroomGetDtos,
+                    totalMushrooms
+            );
+
+            // Retourner la réponse avec le code HTTP 200 (OK)
+            return ResponseEntity.ok(mushroomsPaginate);
+        } catch (Exception e) {
+            // Si une exception est levée, renvoyer une réponse 404
+            return ResponseEntity.notFound().build();
         }
-
-        // Mapping
-        List<MushroomGetDto> mushroomGetDtos = mushroomEntities.stream().map(mushroomEntityMapper::toDto).collect(Collectors.toList());
-
-        // Count the total number of visible mushrooms
-        Long totalMushrooms = mushroomService.countAllVisibleMushrooms();
-
-        MushroomsPaginatorDto mushroomsPaginate = new MushroomsPaginatorDto(
-            mushroomGetDtos,
-            totalMushrooms
-        );
-
-        // Return the response with HTTP status code 200 (OK)
-        return ResponseEntity.ok(mushroomsPaginate);
     }
 
     // GET - Affiche le descriptif d'une espèce
