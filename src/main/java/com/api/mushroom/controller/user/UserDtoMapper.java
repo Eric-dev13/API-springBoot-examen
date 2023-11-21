@@ -15,6 +15,13 @@ public interface UserDtoMapper {
 
     CurrentUserProfilDto userServiceModelToUserProfilDto(UserServiceModel userServiceModel);
 
+    @Mappings({
+        @Mapping(source = "email", target = "username"),
+        @Mapping(source = "authorities", target = "roles")
+    })
+    UserSessionStorageDTO userServiceModelToUserSessionStorageDto(UserServiceModel userServiceModel);
+
+
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     CurrentUserProfilDto partialUpdate(UserServiceModel userServiceModel, @MappingTarget CurrentUserProfilDto currentUserProfilDto);
 
