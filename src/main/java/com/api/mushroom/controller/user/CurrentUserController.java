@@ -1,5 +1,6 @@
 package com.api.mushroom.controller.user;
 
+import com.api.mushroom.service.user.ChangePasswordServiceModel;
 import com.api.mushroom.service.user.CurrentUserService;
 import com.api.mushroom.service.user.UserServiceModel;
 import com.api.mushroom.service.utils.FileUploadService;
@@ -9,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.util.Optional;
 
@@ -51,7 +51,7 @@ public class CurrentUserController {
 
     // Modification du profil de l'utilisateur courant
     @PutMapping
-    public boolean updateCurrentUser(@RequestParam(name = "pseudo",  required = true) String pseudo,
+    public ResponseEntity<UserSessionStorageDTO> updateCurrentUser(@RequestParam(name = "pseudo",  required = true) String pseudo,
                                      @RequestParam(name = "lastname", required = true) String lastname,
                                      @RequestParam(name = "firstname", required = true) String firstname,
                                      @RequestPart(name = "filename", required = false) Optional<MultipartFile> filename
@@ -60,7 +60,7 @@ public class CurrentUserController {
 
         if (filename.isPresent()) {
             // Télécharger le fichier de média et obtient le nouveau nom de fichier
-            newFilename = fileUploadService.fileUpload(filename.get(), "user/");
+            newFilename = fileUploadService.fileUpload(filename.get(), "users/");
         }
 
         CurrentUserUpdateDto currentUserUpdateDto = new CurrentUserUpdateDto(
@@ -69,10 +69,25 @@ public class CurrentUserController {
                 firstname,
                 newFilename);
 
+        // Mapping dto -> serviceModel
         UserServiceModel userServiceModel = userDtoMapper.currentUserUpdateDtoToUserServiceModel(currentUserUpdateDto);
 
         // Persistence DB
-        return currentUserService.updateCurrentUser(userServiceModel);
+        UserServiceModel userServiceModelPersist = currentUserService.updateCurrentUser(userServiceModel);
+
+        // Mapping serviceModel -> dto
+        UserSessionStorageDTO userSessionStorageDTO = userDtoMapper.userServiceModelToUserSessionStorageDto(userServiceModelPersist);
+
+        return ResponseEntity.ok(userSessionStorageDTO) ;
+    }
+
+    @PutMapping("/password/change")
+    public boolean updatePassword(@Valid @RequestBody CurrentUserChangePasswordDto currentUserChangePasswordDto){
+
+        ChangePasswordServiceModel changePasswordServiceModel = userDtoMapper.changePasswordDtoToChangePasswordServiceModel(currentUserChangePasswordDto);
+
+        return currentUserService.updatePassword(changePasswordServiceModel);
+
     }
 
 }

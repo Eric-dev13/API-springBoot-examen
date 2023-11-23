@@ -1,13 +1,14 @@
-package com.api.mushroom.auth;
+package com.api.mushroom.controller.user;
 
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
 
-public record UserDto(
+
+public record UserSessionStorageDTO(
         String username,
         String pseudo,
-        Collection<? extends GrantedAuthority> getAuthorities,
+        Collection<? extends GrantedAuthority> roles,
         String filename
-) {
-}
+){ }
+

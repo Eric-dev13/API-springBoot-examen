@@ -1,5 +1,6 @@
 package com.api.mushroom.controller.user;
 
+import com.api.mushroom.service.user.ChangePasswordServiceModel;
 import com.api.mushroom.service.user.UserServiceModel;
 import org.mapstruct.*;
 
@@ -8,12 +9,21 @@ import org.mapstruct.*;
  */
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
 public interface UserDtoMapper {
+
+    ChangePasswordServiceModel changePasswordDtoToChangePasswordServiceModel(CurrentUserChangePasswordDto currentUserChangePasswordDto);
+
     UserServiceModel userProfilDtoToUserServiceModel(CurrentUserProfilDto currentUserProfilDto);
 
     UserServiceModel currentUserUpdateDtoToUserServiceModel(CurrentUserUpdateDto currentUserUpdateDto);
 
-
     CurrentUserProfilDto userServiceModelToUserProfilDto(UserServiceModel userServiceModel);
+
+    @Mappings({
+        @Mapping(source = "email", target = "username"),
+        @Mapping(source = "authorities", target = "roles")
+    })
+    UserSessionStorageDTO userServiceModelToUserSessionStorageDto(UserServiceModel userServiceModel);
+
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     CurrentUserProfilDto partialUpdate(UserServiceModel userServiceModel, @MappingTarget CurrentUserProfilDto currentUserProfilDto);

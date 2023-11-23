@@ -66,6 +66,7 @@ public class AuthenticationService {
 
     public Map<String, Object> userDetailMap(UserEntity user){
         Map<String, Object> userDetailsMap = new HashMap<>();
+
         userDetailsMap.put("username", user.getUsername());
         userDetailsMap.put("pseudo",  user.getPseudo());
         userDetailsMap.put("roles",  user.getAuthorities());
