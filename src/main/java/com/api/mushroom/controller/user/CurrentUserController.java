@@ -1,8 +1,10 @@
 package com.api.mushroom.controller.user;
 
+import com.api.mushroom.service.user.ChangePasswordServiceModel;
 import com.api.mushroom.service.user.CurrentUserService;
 import com.api.mushroom.service.user.UserServiceModel;
 import com.api.mushroom.service.utils.FileUploadService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -77,6 +79,15 @@ public class CurrentUserController {
         UserSessionStorageDTO userSessionStorageDTO = userDtoMapper.userServiceModelToUserSessionStorageDto(userServiceModelPersist);
 
         return ResponseEntity.ok(userSessionStorageDTO) ;
+    }
+
+    @PutMapping("/password/change")
+    public boolean updatePassword(@Valid @RequestBody CurrentUserChangePasswordDto currentUserChangePasswordDto){
+
+        ChangePasswordServiceModel changePasswordServiceModel = userDtoMapper.changePasswordDtoToChangePasswordServiceModel(currentUserChangePasswordDto);
+
+        return currentUserService.updatePassword(changePasswordServiceModel);
+
     }
 
 }
