@@ -10,7 +10,7 @@ import java.util.List;
 public interface ForumSubjectJpaRepository extends JpaRepository<ForumSubjectEntity, Long> {
     ArrayList<ForumSubjectEntity> findAll();
 
-    @Query("SELECT f FROM ForumSubjectEntity f ORDER BY f.title LIMIT :limit OFFSET :offset")
+    @Query("SELECT f FROM ForumSubjectEntity f ORDER BY f.createdAt DESC LIMIT :limit OFFSET :offset")
     List<ForumSubjectEntity> findPaginate(Long limit, Long offset);
 
     @Query("SELECT COUNT(f) FROM ForumSubjectEntity f")

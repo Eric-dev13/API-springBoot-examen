@@ -1,6 +1,6 @@
 package com.api.mushroom.controller.admin.mushroom;
 
-import com.api.mushroom.controller.Edibility.EdibilityDto;
+import com.api.mushroom.controller.edibility.EdibilityDto;
 import com.api.mushroom.controller.Localname.LocalnameDto;
 import com.api.mushroom.controller.Media.MediaDto;
 import com.api.mushroom.controller.lamellaType.LamellatypeDto;

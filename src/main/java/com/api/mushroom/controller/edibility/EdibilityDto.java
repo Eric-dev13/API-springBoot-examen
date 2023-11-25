@@ -1,4 +1,4 @@
-package com.api.mushroom.controller.Edibility;
+package com.api.mushroom.controller.edibility;
 
 import java.time.LocalDateTime;
 
