@@ -30,16 +30,26 @@ public class ForumSubjectService {
     }
 
     public List<ForumSubjectEntity> findAllPaginate(Long limit, Long offset) {
-        return forumSubjectJpaRepository.findPaginate(limit, offset);
+        return forumSubjectJpaRepository.findAllPaginate(limit, offset);
+    }
+
+    public Long countAllForumSubject() {
+        return forumSubjectJpaRepository.countAllForumSubject();
+    }
+
+    public List<ForumSubjectEntity> findPaginateAndFilterCategory(Long limit, Long offset, Long categoryId) {
+        return forumSubjectJpaRepository.findPaginateAndFilterCategory(limit, offset, categoryId);
+    }
+
+    public Long countTotalForumSubjectsByCategory(Long categoryId) {
+        return forumSubjectJpaRepository.countTotalForumSubjectsByCategory(categoryId);
     }
 
     public ForumSubjectEntity findById(Long id) {
         return forumSubjectJpaRepository.findById(id).orElse(null);
     }
 
-    public Long countAllForumSubject() {
-        return forumSubjectJpaRepository.countAllForumSubject();
-    }
+
 
     public boolean add(ForumSubjectServiceModel forumSubjectServiceModel) {
         // Récupérer l'email de l'utilisateur courant

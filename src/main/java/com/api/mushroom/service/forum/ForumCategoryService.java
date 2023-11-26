@@ -19,7 +19,6 @@ public class ForumCategoryService {
     private final ForumCategoryJpaRepository forumCategoryJpaRepository;
     private final ForumCategoryServiceMapper forumCategoryServiceMapper;
 
-
     public List<ForumCategoryServiceModel> findAll() {
         List<ForumCategoryEntity> forumCategoryEntity = forumCategoryJpaRepository.findAll(Sort.by(Sort.Order.asc("name")));
         return forumCategoryEntity.stream().map(forumCategoryServiceMapper::forumCategoryEntityToForumCategoryServiceModel).collect(Collectors.toList());

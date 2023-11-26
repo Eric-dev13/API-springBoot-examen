@@ -9,5 +9,4 @@ public record ForumCategoryDto (
         Long id,
         LocalDateTime createdAt,
         String name
-        //List<ForumSubjectDto> forumSubjects
         ){ }

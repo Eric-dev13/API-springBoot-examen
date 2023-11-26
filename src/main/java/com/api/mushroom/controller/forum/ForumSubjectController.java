@@ -5,7 +5,6 @@ import com.api.mushroom.controller.forum.dto.ForumSubjectDto;
 import com.api.mushroom.controller.forum.dto.ForumSubjectPaginatorDto;
 import com.api.mushroom.controller.forum.mapper.ForumSubjectDtoMapper;
 import com.api.mushroom.entity.ForumSubjectEntity;
-import com.api.mushroom.repository.UserEntityJpaRepository;
 import com.api.mushroom.service.forum.ForumSubjectService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,8 +21,6 @@ import java.util.stream.Collectors;
 @RequestMapping("api/v1/forum")
 public class ForumSubjectController {
 
-    private final UserEntityJpaRepository userEntityJpaRepository;
-
     private final ForumSubjectService forumSubjectService;
 
     private final ForumSubjectDtoMapper forumSubjectDtoMapper;
@@ -31,26 +28,34 @@ public class ForumSubjectController {
     @GetMapping
     public ResponseEntity<ForumSubjectPaginatorDto> findAllPaginate(
             @RequestParam(name = "limit", required = false) Long limit,
-            @RequestParam(name = "offset", required = false) Long offset
+            @RequestParam(name = "offset", required = false) Long offset,
+            @RequestParam(name = "category", required = false) Long categoryId
     ) throws Exception {
 
         try {
             List<ForumSubjectEntity> forumSubjectEntities;
 
-            // Vérifie si les paramètres limit et offset sont fournis
-            if (limit == null) {
-                // Si non, récupère toutes les entités (peut être lourd si beaucoup d'entités)
-                forumSubjectEntities = forumSubjectService.findAll();
-            } else {
-                // Si oui, récupère les entités paginées
+            // Compter le nombre total de sujets de forum
+            Long totalForumSubject;
+
+            // Vérifie si category, limit et offset sont fournis
+            if ( limit != null && offset != null && categoryId != null) {
+                // Si oui, récupère les entités paginées avec filtre par catégorie
+                forumSubjectEntities = forumSubjectService.findPaginateAndFilterCategory(limit, offset, categoryId);
+                totalForumSubject = forumSubjectService.countTotalForumSubjectsByCategory(categoryId);
+            } else if (limit != null && offset != null) {
+                // Si seulement limit et offset sont fournis, récupère les entités paginées sans filtre de catégorie
                 forumSubjectEntities = forumSubjectService.findAllPaginate(limit, offset);
+                totalForumSubject = forumSubjectService.countAllForumSubject();
+            } else {
+                // Si aucun paramètre n'est fourni, récupère toutes les entités (peut être lourd si beaucoup d'entités)
+                forumSubjectEntities = forumSubjectService.findAll();
+                totalForumSubject = forumSubjectService.countAllForumSubject();
             }
 
             // Mapping des entités vers des DTO
             List<ForumSubjectDto> forumSubjectDtos = forumSubjectEntities.stream().map(forumSubjectDtoMapper::forumSubjectEntityToForumSubjectDto).collect(Collectors.toList());
 
-            // Compter le nombre total de sujets de forum
-            Long totalForumSubject = forumSubjectService.countAllForumSubject();
 
             // Créer un objet DTO pour les sujets de forum paginés
             ForumSubjectPaginatorDto forumSubjectsPaginate = new ForumSubjectPaginatorDto(
