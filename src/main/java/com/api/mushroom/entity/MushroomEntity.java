@@ -95,7 +95,6 @@ public class MushroomEntity {
     private List<MediaEntity> medias = new ArrayList<>();
 
 
-
     /* *************************************** */
     /*             JPA PERSISTENCE             */
     /* *************************************** */

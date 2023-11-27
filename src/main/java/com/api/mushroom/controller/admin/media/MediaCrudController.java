@@ -48,15 +48,19 @@ public class MediaCrudController {
 //    }
 
     @PostMapping("/{id}")  // ID de l'enregistrement champignon correspondant
-    public List<MediaEntity> addMediasWithFileUpoladAndName(@PathVariable("id") Long id,
-                                                     @RequestParam("mediasNames") List<String> mediasNames,
-                                                     @RequestPart("mediasFiles") List<MultipartFile> mediasFiles) throws IOException {
+    public List<MediaEntity> addMediasWithFileUpolad(
+            @PathVariable("id") Long id,
+            @RequestParam("mediasNames") List<String> mediasNames,
+            @RequestPart("mediasFiles") List<MultipartFile> mediasFiles
+    ) throws IOException {
         return mediaService.addMediasWithFileUpoladAndName(id, mediasNames, mediasFiles);
     }
 
     @PostMapping("/upload/{id}")  // ID de l'enregistrement champignon correspondant
-    public ResponseEntity<?> addMediasWithFileUpolad(@PathVariable("id") Long id,
-                                                                      @RequestPart("mediasFiles") Optional<List<MultipartFile>> mediasFiles) throws IOException {
+    public ResponseEntity<?> addMediasWithFileUpolad2(
+            @PathVariable("id") Long id,
+            @RequestPart("mediasFiles") Optional<List<MultipartFile>> mediasFiles
+    ) throws IOException {
         if(mediasFiles.isPresent()) {
             List<MediaEntity> mediaEntities = mediaService.addMediasWithFileUpolad(id, mediasFiles.get());
             if (mediaEntities != null) {

@@ -45,10 +45,10 @@ public class ForumSubjectEntity {
     private UserEntity user;
 
     @ManyToMany(mappedBy = "forumSubjects")
-    private Set<ForumCategory> forumCategories = new LinkedHashSet<>();
+    private List<ForumCategoryEntity> forumCategories = new ArrayList<>();
 
-    @OneToMany(mappedBy = "forumSubject", orphanRemoval = true)
     // @OrderBy("order.createdAt DESC")
+    @OneToMany(mappedBy = "forumSubject", orphanRemoval = true)
     private List<ForumCommentaryEntity> forumCommentaries = new ArrayList<>();
 
     /* *************************************** */
