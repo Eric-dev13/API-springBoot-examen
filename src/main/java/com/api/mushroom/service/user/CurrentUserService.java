@@ -45,20 +45,16 @@ public class CurrentUserService {
         if (userEntity.isPresent()) {
             UserEntity currentUser = userEntity.get();
 
-            currentUser.setPseudo(userServiceModel.pseudo());
-            currentUser.setLastname(userServiceModel.lastname());
+            currentUser.setPseudo(userServiceModel.pseudo());currentUser.setLastname(userServiceModel.lastname());
             currentUser.setFirstname(userServiceModel.firstname());
 
             if (!userServiceModel.filename().isBlank()) {
-                // supprimer l'ancien fichier si il existe
-                if(!currentUser.getFilename().isEmpty()){
-                    // Récupérer le répertoire public users
+                // Supprimer l'ancien fichier si il existe, récupérer le répertoire public users
                     Path publicDirectory = Paths.get(".", "public/upload/users").toAbsolutePath();
                     File file = new File(publicDirectory + "/" + currentUser.getFilename());
                     if(file.exists()){
                         boolean success = file.delete();
                     }
-                }
                 // Ajoute le nouveau nom
                 currentUser.setFilename(userServiceModel.filename());
             }
