@@ -13,5 +13,5 @@ public record ForumSubjectDto(
         String description,
         ForumUserDto user,
         List<ForumCategoryDto> forumCategories,
-        List<ForumCommentaryDto> comments
+        List<ForumCommentaryDto> forumCommentaries
 ) { }

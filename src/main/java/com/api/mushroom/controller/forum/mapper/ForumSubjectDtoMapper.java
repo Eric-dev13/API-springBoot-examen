@@ -16,7 +16,6 @@ import org.mapstruct.*;
 public interface ForumSubjectDtoMapper {
 
     // GET ALL / GET BY ID
-    @Mapping(source = "forumCommentaries" , target = "comments")
     ForumSubjectDto forumSubjectEntityToForumSubjectDto(ForumSubjectEntity forumSubjectEntity);
     /**
      * La mèthode effectue une mise à jour partielle en utilisant les données de l'objet source vers l'objet cible et garantit que les valeurs de propriété nulles ne sont pas mappées à l'objet cible préservant les valeurs existantes de ces propriétés.
