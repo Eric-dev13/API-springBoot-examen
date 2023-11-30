@@ -20,7 +20,7 @@ public class ForumCategoryEntity {
     /* ************************************* */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // id auto-incrémente
-    @Setter(AccessLevel.NONE)
+    //@Setter(AccessLevel.NONE)
     private Long id;
 
     @Column(name = "created_at")

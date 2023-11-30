@@ -1,8 +1,6 @@
 package com.api.mushroom.controller.forum.mapper;
 
 import com.api.mushroom.controller.forum.dto.ForumCategoryDto;
-import com.api.mushroom.controller.forum.dto.ForumCategoryGetDto;
-import com.api.mushroom.entity.ForumCategoryEntity;
 import com.api.mushroom.service.forum.model.ForumCategoryServiceModel;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
@@ -14,5 +12,5 @@ public interface ForumCategoryDtoMapper {
     ForumCategoryServiceModel forumCategoryDtoToForumCategoryServiceModel(ForumCategoryDto forumCategoryDto);
 
     // GET ALL / GET BY ID
-    ForumCategoryGetDto forumCategoryServiceModelToForumCategoryDto(ForumCategoryServiceModel forumCategoryServiceModel);
+    ForumCategoryDto forumCategoryServiceModelToForumCategoryDto(ForumCategoryServiceModel forumCategoryServiceModel);
 }

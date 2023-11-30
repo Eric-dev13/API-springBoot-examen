@@ -7,6 +7,6 @@ public record MediaDto(
         LocalDateTime createdAt,
         String name,
         String filename
-        //MushroomEntity mushroom
+        // MushroomEntity mushroom
 ) {
 }

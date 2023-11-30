@@ -17,4 +17,5 @@ public interface ForumCategoryServiceMapper {
     // GET ALL / GET BY ID
     //@Mapping(target = "forumSubjects", ignore = true)
     ForumCategoryServiceModel forumCategoryEntityToForumCategoryServiceModel(ForumCategoryEntity forumCategoryEntity);
+
 }

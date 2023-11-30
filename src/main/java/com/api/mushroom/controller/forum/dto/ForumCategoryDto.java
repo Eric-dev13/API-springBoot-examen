@@ -8,5 +8,5 @@ import java.util.List;
 public record ForumCategoryDto (
         Long id,
         LocalDateTime createdAt,
-        String name
+        String name,        List<ForumSubjectDto> forumSubjects // ++
         ){ }

@@ -1,10 +1,14 @@
 package com.api.mushroom.service.forum;
 
 
+import com.api.mushroom.entity.ForumCategoryEntity;
 import com.api.mushroom.entity.ForumSubjectEntity;
 import com.api.mushroom.entity.UserEntity;
+import com.api.mushroom.repository.ForumCategoryJpaRepository;
 import com.api.mushroom.repository.ForumSubjectJpaRepository;
+import com.api.mushroom.service.forum.mapper.ForumCategoryServiceMapper;
 import com.api.mushroom.service.forum.mapper.ForumSubjectServiceMapper;
+import com.api.mushroom.service.forum.model.ForumCategoryServiceModel;
 import com.api.mushroom.service.forum.model.ForumSubjectServiceModel;
 import com.api.mushroom.service.forum.model.ForumUserServiceModel;
 import lombok.RequiredArgsConstructor;
@@ -13,14 +17,20 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class ForumSubjectService {
 
     private final ForumSubjectJpaRepository forumSubjectJpaRepository;
+    private final ForumCategoryJpaRepository forumCategoryJpaRepository;
+
     private final ForumSubjectServiceMapper forumSubjectServiceMapper;
+    private final ForumCategoryServiceMapper forumCategoryServiceMapper;
 
     /* --------------------------------------------------------------- */
     /*                          ROUTE - PUBLIQUE                       */
@@ -52,25 +62,39 @@ public class ForumSubjectService {
 
 
     public boolean add(ForumSubjectServiceModel forumSubjectServiceModel) {
-        // Récupérer l'email de l'utilisateur courant
+    // Récupérer l'email de l'utilisateur courant
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserEntity user = (UserEntity) authentication.getPrincipal();
+        UserEntity userEntity = (UserEntity) authentication.getPrincipal();
 
-        if(user != null) {
-            // Mapping
-            ForumUserServiceModel forumUserServiceModel = forumSubjectServiceMapper.userEntityToForumUserServiceModel(user);
-
-            // Lie le sujet nouvellement posté avec l'utilisateur courant
-            forumSubjectServiceModel.setUser(forumUserServiceModel);
-
+        if(userEntity != null) {
             // Mapping
             ForumSubjectEntity forumSubjectEntity = forumSubjectServiceMapper.forumSubjectServiceModelToForumSubjectEntity(forumSubjectServiceModel);
+
+            // Ajoute la liste de catégorie
+                for(Long id : forumSubjectServiceModel.getCategoriesId()){
+                    if(id > -1) {
+                        ForumCategoryEntity forumCategoryEntity = forumCategoryJpaRepository.findById(id).orElse(null);
+                        forumSubjectEntity.getForumCategories().add(forumCategoryEntity);
+                        forumCategoryEntity.getForumSubjects().add(forumSubjectEntity);
+                    }
+                }
+
+            // Lie le sujet nouvellement posté avec l'utilisateur courant
+            forumSubjectEntity.setUser(userEntity);
 
             ForumSubjectEntity savedForumSubject = forumSubjectJpaRepository.save(forumSubjectEntity);
             return savedForumSubject != null;
         }
         return false;
     }
+
+    public boolean addNew(ForumSubjectServiceModel forumSubjectServiceModel) {
+        List <Optional<ForumCategoryEntity>> forumCategoryEntity = forumSubjectServiceModel.getCategoriesId().stream().map(forumCategoryJpaRepository::findById).toList();
+
+        return false;
+    }
+
+
 
 /*    public boolean add(ForumSubjectEntity forumSubjectEntity) {
         ForumSubjectEntity savedForumSubject = forumSubjectJpaRepository.save(forumSubjectEntity);
