@@ -18,5 +18,5 @@ public class ForumSubjectServiceModel {
     private ForumUserServiceModel user;
     private List<Long> categoriesId;
     private List<ForumCategoryServiceModel> forumCategories = new ArrayList<>();
-    private List<ForumCommentaryServiceModel> comments = new ArrayList<>();
+    private List<ForumCommentaryServiceModel> forumCommentaries = new ArrayList<>();
 }

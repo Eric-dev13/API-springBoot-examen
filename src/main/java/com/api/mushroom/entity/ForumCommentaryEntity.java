@@ -42,5 +42,9 @@ public class ForumCommentaryEntity {
     @JoinColumn(name = "forum_subject_id")
     private ForumSubjectEntity forumSubject;
 
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
+    }
 
 }

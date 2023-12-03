@@ -16,20 +16,12 @@ import org.mapstruct.*;
 public interface ForumSubjectDtoMapper {
 
     // GET ALL / GET BY ID
-    @Mapping(target="forumCategories",ignore = true)
+
     ForumSubjectDto forumSubjectEntityToForumSubjectDto(ForumSubjectEntity forumSubjectEntity);
-    /**
-     * La mèthode effectue une mise à jour partielle en utilisant les données de l'objet source vers l'objet cible et garantit que les valeurs de propriété nulles ne sont pas mappées à l'objet cible préservant les valeurs existantes de ces propriétés.
-     */
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    ForumSubjectDto partialUpdate(ForumSubjectEntity forumSubjectEntity, @MappingTarget ForumSubjectDto forumSubjectDto );
 
 
     // POST / PUT
     ForumSubjectEntity forumSubjectAddDtoToForumSubjectEntity(ForumSubjectAddDto forumSubjectAddDto);
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    ForumSubjectAddDto partialUpdate(ForumSubjectEntity forumSubjectEntity, @MappingTarget ForumSubjectAddDto forumSubjectAddDto );
-
 
     ForumUserDto forumUserDtoToUserEntity(UserEntity userEntity);
 
@@ -50,7 +42,7 @@ public interface ForumSubjectDtoMapper {
     /*// serviceModel => dto - FIND BY ID
     ForumSubjectPaginatorDto forumSubjectServiceModelToForumSubjectPaginatorDto(ForumSubjectServiceModel forumSubjectServiceModel);*/
 
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    ForumSubjectServiceModel partialUpdate(ForumSubjectAddDto forumSubjectAddDto, @MappingTarget ForumSubjectServiceModel forumSubjectServiceModel );
+//    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+//    ForumSubjectServiceModel partialUpdate(ForumSubjectAddDto forumSubjectAddDto, @MappingTarget ForumSubjectServiceModel forumSubjectServiceModel );
 
 }

@@ -19,8 +19,7 @@ public class ForumCategoryEntity {
     /*      DECLARATION DES PROPRIETES       */
     /* ************************************* */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // id auto-incrémente
-    //@Setter(AccessLevel.NONE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "created_at")

@@ -16,5 +16,5 @@ public class ForumSubjectServiceModelForCategory {
     private String title;
     private String description;
     private ForumUserServiceModel user;
-    private List<ForumCommentaryServiceModel> comments = new ArrayList<>();
+    private List<ForumCommentaryServiceModel> forumCommentaries = new ArrayList<>();
 }

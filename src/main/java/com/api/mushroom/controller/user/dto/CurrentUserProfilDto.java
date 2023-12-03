@@ -1,6 +1,8 @@
-package com.api.mushroom.controller.user;
+package com.api.mushroom.controller.user.dto;
 
 
+import com.api.mushroom.controller.user.ForumCommentaryDto;
+import com.api.mushroom.controller.user.ForumSubjectDto;
 import org.springframework.security.core.GrantedAuthority;
 import java.time.LocalDateTime;
 import java.util.Collection;

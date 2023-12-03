@@ -62,7 +62,7 @@ public class ForumSubjectService {
 
 
     public boolean add(ForumSubjectServiceModel forumSubjectServiceModel) {
-    // Récupérer l'email de l'utilisateur courant
+        // Récupérer l'email de l'utilisateur courant
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserEntity userEntity = (UserEntity) authentication.getPrincipal();
 

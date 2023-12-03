@@ -10,4 +10,5 @@ public class ForumUserServiceModel {
     private LocalDateTime createdAt;
     private String pseudo;
     private String filename;
+    private String email;
 }

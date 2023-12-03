@@ -1,4 +1,4 @@
-package com.api.mushroom.controller.user;
+package com.api.mushroom.controller.user.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

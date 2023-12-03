@@ -6,5 +6,6 @@ public record ForumUserDto(
         Long id,
         LocalDateTime createdAt,
         String pseudo,
-        String filename
+        String filename,
+        String email
 ) { }
