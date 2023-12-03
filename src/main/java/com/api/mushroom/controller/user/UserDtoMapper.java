@@ -1,5 +1,8 @@
 package com.api.mushroom.controller.user;
 
+import com.api.mushroom.controller.user.dto.CurrentUserChangePasswordDto;
+import com.api.mushroom.controller.user.dto.CurrentUserProfilDto;
+import com.api.mushroom.controller.user.dto.CurrentUserUpdateDto;
 import com.api.mushroom.service.user.ChangePasswordServiceModel;
 import com.api.mushroom.service.user.UserServiceModel;
 import org.mapstruct.*;

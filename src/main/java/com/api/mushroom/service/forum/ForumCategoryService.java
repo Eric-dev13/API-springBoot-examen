@@ -1,6 +1,5 @@
 package com.api.mushroom.service.forum;
 
-import com.api.mushroom.controller.forum.dto.ForumCategoryDto;
 import com.api.mushroom.entity.ForumCategoryEntity;
 import com.api.mushroom.repository.ForumCategoryJpaRepository;
 import com.api.mushroom.service.forum.mapper.ForumCategoryServiceMapper;

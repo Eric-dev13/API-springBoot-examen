@@ -84,12 +84,12 @@ public class ForumSubjectController {
         }
     }
 
-    @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
+    // @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
+    @PreAuthorize("isAuthenticated()")
     @PostMapping
     public boolean add(@Valid @RequestBody ForumSubjectAddDto forumSubjectAddDto) {
         return forumSubjectService.add(forumSubjectDtoMapper.forumSubjectAddDtoToForumSubjectServiceModel(forumSubjectAddDto));
     }
-
 
 
     /* --------------------------------------------------------------- */
