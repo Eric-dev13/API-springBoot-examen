@@ -1,18 +1,20 @@
 package com.api.mushroom.service;
 
+import com.api.mushroom.Mapper.MapStructMapper;
 import com.api.mushroom.entity.MediaEntity;
 import com.api.mushroom.entity.MushroomEntity;
 import com.api.mushroom.repository.MediaJpaRepository;
 import com.api.mushroom.repository.MushroomJpaRepository;
+import com.api.mushroom.service.model.MediaServiceModel;
 import com.api.mushroom.service.utils.FileUploadService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
+import javax.management.relation.RoleNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -21,24 +23,26 @@ public class MediaService {
     private final MediaJpaRepository mediaJpaRepository;
     private final FileUploadService fileUploadService;
     private final MushroomJpaRepository mushroomJpaRepository;
+    private final MapStructMapper mapStructMapper;
 
-    // GET - Récupère un tableau d'enregistrement
-    public Iterable<MediaEntity> getAll() {
-        return mediaJpaRepository.findAll();
+
+    public List<MediaServiceModel> getAll() {
+        List<MediaEntity> mediaEntity = mediaJpaRepository.findAll();
+        List<MediaServiceModel> mediaServiceModels =  mediaEntity.stream().map(mapStructMapper::mediaEntityToMediaService).collect(Collectors.toList());
+        return mediaServiceModels;
     }
 
-    // GET - Récupère un enregistrement par l'ID
-    public Optional<MediaEntity> getById(Long id){
-        return mediaJpaRepository.findById(id);
+    public MediaServiceModel getById(Long id) throws RoleNotFoundException {
+        MediaEntity mediaEntity = mediaJpaRepository.findById(id).orElseThrow(() -> new RoleNotFoundException("La référence avec l'ID spécifié n'a pas été trouvé."));
+        return mapStructMapper.mediaEntityToMediaService(mediaEntity);
     }
 
-    // POST : Ajouter un enregistrement
     public MediaEntity add(MediaEntity mediaEntity) {
         return mediaJpaRepository.save(mediaEntity);
     }
 
-    // POST : Ajouter une collection de médias nom + fileUpload
-    public List<MediaEntity> addMediasWithFileUpoladAndName(Long id, List<String> mediasNames, List<MultipartFile> mediasFiles) throws IOException {
+    public List<MediaServiceModel> addMediasWithFileUpoladAndName(Long id, List<String> mediasNames, List<MultipartFile> mediasFiles) throws IOException {
+
         // Obtenir l'enregistrement champignon correspondant à l'ID fourni
         MushroomEntity mushroomEntity  = mushroomJpaRepository.findById(id).orElseThrow();
 
@@ -61,13 +65,12 @@ public class MediaService {
             mediaEntity.setMushroom(mushroomEntity);
 
             // Enregistrer la nouvelle entité MediaEntity dans la base de données
-            mediaJpaRepository.save(mediaEntity);
+            MediaEntity savedMediaEntity = mediaJpaRepository.save(mediaEntity);
 
             // Ajouter la nouvelle entité MediaEntity à la liste des entités créées
-            mediaEntities.add(mediaEntity);
+            mediaEntities.add(savedMediaEntity);
         }
-        // Retourner la liste des entités MediaEntity ajoutées dans la table des médias
-        return mediaEntities;
+        return mediaEntities.stream().map(mapStructMapper::mediaEntityToMediaService).collect(Collectors.toList());
     }
 
     // POST : Ajouter une collection de médias nom + fileUpload
@@ -80,7 +83,6 @@ public class MediaService {
 
         // Parcourir chaque média à ajouter
         for (MultipartFile mediaFile : mediasFiles) {
-//            if(mediaFile.isPresent()) {
                 // Télécharger le fichier de média et obtient le nouveau nom de fichier
                 String newFilename = fileUploadService.fileUpload(mediaFile, "mushrooms/");
 
@@ -94,7 +96,6 @@ public class MediaService {
 
                 // Ajouter la nouvelle entité MediaEntity à la liste des entités créées
                 mediaEntities.add(mediaEntity);
-//            }
         }
         // Retourner la liste des entités MediaEntity ajoutées dans la table des médias
         return mediaEntities;

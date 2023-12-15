@@ -3,7 +3,7 @@ package com.api.mushroom.controller.forum;
 import com.api.mushroom.controller.forum.dto.ForumSubjectAddDto;
 import com.api.mushroom.controller.forum.dto.ForumSubjectDto;
 import com.api.mushroom.controller.forum.dto.ForumSubjectPaginatorDto;
-import com.api.mushroom.controller.forum.mapper.ForumSubjectDtoMapper;
+import com.api.mushroom.controller.forum.mapper.ForumDtoMapper;
 import com.api.mushroom.entity.ForumSubjectEntity;
 import com.api.mushroom.service.forum.ForumSubjectService;
 import jakarta.validation.Valid;
@@ -22,8 +22,7 @@ import java.util.stream.Collectors;
 public class ForumSubjectController {
 
     private final ForumSubjectService forumSubjectService;
-
-    private final ForumSubjectDtoMapper forumSubjectDtoMapper;
+    private final ForumDtoMapper forumDtoMapper;
 
     @GetMapping
     public ResponseEntity<ForumSubjectPaginatorDto> findAllPaginate(
@@ -54,7 +53,7 @@ public class ForumSubjectController {
             }
 
             // Mapping des entités vers des DTO
-            List<ForumSubjectDto> forumSubjectDtos = forumSubjectEntities.stream().map(forumSubjectDtoMapper::forumSubjectEntityToForumSubjectDto).collect(Collectors.toList());
+            List<ForumSubjectDto> forumSubjectDtos = forumSubjectEntities.stream().map(forumDtoMapper::forumSubjectEntityToForumSubjectDto).collect(Collectors.toList());
 
 
             // Créer un objet DTO pour les sujets de forum paginés
@@ -77,7 +76,7 @@ public class ForumSubjectController {
         ForumSubjectEntity forumSubjectEntity = forumSubjectService.findById(id);
 
         if (forumSubjectEntity != null) {
-            ForumSubjectDto forumGetDto = forumSubjectDtoMapper.forumSubjectEntityToForumSubjectDto(forumSubjectEntity);
+            ForumSubjectDto forumGetDto = forumDtoMapper.forumSubjectEntityToForumSubjectDto(forumSubjectEntity);
             return new ResponseEntity<>(forumGetDto, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -88,7 +87,7 @@ public class ForumSubjectController {
     @PreAuthorize("isAuthenticated()")
     @PostMapping
     public boolean add(@Valid @RequestBody ForumSubjectAddDto forumSubjectAddDto) {
-        return forumSubjectService.add(forumSubjectDtoMapper.forumSubjectAddDtoToForumSubjectServiceModel(forumSubjectAddDto));
+        return forumSubjectService.add(forumDtoMapper.forumSubjectAddDtoToForumSubjectServiceModel(forumSubjectAddDto));
     }
 
 

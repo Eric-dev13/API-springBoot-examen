@@ -1,5 +1,7 @@
 package com.api.mushroom.entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -13,6 +15,7 @@ import java.util.Set;
 @Entity
 @Data
 @Table(name = "forum_subject")
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "@id")
 public class ForumSubjectEntity {
 
     /* ************************************* */

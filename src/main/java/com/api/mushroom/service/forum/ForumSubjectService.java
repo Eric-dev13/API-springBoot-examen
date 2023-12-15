@@ -6,21 +6,18 @@ import com.api.mushroom.entity.ForumSubjectEntity;
 import com.api.mushroom.entity.UserEntity;
 import com.api.mushroom.repository.ForumCategoryJpaRepository;
 import com.api.mushroom.repository.ForumSubjectJpaRepository;
-import com.api.mushroom.service.forum.mapper.ForumCategoryServiceMapper;
-import com.api.mushroom.service.forum.mapper.ForumSubjectServiceMapper;
-import com.api.mushroom.service.forum.model.ForumCategoryServiceModel;
-import com.api.mushroom.service.forum.model.ForumSubjectServiceModel;
-import com.api.mushroom.service.forum.model.ForumUserServiceModel;
+//import com.api.mushroom.service.forum.mapper.ForumCategoryServiceMapper;
+import com.api.mushroom.service.forum.mapper.ForumServiceMapper;
+//import com.api.mushroom.service.forum.mapper.ForumSubjectServiceMapper;
+import com.api.mushroom.service.forum.model.ForumSubjectFullServiceModel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -29,8 +26,10 @@ public class ForumSubjectService {
     private final ForumSubjectJpaRepository forumSubjectJpaRepository;
     private final ForumCategoryJpaRepository forumCategoryJpaRepository;
 
-    private final ForumSubjectServiceMapper forumSubjectServiceMapper;
-    private final ForumCategoryServiceMapper forumCategoryServiceMapper;
+    private final ForumServiceMapper forumServiceMapper;
+
+//    private final ForumSubjectServiceMapper forumSubjectServiceMapper;
+//    private final ForumCategoryServiceMapper forumCategoryServiceMapper;
 
     /* --------------------------------------------------------------- */
     /*                          ROUTE - PUBLIQUE                       */
@@ -61,17 +60,17 @@ public class ForumSubjectService {
 
 
 
-    public boolean add(ForumSubjectServiceModel forumSubjectServiceModel) {
+    public boolean add(ForumSubjectFullServiceModel forumSubjectFullServiceModel) {
         // Récupérer l'email de l'utilisateur courant
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserEntity userEntity = (UserEntity) authentication.getPrincipal();
 
         if(userEntity != null) {
             // Mapping
-            ForumSubjectEntity forumSubjectEntity = forumSubjectServiceMapper.forumSubjectServiceModelToForumSubjectEntity(forumSubjectServiceModel);
+            ForumSubjectEntity forumSubjectEntity = forumServiceMapper.forumSubjectServiceModelToForumSubjectEntity(forumSubjectFullServiceModel);
 
             // Ajoute la liste de catégorie
-                for(Long id : forumSubjectServiceModel.getCategoriesId()){
+                for(Long id : forumSubjectFullServiceModel.getCategoriesId()){
                     if(id > -1) {
                         ForumCategoryEntity forumCategoryEntity = forumCategoryJpaRepository.findById(id).orElse(null);
                         forumSubjectEntity.getForumCategories().add(forumCategoryEntity);
@@ -88,8 +87,8 @@ public class ForumSubjectService {
         return false;
     }
 
-    public boolean addNew(ForumSubjectServiceModel forumSubjectServiceModel) {
-        List <Optional<ForumCategoryEntity>> forumCategoryEntity = forumSubjectServiceModel.getCategoriesId().stream().map(forumCategoryJpaRepository::findById).toList();
+    public boolean addNew(ForumSubjectFullServiceModel forumSubjectFullServiceModel) {
+        List <Optional<ForumCategoryEntity>> forumCategoryEntity = forumSubjectFullServiceModel.getCategoriesId().stream().map(forumCategoryJpaRepository::findById).toList();
 
         return false;
     }

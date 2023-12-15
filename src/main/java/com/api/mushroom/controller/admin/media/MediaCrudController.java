@@ -1,16 +1,17 @@
 package com.api.mushroom.controller.admin.media;
 
 
+import com.api.mushroom.Mapper.MapStructMapper;
+import com.api.mushroom.controller.dto.MediaDto;
 import com.api.mushroom.entity.MediaEntity;
 import com.api.mushroom.service.MediaService;
+import com.api.mushroom.service.model.MediaServiceModel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.StreamingHttpOutputMessage;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
+import javax.management.relation.RoleNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
@@ -18,49 +19,46 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @RestController
 @RequiredArgsConstructor
-//@PreAuthorize("hasAuthority('ADMIN')")
 @RequestMapping("api/v1/admin/media")
 public class MediaCrudController {
-    // Via l'annotation @RequiredArgsConstructor Lombok va génèrer un constructeur avec un paramètre pour chaque constante (final)
+
     private final MediaService mediaService;
+    private final MapStructMapper mapStructMapper;
 
 
-    // GET - Récupère un tableau d'enregistrement
     @GetMapping
-    public Iterable<MediaEntity> getAll() {
-        return mediaService.getAll();
+    public List<MediaDto> getAll() {
+        List<MediaServiceModel> mediaServiceModels = mediaService.getAll();
+        List<MediaDto> mediaDtos = mediaServiceModels.stream().map(mapStructMapper::mediaServiceMediaDto).collect(Collectors.toList());
+        return mediaDtos;
     }
 
-    // GET : Afficher un utilisateur via son ID
     @GetMapping("/{id}")
-    public Optional<MediaEntity> getById(@PathVariable("id") Long id) {
-        return mediaService.getById(id);
+    public ResponseEntity<MediaDto> getById(@PathVariable("id") Long id) throws RoleNotFoundException {
+        try {
+            MediaServiceModel mediaServiceModel = mediaService.getById(id);
+            return ResponseEntity.ok(mapStructMapper.mediaServiceMediaDto(mediaServiceModel));
+        }  catch (RoleNotFoundException e) {
+            // Gérer l'erreur lorsque le rôle n'est pas trouvé
+            return ResponseEntity.notFound().build();
+        }
     }
 
-    // POST : Ajouter un enregistrement
-//    @PostMapping
-//    public MediaEntity add(@RequestBody MediaEntity mediaEntity) {
-//        return mediaService.add(mediaEntity);
-//    }
-
-    @PostMapping("/{id}")  // ID de l'enregistrement champignon correspondant
-    public List<MediaEntity> addMediasWithFileUpolad(
-            @PathVariable("id") Long id,
-            @RequestParam("mediasNames") List<String> mediasNames,
-            @RequestPart("mediasFiles") List<MultipartFile> mediasFiles
-    ) throws IOException {
-        return mediaService.addMediasWithFileUpoladAndName(id, mediasNames, mediasFiles);
+    // Enregistrer un lot d'images en une seule fois.
+    @PostMapping("/{id}")
+    public List<MediaDto> addMediasWithFileUpolad(@PathVariable("id") Long id, @RequestParam("mediasNames") List<String> mediasNames, @RequestPart("mediasFiles") List<MultipartFile> mediasFiles) throws IOException {
+        List<MediaServiceModel> mediaServiceModel = mediaService.addMediasWithFileUpoladAndName(id, mediasNames, mediasFiles);
+        return mediaServiceModel.stream().map(mapStructMapper::mediaServiceMediaDto).collect(Collectors.toList());
     }
 
-    @PostMapping("/upload/{id}")  // ID de l'enregistrement champignon correspondant
-    public ResponseEntity<?> addMediasWithFileUpolad2(
-            @PathVariable("id") Long id,
-            @RequestPart("mediasFiles") Optional<List<MultipartFile>> mediasFiles
-    ) throws IOException {
+    // Enregistrer un lot d'images en une seule fois.
+    @PostMapping("/upload/{id}")
+    public ResponseEntity<?> addMediasWithFileUpolad2(@PathVariable("id") Long id, @RequestPart("mediasFiles") Optional<List<MultipartFile>> mediasFiles ) throws IOException {
         if(mediasFiles.isPresent()) {
             List<MediaEntity> mediaEntities = mediaService.addMediasWithFileUpolad(id, mediasFiles.get());
             if (mediaEntities != null) {
@@ -72,18 +70,15 @@ public class MediaCrudController {
         return null;
     }
 
-    // UPDATE : Mettre à jour un enregistrement
     @PutMapping("/{id}")
     public MediaEntity edit(@PathVariable("id") Long id, @RequestBody final MediaEntity mediaEntity) {
         return mediaService.edit(mediaEntity);
     }
 
-    // DELETE : Supprimer un enregistrement
     @DeleteMapping("/{id}")
     public boolean delete(@PathVariable("id") Long id){
         return mediaService.delete(id);
     }
-
 
     @PostMapping("/new")
     public boolean fileUpload(MultipartFile mediaFile) throws IOException {

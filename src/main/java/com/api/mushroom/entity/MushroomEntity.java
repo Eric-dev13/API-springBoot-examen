@@ -1,6 +1,8 @@
 package com.api.mushroom.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.github.slugify.Slugify;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
@@ -14,11 +16,7 @@ import java.util.*;
 @Entity
 @Data
 @Table(name = "mushroom")
-//@NamedQueries({
-//        @NamedQuery(name = "MushroomEntity.findAllByVisibility", query = "SELECT m FROM MushroomEntity m WHERE m.visibility = :visibility ORDER BY commonname"),
-//        @NamedQuery(name = "MushroomEntity.findAllTitleImageEdibilityByVisibility", query = "SELECT m.commonname as commonname, m.medias as medias, m.edibility as edibility FROM MushroomEntity m WHERE m.visibility = :visibility"),
-//        @NamedQuery(name = "MushroomEntity.findBySlug", query = "SELECT m FROM MushroomEntity m WHERE m.slug=:slug"),
-//})
+@NamedQuery(name = "MushroomEntity.findBySlug", query = "SELECT m FROM MushroomEntity m WHERE m.slug=:slug")
 public class MushroomEntity {
     /* ************************************* */
     /*      DECLARATION DES PROPRIETES       */

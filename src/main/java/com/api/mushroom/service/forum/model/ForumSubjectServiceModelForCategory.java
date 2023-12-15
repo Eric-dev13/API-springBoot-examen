@@ -2,7 +2,6 @@ package com.api.mushroom.service.forum.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;

@@ -1,14 +1,17 @@
 package com.api.mushroom.controller.mushroom;
 
 
+import com.api.mushroom.Mapper.MapStructMapper;
+import com.api.mushroom.controller.dto.MushroomDto;
+import com.api.mushroom.controller.dto.MushroomsPaginateDto;
 import com.api.mushroom.entity.MushroomEntity;
 import com.api.mushroom.repository.MushroomJpaRepository;
 import com.api.mushroom.service.MushroomService;
+import com.api.mushroom.service.model.MushroomServiceModel;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import javax.management.relation.RoleNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,45 +20,22 @@ import java.util.stream.Collectors;
 @RequestMapping("api/v1/mushroom")
 public class MushroomController {
 
-    // Via l'annotation @RequiredArgsConstructor Lombok va génèrer un constructeur avec un paramètre pour chaque constante (final)
+    private final MapStructMapper mapStructMapper;
     private final MushroomService mushroomService;
 
-    private final MushroomEntityMapper mushroomEntityMapper;
-
-    private final MushroomJpaRepository mushroomJpaRepository;
-
-    // GET - Liste des espèces validé par l'administrateur pour la publication.
-//    @GetMapping
-//    public List<MushroomGetDto> findAllByVisibility() {
-//        List<MushroomEntity> mushroomEntities =  mushroomService.findAllByVisibility();
-//        return mushroomEntities.stream().map(mushroomEntityMapper::toDto).collect(Collectors.toList());
-//    }
 
     @GetMapping()
-    public ResponseEntity<MushroomsPaginatorDto> findAllByVisibilityPaginate(
-            @RequestParam(name = "limit", required = false) Long limit,
-            @RequestParam(name = "offset", required = false) Long offset
-    ) {
-
+    public ResponseEntity<MushroomsPaginateDto> findAllFilter( @RequestParam(name = "limit", required = false) Long limit, @RequestParam(name = "offset", required = false) Long offset ) {
         try {
-            // Récupérer la liste des champignons en fonction de leur visibilité
-            List<MushroomEntity> mushroomEntities;
-
-            if (limit == null) {
-                mushroomEntities = mushroomService.findAllByVisibility();
-            } else {
-                mushroomEntities = mushroomService.findAllByVisibilityPaginate(limit, offset);
-            }
-
-            // // Mapper les entités vers des DTO
-            List<MushroomGetDto> mushroomGetDtos = mushroomEntities.stream().map(mushroomEntityMapper::toDto).collect(Collectors.toList());
+            List<MushroomServiceModel> mushroomServiceModels = mushroomService.findAllFilter(limit, offset);
+            List<MushroomDto> mushroomDtos = mushroomServiceModels.stream().map(mapStructMapper::mushroomServiceMushroomDto).collect(Collectors.toList());
 
             // Compter le nombre total de champignons visibles
             Long totalMushrooms = mushroomService.countAllVisibleMushrooms();
 
             // Créer un objet DTO pour les champignons paginés
-            MushroomsPaginatorDto mushroomsPaginate = new MushroomsPaginatorDto(
-                    mushroomGetDtos,
+            MushroomsPaginateDto mushroomsPaginate = new MushroomsPaginateDto(
+                    mushroomDtos,
                     totalMushrooms
             );
 
@@ -67,17 +47,20 @@ public class MushroomController {
         }
     }
 
-    // GET - Affiche le descriptif d'une espèce
     @GetMapping("/{id}")
-    public MushroomGetDto getById(@PathVariable("id") Long id) {
-        MushroomEntity mushroom = mushroomService.getById(id).orElseThrow();
-        return mushroomEntityMapper.toDto(mushroom);
+    public ResponseEntity<MushroomDto> getById(@PathVariable("id") Long id) {
+        try {
+            MushroomServiceModel mushroom = mushroomService.getById(id);
+            return ResponseEntity.ok(mapStructMapper.mushroomServiceMushroomDto(mushroom));
+        } catch (RoleNotFoundException e) {
+            // Gérer l'erreur lorsque le rôle n'est pas trouvé
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping("/findBySlug/{slug}")
-    public MushroomGetDto findBySlug(@PathVariable("slug") String slug) {
-        MushroomEntity mushroom = mushroomService.findBySlug(slug).orElseThrow();
-        return mushroomEntityMapper.toDto(mushroom);
+    public MushroomDto findBySlug(@PathVariable("slug") String slug) {
+        MushroomServiceModel mushroom = mushroomService.findBySlug(slug);
+        return mapStructMapper.mushroomServiceMushroomDto(mushroom);
     }
-
 }

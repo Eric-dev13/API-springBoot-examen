@@ -4,7 +4,8 @@ package com.api.mushroom.service.forum;
 import com.api.mushroom.entity.ForumCommentaryEntity;
 import com.api.mushroom.entity.UserEntity;
 import com.api.mushroom.repository.ForumCommentaryJpaRepository;
-import com.api.mushroom.service.forum.mapper.ForumCommentaryServiceMapper;
+//import com.api.mushroom.service.forum.mapper.ForumCommentaryServiceMapper;
+import com.api.mushroom.service.forum.mapper.ForumServiceMapper;
 import com.api.mushroom.service.forum.model.ForumCommentaryServiceModel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -16,15 +17,17 @@ import org.springframework.stereotype.Service;
 public class ForumCommentaryService {
 
     private final ForumCommentaryJpaRepository forumCommentaryJpaRepository;
-    private final ForumCommentaryServiceMapper forumCommentaryServiceMapper;
+//    private final ForumCommentaryServiceMapper forumCommentaryServiceMapper;
 
+
+    private final ForumServiceMapper forumServiceMapper;
     public boolean add(ForumCommentaryServiceModel forumCommentaryServiceModel) {
 
         // Récupérer l'email de l'utilisateur courant
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserEntity userEntity = (UserEntity) authentication.getPrincipal();
 
-        ForumCommentaryEntity forumCommentaryEntity = forumCommentaryServiceMapper.addForumCategoryServiceModelToForumCategoryEntity(forumCommentaryServiceModel);
+        ForumCommentaryEntity forumCommentaryEntity = forumServiceMapper.addForumCategoryServiceModelToForumCategoryEntity(forumCommentaryServiceModel);
 
         forumCommentaryEntity.setUser(userEntity);
 
