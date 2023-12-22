@@ -1,5 +1,7 @@
 package com.api.mushroom.entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -41,7 +43,7 @@ public class MediaEntity {
     // RELATIONS MUSHROOM - mapping type: bidirectionnel
     @ManyToOne
     // Désactiver la génération des méthodes getter ou setter.
-    @Getter(AccessLevel.NONE)
+//    @Getter(AccessLevel.NONE)
     @JoinColumn(name = "mushroom_id")
     private MushroomEntity mushroom;
 

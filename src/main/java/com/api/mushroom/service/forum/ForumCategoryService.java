@@ -2,7 +2,8 @@ package com.api.mushroom.service.forum;
 
 import com.api.mushroom.entity.ForumCategoryEntity;
 import com.api.mushroom.repository.ForumCategoryJpaRepository;
-import com.api.mushroom.service.forum.mapper.ForumCategoryServiceMapper;
+//import com.api.mushroom.service.forum.mapper.ForumCategoryServiceMapper;
+import com.api.mushroom.service.forum.mapper.ForumServiceMapper;
 import com.api.mushroom.service.forum.model.ForumCategoryServiceModel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
@@ -16,10 +17,11 @@ import java.util.stream.Collectors;
 public class ForumCategoryService {
 
     private final ForumCategoryJpaRepository forumCategoryJpaRepository;
-    private final ForumCategoryServiceMapper forumCategoryServiceMapper;
+
+    private final ForumServiceMapper forumServiceMapper;
 
     public List<ForumCategoryServiceModel> findAll() {
         List<ForumCategoryEntity> forumCategoryEntity = forumCategoryJpaRepository.findAll(Sort.by(Sort.Order.asc("name")));
-        return forumCategoryEntity.stream().map(forumCategoryServiceMapper::forumCategoryEntityToForumCategoryServiceModel).collect(Collectors.toList());
+        return forumCategoryEntity.stream().map(forumServiceMapper::forumCategoryEntityToForumCategoryServiceModel).collect(Collectors.toList());
     }
 }

@@ -1,9 +1,8 @@
 package com.api.mushroom.controller.forum;
 
-import com.api.mushroom.controller.forum.dto.ForumCategoryDto;
+
 import com.api.mushroom.controller.forum.dto.ForumCategoryGetDto;
-import com.api.mushroom.controller.forum.mapper.ForumCategoryDtoMapper;
-import com.api.mushroom.repository.ForumCategoryJpaRepository;
+import com.api.mushroom.controller.forum.mapper.ForumDtoMapper;
 import com.api.mushroom.service.forum.ForumCategoryService;
 import com.api.mushroom.service.forum.model.ForumCategoryServiceModel;
 import lombok.RequiredArgsConstructor;
@@ -20,12 +19,11 @@ import java.util.stream.Collectors;
 public class ForumCategoryController {
 
     private final ForumCategoryService forumCategoryService;
-    private final ForumCategoryDtoMapper forumCategoryDtoMapper;
-    private final ForumCategoryJpaRepository forumCategoryJpaRepository;
+    private final ForumDtoMapper forumDtoMapper;
 
     @GetMapping
     public List<ForumCategoryGetDto> findAll(){
         List<ForumCategoryServiceModel> forumCategoryServiceModels = forumCategoryService.findAll();
-        return forumCategoryServiceModels.stream().map((forumCategoryDtoMapper::forumCategoryServiceModelToForumCategoryGetDto)).collect(Collectors.toList());
+        return forumCategoryServiceModels.stream().map((forumDtoMapper::forumCategoryServiceModelToForumCategoryGetDto)).collect(Collectors.toList());
     }
 }

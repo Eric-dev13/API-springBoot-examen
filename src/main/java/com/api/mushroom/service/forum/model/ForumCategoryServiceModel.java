@@ -1,9 +1,7 @@
 package com.api.mushroom.service.forum.model;
 
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,5 +13,5 @@ public class ForumCategoryServiceModel {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private String name;
-    private List<ForumSubjectServiceModelForCategory> forumSubjects = new ArrayList<>();
+    private List<ForumSubjectServiceModelForCategory> forumSubjects;
 }

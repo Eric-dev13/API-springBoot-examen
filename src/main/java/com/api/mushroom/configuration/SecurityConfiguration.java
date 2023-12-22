@@ -40,7 +40,7 @@ public class SecurityConfiguration {
             .and()
             // Configure le fournisseur d'authentification.
             .authenticationProvider(authenticationProvider)
-            //Le filtre jwtAuthFilter est un filtre personnalisé qui valide les tokens d'authentification JWT. Le filtre jwtAuthFilter est ajouté avant le filtre UsernamePasswordAuthenticationFilter. Cela signifie que le filtre jwtAuthFilter est utilisé pour authentifier les utilisateurs qui ont déjà fourni un token d'authentification JWT.
+            // Le filtre jwtAuthFilter est un filtre personnalisé qui valide les tokens d'authentification JWT. Le filtre jwtAuthFilter est ajouté avant le filtre UsernamePasswordAuthenticationFilter. Cela signifie que le filtre jwtAuthFilter est utilisé pour authentifier les utilisateurs qui ont déjà fourni un token d'authentification JWT.
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
             .authorizeHttpRequests(a -> {
                 // Sécurise la route pour les utilisateurs authentifiés

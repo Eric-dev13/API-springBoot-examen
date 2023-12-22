@@ -1,117 +1,78 @@
 package com.api.mushroom.controller.admin.mushroom;
 
-import com.api.mushroom.controller.mushroom.MushroomEntityMapper;
-import com.api.mushroom.controller.mushroom.MushroomGetDto;
-import com.api.mushroom.controller.mushroom.MushroomsPaginatorDto;
-import com.api.mushroom.entity.MushroomEntity;
+import com.api.mushroom.Mapper.MapStructMapper;
+import com.api.mushroom.controller.dto.MushroomDto;
+import com.api.mushroom.controller.dto.MushroomsPaginateDto;
 import com.api.mushroom.service.MushroomService;
+import com.api.mushroom.service.model.MushroomServiceModel;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import javax.management.relation.RoleNotFoundException;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 
 @RestController
 @RequiredArgsConstructor
-//@PreAuthorize("hasAuthority('ADMIN')")
 @RequestMapping("api/v1/admin/mushroom")
 public class MushroomCrudController {
 
-    // Via la constante (final) l'annotation @RequiredArgsConstructor Lombok va injecter le service dans le constructeur
     private final MushroomService mushroomService;
+    private final MapStructMapper mapStructMapper;
 
-    private final MushroomEntityMapper mushroomEntityMapper;
-
-    // GET - FIND ALL - Récupère un tableau d'enregistrement trié par nom commun.
-    @GetMapping
-    public ResponseEntity<MushroomsPaginatorDto> findAllPaginate(
-            @RequestParam(name = "limit", required = false)  Long limit,
+    @GetMapping()
+    public ResponseEntity<MushroomsPaginateDto> findAllFilter(
+            @RequestParam(name = "limit", required = false) Long limit,
             @RequestParam(name = "offset", required = false) Long offset
     ) {
-        List<MushroomEntity> mushroomEntities;
-        if (limit == null) {
-            mushroomEntities =  mushroomService.findAll();
-        } else {
-            mushroomEntities = mushroomService.findAllPaginate(limit, offset);
-        }
-        List<MushroomGetDto> mushroomGetDtos = mushroomEntities.stream().map(mushroomEntityMapper::toDto).collect(Collectors.toList());
-
-        // Mapping
-
-        // Count the total number of visible mushrooms
-        Long totalMushrooms = mushroomService.countAllMushrooms();
-
-        MushroomsPaginatorDto mushrooms = new MushroomsPaginatorDto(
-                mushroomGetDtos,
-                totalMushrooms
-        );
-
-        // Return the response with HTTP status code 200 (OK)
-        return ResponseEntity.ok(mushrooms);
-
-    }
-
-    // GET - FIND BY ID
-    @GetMapping("/{id}")
-    public Optional<MushroomEntity> getById(@PathVariable("id") Long id) {
-        return mushroomService.getById(id);
-    }
-
-    /**
-     //     * @Valid : déclenche la validation des données
-     //     * @param mushroomEntity
-     //     * @return
-     //     */
-//    @PostMapping
-//    public ResponseEntity<?> add(@Valid @RequestBody MushroomGetDto mushroomGetDto) {
-//        try {
-//            MushroomEntity mushroom = mushroomEntityMapper.toEntity(mushroomGetDto);
-//            MushroomEntity mushroomValidate = mushroomService.add(mushroom);
-//
-//            return ResponseEntity.status(HttpStatus.CREATED).body(mushroomEntityMapper.toDto(mushroom)); // 201 Created en cas de succès
-//        } catch (Exception e) {
-//            // Handle other exceptions as needed
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(" \"error\" : \"Une erreur est survenu pendant l'ajout de la fiche!\" ");
-//        }
-//    }
-
-    /**
-     * @Valid : déclenche la validation des données
-     * @param mushroomEntity
-     * @return
-     */
-    @PostMapping
-    public ResponseEntity<MushroomEntity> add(@Valid @RequestBody MushroomEntity mushroomEntity) {
         try {
-            MushroomEntity mushroom = mushroomService.add(mushroomEntity);
-            return ResponseEntity.status(HttpStatus.CREATED).body(mushroom); // 201 Created en cas de succès
+            List<MushroomServiceModel> mushroomServiceModels = mushroomService.findAllFilterAdmin(limit, offset);
+
+            List<MushroomDto> mushroomDtos = mushroomServiceModels.stream().map(mapStructMapper::mushroomServiceMushroomDto).collect(Collectors.toList());
+
+            // Count the total number of visible mushrooms
+            Long totalMushrooms = mushroomService.countAllMushrooms();
+
+            // Créer un objet DTO pour les champignons paginés
+            MushroomsPaginateDto mushroomsPaginate = new MushroomsPaginateDto(
+                    mushroomDtos,
+                    totalMushrooms
+            );
+
+            // Retourner la réponse avec le code HTTP 200 (OK)
+            return ResponseEntity.ok(mushroomsPaginate);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            // Si une exception est levée, renvoyer une réponse 404
+            return ResponseEntity.notFound().build();
         }
     }
 
-    // POST
-//    @PostMapping
-//    public ResponseEntity<?> add(@Valid @RequestBody MushroomEntity mushroomEntity) {
-//        try {
-//            MushroomEntity mushroom = mushroomService.add(mushroomEntity);
-//            return ResponseEntity.status(HttpStatus.CREATED).body(mushroom); // 201 Created en cas de succès
-//        } catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erreur lors de l'ajout : " + e.getMessage()); // 500 Internal Server Error en cas d'erreur.
-//        }
-//    }
-
-    // UPDATE : Mise à jour complète d'un enregistrement
-    @PutMapping("/{id}")
-    public MushroomEntity put(@PathVariable("id") Long id, @Valid @RequestBody MushroomEntity mushroomEntity) {
-        return mushroomService.put(id, mushroomEntity);
+    // GET - Affiche le descriptif d'une espèce
+    @GetMapping("/{id}")
+    public ResponseEntity<MushroomDto> getById(@PathVariable("id") Long id) {
+        try {
+            MushroomServiceModel mushroom = mushroomService.getById(id);
+            return ResponseEntity.ok(mapStructMapper.mushroomServiceMushroomDto(mushroom));
+        } catch (RoleNotFoundException e) {
+            // Gérer l'erreur lorsque le rôle n'est pas trouvé
+            return ResponseEntity.notFound().build();
+        }
     }
 
-    // Inverse la valeur booléen du champ visibility
+    @PostMapping
+    public Long add(@Valid @RequestBody MushroomDto mushroomDto) {
+        MushroomServiceModel mushroomServiceModel = mapStructMapper.mushroomDtoToMushroomService(mushroomDto);
+        return mushroomService.add(mushroomServiceModel);
+    }
+
+    @PutMapping("/{id}")
+    public long put(@PathVariable("id") Long id, @Valid @RequestBody MushroomDto mushroomDto) {
+        MushroomServiceModel mushroomServiceModel = mapStructMapper.mushroomDtoToMushroomService(mushroomDto);
+        return mushroomService.put(id, mushroomServiceModel);
+    }
+
     @PutMapping("/publier/{id}")
     public ResponseEntity<Boolean> invertPublish(@PathVariable("id") Long id) {
         boolean isUpdated = mushroomService.invertPublish(id);
@@ -122,7 +83,6 @@ public class MushroomCrudController {
         }
     }
 
-    // DELETE : Supprimer un enregistrement
     @DeleteMapping("/{id}")
     public boolean delete(@PathVariable("id") Long id){
         return mushroomService.delete(id);

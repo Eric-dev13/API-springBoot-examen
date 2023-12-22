@@ -1,6 +1,8 @@
 package com.api.mushroom.entity;
 
 import com.api.mushroom.security.Role;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.*;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,6 +19,7 @@ import java.util.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "user")
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "@id")
 public class UserEntity implements Serializable, UserDetails {
 
     /* ************************************* */
@@ -27,34 +30,26 @@ public class UserEntity implements Serializable, UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY) // id auto-incrémente
     private Long id;
 
-
     @Column(name="created_at")
     private LocalDateTime createdAt;
-
 
     @Column(name="updated_at")
     private LocalDateTime updatedAt;
 
-
     @Column(name = "email", length = 255, unique = true)
     private String email;
-
 
     @Column(name = "password", length = 255)
     private String password;
 
-
     @Enumerated(EnumType.STRING)
     private Role role;
-
 
     @Column(name = "pseudo", length = 255, nullable = false)
     private String pseudo;
 
-
     @Column(name = "lastname", length = 255)
     private String lastname;
-
 
     @Column(name = "firstname", length = 255)
     private String firstname;

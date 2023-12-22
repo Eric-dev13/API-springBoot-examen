@@ -17,7 +17,8 @@ l'annotation @Repository sur l'interface indique à Spring que cette interface e
     et traduites en exceptions plus spécifiques de Spring.
  */
 @Repository
-public interface MushroomJpaRepository extends JpaRepository<MushroomEntity, Long> {
+public interface
+MushroomJpaRepository extends JpaRepository<MushroomEntity, Long> {
 
     // Retourne la liste des champignons validés par l'administrateur ordonnée par nom commun
     @Query("SELECT m FROM MushroomEntity m WHERE m.visibility = true ORDER BY m.commonname")

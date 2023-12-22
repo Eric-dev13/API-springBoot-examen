@@ -23,5 +23,6 @@ public interface ForumSubjectJpaRepository extends JpaRepository<ForumSubjectEnt
     @Query("SELECT COUNT(f) FROM ForumSubjectEntity f JOIN f.forumCategories fc WHERE fc.id = :categoryId")
     Long countTotalForumSubjectsByCategory(@Param("categoryId") Long categoryId);
 
-
+    @Query("SELECT f FROM ForumSubjectEntity f JOIN f.user u WHERE u.id = :userId")
+    List<ForumSubjectEntity> findAllSubjectsByUser(@Param("userId") Long userId);
 }

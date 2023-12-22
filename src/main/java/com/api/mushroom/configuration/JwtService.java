@@ -54,7 +54,7 @@ public class JwtService {
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 //.setExpiration(new Date(System.currentTimeMillis() + 1000 * 3600 * 24)) // jeton valide 24 h
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 3600))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 3600))  // 1 h
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
     }

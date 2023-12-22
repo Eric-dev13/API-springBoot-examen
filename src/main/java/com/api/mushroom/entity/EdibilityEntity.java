@@ -30,4 +30,9 @@ public class EdibilityEntity {
     @Column(name="filename")
     private String filename;
 
+    @PrePersist
+    public void prePresist() {
+        this.createdAt = LocalDateTime.now();
+    }
+
 }

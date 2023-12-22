@@ -33,7 +33,7 @@ public class LocalnameEntity {
     /* ******************************************** */
     // RELATIONS MUSHROOM - mapping type: bidirectionnel
     // Désactiver la génération des méthodes getter ou setter.
-    @Getter(AccessLevel.NONE)
+//    @Getter(AccessLevel.NONE)
     @ManyToOne
     @JoinColumn(name = "mushroom_id")
     private MushroomEntity mushroom;

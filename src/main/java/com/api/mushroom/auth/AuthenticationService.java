@@ -44,7 +44,7 @@ public class AuthenticationService {
 
         return AuthenticationResponse.builder()
                 .token(jwtToken)
-                .user(userDetailMap(user))// ++
+                .user(userDetailMap(user)) // ++
                 .build();
     }
 
@@ -60,7 +60,7 @@ public class AuthenticationService {
 
             return AuthenticationResponse.builder()
                     .token(jwtToken)
-                    .user(userDetailMap(user))// ++
+                    .user(userDetailMap(user)) // ++
                     .build();
     }
 
