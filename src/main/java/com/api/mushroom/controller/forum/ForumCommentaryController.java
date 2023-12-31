@@ -1,15 +1,13 @@
 package com.api.mushroom.controller.forum;
 
-import com.api.mushroom.controller.forum.dto.ForumCommentaryDto;
-import com.api.mushroom.controller.forum.mapper.ForumDtoMapper;
+import com.api.mushroom.Mapper.MapStructMapper;
+import com.api.mushroom.controller.dto.ForumCommentaryDto;
+import com.api.mushroom.service.model.ForumCommentaryServiceModel;
 import com.api.mushroom.service.forum.ForumCommentaryService;
-import com.api.mushroom.service.forum.model.ForumCommentaryServiceModel;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
@@ -17,12 +15,20 @@ import org.springframework.web.bind.annotation.RestController;
 public class ForumCommentaryController {
 
     private final ForumCommentaryService forumCommentaryService;
-    private final ForumDtoMapper forumDtoMapper;
+    private final MapStructMapper mapStructMapper;
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping
-    public boolean add(@RequestBody ForumCommentaryDto commentaryDto) {
-        ForumCommentaryServiceModel forumCommentaryServiceModel = forumDtoMapper.forumCommentaryDtoToForumCommentaryServiceModel(commentaryDto);
+    public boolean add(@RequestBody ForumCommentaryDto forumCommentaryDto) {
+        ForumCommentaryServiceModel forumCommentaryServiceModel = mapStructMapper.forumCommentaryDtoToServiceModel(forumCommentaryDto);
         return forumCommentaryService.add(forumCommentaryServiceModel);
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @PutMapping("/{id}")
+    public boolean put(@PathVariable("id") Long commentaryId, @RequestBody ForumCommentaryDto forumCommentaryDto) {
+        //Mapping
+        ForumCommentaryServiceModel forumCommentaryServiceModel = mapStructMapper.forumCommentaryDtoToServiceModel(forumCommentaryDto);
+        return forumCommentaryService.put(commentaryId, forumCommentaryServiceModel);
     }
 }

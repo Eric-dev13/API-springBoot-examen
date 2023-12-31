@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 public class ForumCommentaryServiceModel {
     private Long id;
     private LocalDateTime createdAt;
+    private LocalDateTime updateAt;
     private String commentary;
     private UserServiceModel user;
     private ForumSubjectServiceModel forumSubject;

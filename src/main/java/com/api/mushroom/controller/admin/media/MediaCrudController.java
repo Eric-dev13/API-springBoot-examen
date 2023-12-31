@@ -58,7 +58,8 @@ public class MediaCrudController {
 
     // Enregistrer un lot d'images en une seule fois.
     @PostMapping("/upload/{id}")
-    public ResponseEntity<?> addMediasWithFileUpolad2(@PathVariable("id") Long id, @RequestPart("mediasFiles") Optional<List<MultipartFile>> mediasFiles ) throws IOException {
+    public ResponseEntity<?> addMediasWithFileUpolad2(@PathVariable("id") Long id,
+                                                      Optional<List<MultipartFile>> mediasFiles ) throws IOException {
         if(mediasFiles.isPresent()) {
             List<MediaEntity> mediaEntities = mediaService.addMediasWithFileUpolad(id, mediasFiles.get());
             if (mediaEntities != null) {

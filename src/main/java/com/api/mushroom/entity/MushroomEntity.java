@@ -82,7 +82,7 @@ public class MushroomEntity {
     @JoinColumn(name = "edibility_id")
     private EdibilityEntity edibility;
 
-    // ASSOCIE AVEC L'ENTITEE LOCALNAME - mapping type: bidirectionnel - (cle étrangère est stockée dans la table associée)
+    // ASSOCIE AVEC L'ENTITE LOCALNAME - mapping type: bidirectionnel - (cle étrangère est stockée dans la table associée)
     // Configurée pour propager les opérations de persistance (CascadeType.PERSIST)et de suppression automatiquement des entités enfants lorsqu'elles sont dissociées de l'entité parente (orphanRemoval = true).
     @OneToMany(mappedBy = "mushroom", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<LocalnameEntity> localnames = new ArrayList<>();

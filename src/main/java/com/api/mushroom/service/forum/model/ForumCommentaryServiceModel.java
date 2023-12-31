@@ -15,6 +15,6 @@ public class ForumCommentaryServiceModel {
     private LocalDateTime createdAt;
     private String commentary;
     private UserServiceModelForForum user;
-//    private UserServiceModel user;
+//  private UserServiceModel user;
     private ForumSubjectServiceModel forumSubject;
 }

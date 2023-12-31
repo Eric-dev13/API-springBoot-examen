@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 public class ForumCommentaryDto {
     private Long id;
     private LocalDateTime createdAt;
+    private LocalDateTime updateAt;
     private String commentary;
     private UserDto user;
     private ForumSubjectDto forumSubject;

@@ -45,7 +45,7 @@ public class CurrentUserController {
     }
 
     // Modification du profil de l'utilisateur courant
-    @PutMapping("{userId}")
+    @PutMapping("/{userId}")
     public ResponseEntity<UserSessionStorageDTO> updateCurrentUser(@PathVariable("userId") Long id,
                                                                    @RequestParam(name = "pseudo",  required = true) String pseudo,
                                                                    @RequestParam(name = "lastname", required = true) String lastname,

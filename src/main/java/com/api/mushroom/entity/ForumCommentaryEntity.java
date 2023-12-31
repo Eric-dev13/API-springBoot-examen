@@ -26,6 +26,9 @@ public class ForumCommentaryEntity {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
     @Column(name = "commentary", columnDefinition = "LONGTEXT")
     private String commentary;
 
@@ -46,6 +49,12 @@ public class ForumCommentaryEntity {
     @PrePersist
     public void prePersist() {
         this.createdAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    // METHODES pour stocker automatiquement la date de mise à jour de l'enregistrement dans la base de données.
+    public void preUpdate() {
+        this.updatedAt = LocalDateTime.now();
     }
 
 }

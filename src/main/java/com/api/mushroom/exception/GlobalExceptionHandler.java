@@ -1,6 +1,7 @@
 package com.api.mushroom.exception;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -23,8 +24,8 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     // gère les Exceptions lié à spring-boot-starter-validation
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
         ex.getBindingResult().getAllErrors().forEach((error) -> {
@@ -36,21 +37,16 @@ public class GlobalExceptionHandler {
     }
 
     // Gere l'erreur remonté depuis AuthenticationService vers la classe d'exception CustomValidationException
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(CustomValidationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, String> handleCustomValidationException(CustomValidationException ex) {
         return ex.getError();
     }
 
-//    @ExceptionHandler(AccessDeniedException.class)
-//    public ResponseEntity<Object> handleAccessDeniedException(AccessDeniedException ex) {
-//        // Enregistrez l'erreur dans un fichier journal
-//        System.out.println(ex.getMessage());
-//
-//        // Afficher une page d'erreur personnalisée
-//        return ResponseEntity
-//                .status(HttpStatus.FORBIDDEN)
-//                .body("erreur");
-//    }
+    @ExceptionHandler(UserMismatchException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ResponseEntity<Object> handleUserMismatchException(UserMismatchException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.FORBIDDEN);
+    }
 
 }

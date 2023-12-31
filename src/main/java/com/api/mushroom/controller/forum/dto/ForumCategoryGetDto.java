@@ -1,11 +1,16 @@
 package com.api.mushroom.controller.forum.dto;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
-public record ForumCategoryGetDto(
-        Long id,
-        LocalDateTime createdAt,
-        String name,
-        List<ForumSubjectDto> forumSubjects
-        ){ }
+@Data
+@NoArgsConstructor
+public class ForumCategoryGetDto {
+        private Long id;
+        private LocalDateTime createdAt;
+        private String name;
+        private List<ForumSubjectDto> forumSubjects;
+}
