@@ -174,17 +174,17 @@ public interface MapStructMapper {
 //    ForumCategoryDto forumCategoryServiceToForumCategoryDto(ForumCategoryServiceModel forumCategoryServiceModel);
 //
 //
-//    // ***********************
-//    //    FORUM COMMENTARY
-//    // ***********************
-//
-//    // dto --> service
-//    ForumCommentaryServiceModel forumCategoryDtoToForumCategoryService(ForumCommentaryDto forumCommentaryDto);
-//
-//    // service --> repository
-//    ForumCommentaryEntity forumCommentaryServiceToForumCommentaryEntity(ForumCommentaryServiceModel forumCommentaryServiceModel);
-//
-//    // repository --> service
+    // ***********************
+    //    FORUM COMMENTARY
+    // ***********************
+
+    // dto --> service
+    ForumCommentaryServiceModel forumCommentaryDtoToServiceModel(ForumCommentaryDto forumCommentaryDto);
+
+    // service --> repository
+    ForumCommentaryEntity forumCommentaryServiceToForumCommentaryEntity(ForumCommentaryServiceModel forumCommentaryServiceModel);
+
+    // repository --> service
     @Mapping(target="user", ignore = true)
     ForumCommentaryServiceModel forumCommentaryEntityToForumCommentaryService(ForumCommentaryEntity forumCommentaryEntity);
 //
@@ -208,4 +208,6 @@ public interface MapStructMapper {
 
     // service --> dto
     ForumSubjectDto forumSubjectServiceToForumSubjectDto(ForumSubjectServiceModel forumSubjectServiceModel);
+
+
 }

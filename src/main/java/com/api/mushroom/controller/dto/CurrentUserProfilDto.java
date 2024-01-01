@@ -16,6 +16,5 @@ public record CurrentUserProfilDto(
     String firstname,
     Collection<? extends GrantedAuthority> authorities,
     String filename
-    //List<ForumSubjectDto> forumSubjects,
-    //List<ForumCommentaryDto> forumCommentaries
+
 ) {}

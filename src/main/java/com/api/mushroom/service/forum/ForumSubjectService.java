@@ -25,11 +25,8 @@ public class ForumSubjectService {
 
     private final ForumSubjectJpaRepository forumSubjectJpaRepository;
     private final ForumCategoryJpaRepository forumCategoryJpaRepository;
-
     private final ForumServiceMapper forumServiceMapper;
 
-//    private final ForumSubjectServiceMapper forumSubjectServiceMapper;
-//    private final ForumCategoryServiceMapper forumCategoryServiceMapper;
 
     /* --------------------------------------------------------------- */
     /*                          ROUTE - PUBLIQUE                       */

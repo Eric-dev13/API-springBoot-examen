@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 public record ForumCommentaryDto(
+        Long id,
         LocalDateTime createdAt,
         @NotBlank
         String commentary,
