@@ -5,7 +5,10 @@ INSERT IGNORE INTO user (id,created_at,email,filename,firstname,is_verified,last
 	 (1,'2023-10-07 11:16:10.472996','lanzae32@gmail.com','61c6411de4211620488497.png','Eric',0,'Lanza','$2a$10$kLc7BnGmiSEcYdEU6EiLtOkSo2syOZn0a1Z.jhBWspPkCLzvNVRlS','Eric','ADMIN','2023-12-15 08:52:16.899556'),
 	 (2,'2023-10-07 11:31:53.420574','alice@gmail.com','61b2f10973d82626462629.png','Alicia',0,'Blue','$2a$10$kLc7BnGmiSEcYdEU6EiLtOkSo2syOZn0a1Z.jhBWspPkCLzvNVRlS','Alice','USER','2023-12-04 09:21:58.979272'),
 	 (21,'2023-11-16 18:25:45.057887','skywalker@gmail.com','test-bdd1e1bfb71e4af7888d9a0c696b9e6f.png','firstname',0,'lastname','$2a$10$6XxMymzF62bi6/6VX7B2.ONM5Af2BpDPNCMPVnwD5bQuYybXIb3Uy','skywalker','USER','2023-11-26 20:08:30.085766'),
-	 (24,'2023-11-26 20:09:32.895620','jo@gmail.com','1-57deb57097024dff9d26d7fcfcda7b71.PNG','Jonathan',0,'Joubert','$2a$10$Ja/uVQqmiOgln9r.k2zZB.TEXVd1JWsk9tzH.364mqAVt/yX932SK','Jo','USER','2023-12-14 18:21:56.465988');
+	 (24,'2023-11-26 20:09:32.895620','jo@gmail.com','1-bc6ceca6868c4456b326f00d34b9902e.PNG','Jonathan',0,'Joubert','$2a$10$Ja/uVQqmiOgln9r.k2zZB.TEXVd1JWsk9tzH.364mqAVt/yX932SK','Jo','USER','2023-12-14 18:21:56.465988'),
+	 (25,'2023-11-26 20:09:32.895620','EmmaMartin@gmail.com','3-4109fc9f823345dd910d4466d567d81b.PNG','Emma',0,'Martin','$2a$10$Ja/uVQqmiOgln9r.k2zZB.TEXVd1JWsk9tzH.364mqAVt/yX932SK','Emma','USER','2023-12-14 18:21:56.465988'),
+	 (26,'2023-11-26 20:09:32.895620','LéaDupont@gmail.com','2-8e2bd6ea3cd3444db2fbae1e4d59428e.PNG','Léa',0,'Dupont','$2a$10$Ja/uVQqmiOgln9r.k2zZB.TEXVd1JWsk9tzH.364mqAVt/yX932SK','Léa','USER','2023-12-14 18:21:56.465988'),
+	 (27,'2023-11-26 20:09:32.895620','ChloéDubois@gmail.com','1-57deb57097024dff9d26d7fcfcda7b71.PNG','Chloé',0,'Dubois','$2a$10$Ja/uVQqmiOgln9r.k2zZB.TEXVd1JWsk9tzH.364mqAVt/yX932SK','Chloé','USER','2023-12-14 18:21:56.465988');
 
 
 ----
