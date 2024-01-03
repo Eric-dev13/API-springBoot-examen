@@ -10,6 +10,7 @@ import com.api.mushroom.repository.ForumSubjectJpaRepository;
 import com.api.mushroom.service.forum.mapper.ForumServiceMapper;
 //import com.api.mushroom.service.forum.mapper.ForumSubjectServiceMapper;
 import com.api.mushroom.service.forum.model.ForumSubjectFullServiceModel;
+import com.api.mushroom.service.model.ForumSubjectServiceModel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
@@ -55,8 +56,6 @@ public class ForumSubjectService {
         return forumSubjectJpaRepository.findById(id).orElse(null);
     }
 
-
-
     public boolean add(ForumSubjectFullServiceModel forumSubjectFullServiceModel) {
         // Récupérer l'email de l'utilisateur courant
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -86,7 +85,10 @@ public class ForumSubjectService {
 
     public boolean addNew(ForumSubjectFullServiceModel forumSubjectFullServiceModel) {
         List <Optional<ForumCategoryEntity>> forumCategoryEntity = forumSubjectFullServiceModel.getCategoriesId().stream().map(forumCategoryJpaRepository::findById).toList();
+        return false;
+    }
 
+    public boolean put(Long subjectId, ForumSubjectServiceModel forumCommentaryServiceModel) {
         return false;
     }
 

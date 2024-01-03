@@ -1,6 +1,7 @@
 package com.api.mushroom.Mapper;
 
 import com.api.mushroom.controller.dto.*;
+import com.api.mushroom.controller.forum.dto.ForumSubjectAddDto;
 import com.api.mushroom.service.model.*;
 import com.api.mushroom.entity.*;
 import org.mapstruct.*;
@@ -192,13 +193,13 @@ public interface MapStructMapper {
 //    ForumCommentaryDto forumCommentaryServiceToForumCommentaryDto(ForumCommentaryServiceModel forumCommentaryServiceModel);
 //
 //
-//    // ***********************
-//    //    FORUM SUBJECT
-//    // ***********************
-//
-//    // dto --> service
-//    ForumSubjectServiceModel forumSubjectDtoToForumSubjectService(ForumSubjectDto forumSubjectDto);
-//
+    // ***********************
+    //    FORUM SUBJECT
+    // ***********************
+
+    // dto --> service
+    ForumSubjectServiceModel forumSubjectDtoToService(ForumSubjectDto forumSubjectAddDto);
+
 //    // service --> repository
 //    ForumSubjectEntity forumSubjectServiceToForumSubjectEntity(ForumSubjectServiceModel forumSubjectServiceModel);
 //
@@ -208,6 +209,5 @@ public interface MapStructMapper {
 
     // service --> dto
     ForumSubjectDto forumSubjectServiceToForumSubjectDto(ForumSubjectServiceModel forumSubjectServiceModel);
-
 
 }
