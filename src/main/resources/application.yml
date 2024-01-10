@@ -3,7 +3,7 @@
 # ===============================================
 # Spring Boot incluent par défaut un serveur Web intégré préconfiguré, adresse et port du serveur  8080 par défaut.
 server:
-  port: 9000
+  port: 8080
 
 # ============================================================================
 # = CONFIGURATION DE L'INTEGRITE DES JETONS POUR EMPECHER LEUR FALSIFICATION =
@@ -51,6 +51,13 @@ spring:
 # = PROFIL PHASE DE DEVELOPPEMENT =
 # =================================
 spring:
+#  http:
+#    encoding:
+#      #  Utilise l'encodage UTF-8 pour les communications HTTP
+#      charset: UTF-8
+#      enabled: true
+#      force: true
+
   #  Définir des propriétés spécifiques pour chaque profil
   config:
     activate:
@@ -65,7 +72,8 @@ spring:
   # = CONFIGURATION DE LA SOURCE DE DONNEE MySQL =
   # ==============================================
   datasource:
-    url: jdbc:mysql://localhost:3306/mushroom
+    # S'assurer que toute connexion à la base de données est conforme à l’encodage UTF-8.
+    url: jdbc:mysql://localhost:3306/mushroom?useUnicode=yes;characterEncoding=UTF-8
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -79,6 +87,10 @@ spring:
   # ===========================================================
   jpa:
     hibernate:
+#      connection:
+#        CharSet: utf-8
+#        characterEncoding: utf-8
+#        useUnicode: true
       ddl-auto: create-drop # create-drop # Hibernate va créer le schéma de base de données à partir des entités annotées. À la fin de l'application, le schéma sera supprimé.
       # ddl-auto: create        # Hibernate va créer le schéma de base de données à partir des entités annotées. Si des tables existent déjà, elles seront supprimées et recréées.
       # ddl-auto: none          # Aucune action DDL automatique ne sera effectuée par Hibernate. Cela signifie que vous devez gérer manuellement la création et la mise à jour des schémas de base de données.
@@ -99,9 +111,12 @@ spring:
         format_sql: true
 
 
-  #  Exécute l’insertion de données via le fichier data.sql lors du démarrage de votre application: always / never
+  # Configuration pour l'initialisation SQL
   sql:
     init:
+      #  Définir l'encodage à utiliser lors de l'initialisation de la base de données à partir de scripts SQL.
+      encoding: UTF-8
+      # Exécute l’insertion de données via le fichier data.sql lors du démarrage de votre application: always / never
       mode: always
 
 ---
