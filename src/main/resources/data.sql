@@ -1,3 +1,7 @@
+-- Utilisez UTF-8 pour l'encodage
+SET NAMES utf8mb4;
+SET CHARACTER SET utf8mb4;
+
 ----
 ---- Déchargement des données de la table USER password: Azerty-12
 ----

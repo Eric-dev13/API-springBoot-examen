@@ -101,8 +101,8 @@ public class ForumSubjectController {
     @PutMapping("/{id}")
     public boolean put(@PathVariable("id") Long subjectId, @RequestBody com.api.mushroom.controller.dto.ForumSubjectDto forumSubjectDto) {
         //Mapping
-        ForumSubjectServiceModel forumCommentaryServiceModel = mapStructMapper.forumSubjectDtoToService(forumSubjectDto);
-        return forumSubjectService.put(subjectId, forumCommentaryServiceModel);
+        ForumSubjectServiceModel forumSubjectServiceModel = mapStructMapper.forumSubjectDtoToService(forumSubjectDto);
+        return forumSubjectService.put(subjectId, forumSubjectServiceModel);
     }
 
 

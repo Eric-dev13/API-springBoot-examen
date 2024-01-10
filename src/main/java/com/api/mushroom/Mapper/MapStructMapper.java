@@ -156,18 +156,17 @@ public interface MapStructMapper {
 
 
 
-//
-//    // ***********************
-//    //      FORUM CATEGORY
-//    // ***********************
-//
-//    // dto --> service
-//    ForumCategoryServiceModel forumCategoryDtoToForumCategoryService(ForumCategoryDto forumCategoryDto);
-//
-//    // service --> repository
-//    ForumCategoryEntity forumCategoryServiceToForumCategoryEntity(ForumCategoryServiceModel forumCategoryServiceModel);
-//
-//    // repository --> service
+
+    // ***********************
+    //      FORUM CATEGORY
+    // ***********************
+    // dto --> service
+    ForumCategoryServiceModel forumCategoryDtoToForumCategoryService(ForumCategoryDto forumCategoryDto);
+
+    // service --> repository
+    ForumCategoryEntity forumCategoryServiceToForumCategoryEntity(ForumCategoryServiceModel forumCategoryServiceModel);
+
+    // repository --> service
     @Mapping(target="forumSubjects", ignore = true)
     ForumCategoryServiceModel forumCategoryEntityToForumCategoryService(ForumCategoryEntity forumCategoryEntity);
 //
@@ -200,10 +199,10 @@ public interface MapStructMapper {
     // dto --> service
     ForumSubjectServiceModel forumSubjectDtoToService(ForumSubjectDto forumSubjectAddDto);
 
-//    // service --> repository
-//    ForumSubjectEntity forumSubjectServiceToForumSubjectEntity(ForumSubjectServiceModel forumSubjectServiceModel);
-//
-//    // repository --> service
+    // service --> repository
+    ForumSubjectEntity forumSubjectServiceModelToForumSubjectEntity(ForumSubjectServiceModel forumSubjectServiceModel);
+
+    // repository --> service
     @Mapping(target="user", ignore = true)
     ForumSubjectServiceModel forumSubjectEntityToForumSubjectService(ForumSubjectEntity forumSubjectEntity);
 

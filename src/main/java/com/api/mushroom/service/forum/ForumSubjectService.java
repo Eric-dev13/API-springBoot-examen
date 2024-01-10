@@ -1,6 +1,7 @@
 package com.api.mushroom.service.forum;
 
 
+import com.api.mushroom.Mapper.MapStructMapper;
 import com.api.mushroom.entity.ForumCategoryEntity;
 import com.api.mushroom.entity.ForumSubjectEntity;
 import com.api.mushroom.entity.UserEntity;
@@ -26,6 +27,8 @@ public class ForumSubjectService {
 
     private final ForumSubjectJpaRepository forumSubjectJpaRepository;
     private final ForumCategoryJpaRepository forumCategoryJpaRepository;
+    private final MapStructMapper mapStructMapper;
+
     private final ForumServiceMapper forumServiceMapper;
 
 
@@ -88,13 +91,19 @@ public class ForumSubjectService {
         return false;
     }
 
-    public boolean put(Long subjectId, ForumSubjectServiceModel forumCommentaryServiceModel) {
+    public boolean put(Long subjectId, ForumSubjectServiceModel forumSubjectServiceModel) {
+        ForumSubjectEntity forumSubjectEntity = mapStructMapper.forumSubjectServiceModelToForumSubjectEntity(forumSubjectServiceModel);
+        Optional<ForumSubjectEntity> originalForumSubjectEntity = forumSubjectJpaRepository.findById(subjectId);
+        if(originalForumSubjectEntity.isPresent()){
+            originalForumSubjectEntity.get().setDescription(forumSubjectEntity.getDescription());
+            return true;
+        }
         return false;
     }
 
 
 
-/*    public boolean add(ForumSubjectEntity forumSubjectEntity) {
+/*    public boolean add(ForumSubjectEntity forumSubjectServiceModel) {
         ForumSubjectEntity savedForumSubject = forumSubjectJpaRepository.save(forumSubjectEntity);
         return savedForumSubject != null;
     }*/
