@@ -1,11 +1,6 @@
-# ===============================================
-# = CONFIGURATION DU SERVER WEB EMBARQUE TOMCAT =
-# ===============================================
-# Spring Boot incluent par défaut un serveur Web intégré préconfiguré, adresse et port du serveur  8080 par défaut.
-server:
-  port: 9000
-
-
+# ==========================
+#         PROFIL GENERAL
+# ==========================
 # ============================================================================
 # = CONFIGURATION DE L'INTEGRITE DES JETONS POUR EMPECHER LEUR FALSIFICATION =
 # ============================================================================
@@ -28,9 +23,9 @@ logging:
     com.api: DEBUG
   file: /log/myapp.log
 
-# =============================
-# = DEFINIR PLUSIEURS PROFILS =
-# =============================
+# =======================
+# =  PROFIL PAR DEFAUT  =
+# =======================
 # https://www.baeldung.com/spring-profiles
 
 # deux profils : "dev" et "prod". Le profil actif est défini sur "dev"
@@ -48,11 +43,24 @@ spring:
       max-request-size: 10MB
 
 ---
+
+# ==========================
+#         PROFIL DEV
+# ==========================
+
+# ===============================================
+# = CONFIGURATION DU SERVER WEB EMBARQUE TOMCAT =
+# ===============================================
+# Spring Boot incluent par défaut un serveur Web intégré préconfiguré, adresse et port du serveur  8080 par défaut.
+server:
+  port: 8080
 # =================================
 # = PROFIL PHASE DE DEVELOPPEMENT =
 # =================================
+domaine: http://localhost:4200
+
 spring:
-  #  Définir des propriétés spécifiques pour chaque profil
+  # Définir des propriétés spécifiques pour chaque profil
   config:
     activate:
       on-profile: dev
@@ -66,7 +74,8 @@ spring:
   # = CONFIGURATION DE LA SOURCE DE DONNEE MySQL =
   # ==============================================
   datasource:
-    url: jdbc:mysql://localhost:3306/mushroom
+    # S'assurer que toute connexion à la base de données est conforme à l’encodage UTF-8.
+    url: jdbc:mysql://localhost:3306/mushroom?useUnicode=yes;characterEncoding=UTF-8
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -79,7 +88,12 @@ spring:
   # = CONFIGURATION DES PROPRIETES JPA (Java Persistence API) =
   # ===========================================================
   jpa:
+    # database-platform: org.hibernate.dialect.MariaDBDialect
     hibernate:
+#      connection:
+#        CharSet: utf-8
+#        characterEncoding: utf-8
+#        useUnicode: true
       ddl-auto: create-drop # create-drop # Hibernate va créer le schéma de base de données à partir des entités annotées. À la fin de l'application, le schéma sera supprimé.
       # ddl-auto: create        # Hibernate va créer le schéma de base de données à partir des entités annotées. Si des tables existent déjà, elles seront supprimées et recréées.
       # ddl-auto: none          # Aucune action DDL automatique ne sera effectuée par Hibernate. Cela signifie que vous devez gérer manuellement la création et la mise à jour des schémas de base de données.
@@ -99,21 +113,28 @@ spring:
         # Pour embellir
         format_sql: true
 
-
-  #  Exécute l’insertion de données via le fichier data.sql lors du démarrage de votre application: always / never
+  # Configuration pour l'initialisation SQL
   sql:
     init:
+      #  Définir l'encodage à utiliser lors de l'initialisation de la base de données à partir de scripts SQL.
+      encoding: UTF-8
+      # Exécute l’insertion de données via le fichier data.sql lors du démarrage de votre application: always / never
       mode: always
 
 ---
-# ==============================
-# = PROFIL PHASE DE PRODUCTION =
-# ==============================
+
+# ==========================
+#         PROFIL PROD
+# ==========================
+domaine: http://le-royaume-des-champignons.com
+
 spring:
   config:
     activate:
       on-profile: prod
+
   datasource:
-    url: jdbc:mysql://localhost:3306/proddatabase
-    username: produser
-    password: prodpassword
+    url: jdbc:mariadb://localhost:3306/mushroom?useUnicode=yes&characterEncoding=UTF-8
+    username: raspberry
+    password: auth-mysql-13
+    driver-class-name: org.mariadb.jdbc.Driver

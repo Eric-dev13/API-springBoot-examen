@@ -1,6 +1,7 @@
 package com.api.mushroom.service.forum;
 
 
+import com.api.mushroom.Mapper.MapStructMapper;
 import com.api.mushroom.entity.ForumCategoryEntity;
 import com.api.mushroom.entity.ForumSubjectEntity;
 import com.api.mushroom.entity.UserEntity;
@@ -10,6 +11,7 @@ import com.api.mushroom.repository.ForumSubjectJpaRepository;
 import com.api.mushroom.service.forum.mapper.ForumServiceMapper;
 //import com.api.mushroom.service.forum.mapper.ForumSubjectServiceMapper;
 import com.api.mushroom.service.forum.model.ForumSubjectFullServiceModel;
+import com.api.mushroom.service.model.ForumSubjectServiceModel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
@@ -25,6 +27,8 @@ public class ForumSubjectService {
 
     private final ForumSubjectJpaRepository forumSubjectJpaRepository;
     private final ForumCategoryJpaRepository forumCategoryJpaRepository;
+    private final MapStructMapper mapStructMapper;
+
     private final ForumServiceMapper forumServiceMapper;
 
 
@@ -55,8 +59,6 @@ public class ForumSubjectService {
         return forumSubjectJpaRepository.findById(id).orElse(null);
     }
 
-
-
     public boolean add(ForumSubjectFullServiceModel forumSubjectFullServiceModel) {
         // Récupérer l'email de l'utilisateur courant
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -86,13 +88,22 @@ public class ForumSubjectService {
 
     public boolean addNew(ForumSubjectFullServiceModel forumSubjectFullServiceModel) {
         List <Optional<ForumCategoryEntity>> forumCategoryEntity = forumSubjectFullServiceModel.getCategoriesId().stream().map(forumCategoryJpaRepository::findById).toList();
+        return false;
+    }
 
+    public boolean put(Long subjectId, ForumSubjectServiceModel forumSubjectServiceModel) {
+        ForumSubjectEntity forumSubjectEntity = mapStructMapper.forumSubjectServiceModelToForumSubjectEntity(forumSubjectServiceModel);
+        Optional<ForumSubjectEntity> originalForumSubjectEntity = forumSubjectJpaRepository.findById(subjectId);
+        if(originalForumSubjectEntity.isPresent()){
+            originalForumSubjectEntity.get().setDescription(forumSubjectEntity.getDescription());
+            return true;
+        }
         return false;
     }
 
 
 
-/*    public boolean add(ForumSubjectEntity forumSubjectEntity) {
+/*    public boolean add(ForumSubjectEntity forumSubjectServiceModel) {
         ForumSubjectEntity savedForumSubject = forumSubjectJpaRepository.save(forumSubjectEntity);
         return savedForumSubject != null;
     }*/

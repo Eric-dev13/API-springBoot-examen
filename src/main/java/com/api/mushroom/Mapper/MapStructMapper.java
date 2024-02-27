@@ -1,6 +1,7 @@
 package com.api.mushroom.Mapper;
 
 import com.api.mushroom.controller.dto.*;
+import com.api.mushroom.controller.forum.dto.ForumSubjectAddDto;
 import com.api.mushroom.service.model.*;
 import com.api.mushroom.entity.*;
 import org.mapstruct.*;
@@ -155,18 +156,17 @@ public interface MapStructMapper {
 
 
 
-//
-//    // ***********************
-//    //      FORUM CATEGORY
-//    // ***********************
-//
-//    // dto --> service
-//    ForumCategoryServiceModel forumCategoryDtoToForumCategoryService(ForumCategoryDto forumCategoryDto);
-//
-//    // service --> repository
-//    ForumCategoryEntity forumCategoryServiceToForumCategoryEntity(ForumCategoryServiceModel forumCategoryServiceModel);
-//
-//    // repository --> service
+
+    // ***********************
+    //      FORUM CATEGORY
+    // ***********************
+    // dto --> service
+    ForumCategoryServiceModel forumCategoryDtoToForumCategoryService(ForumCategoryDto forumCategoryDto);
+
+    // service --> repository
+    ForumCategoryEntity forumCategoryServiceToForumCategoryEntity(ForumCategoryServiceModel forumCategoryServiceModel);
+
+    // repository --> service
     @Mapping(target="forumSubjects", ignore = true)
     ForumCategoryServiceModel forumCategoryEntityToForumCategoryService(ForumCategoryEntity forumCategoryEntity);
 //
@@ -192,22 +192,21 @@ public interface MapStructMapper {
 //    ForumCommentaryDto forumCommentaryServiceToForumCommentaryDto(ForumCommentaryServiceModel forumCommentaryServiceModel);
 //
 //
-//    // ***********************
-//    //    FORUM SUBJECT
-//    // ***********************
-//
-//    // dto --> service
-//    ForumSubjectServiceModel forumSubjectDtoToForumSubjectService(ForumSubjectDto forumSubjectDto);
-//
-//    // service --> repository
-//    ForumSubjectEntity forumSubjectServiceToForumSubjectEntity(ForumSubjectServiceModel forumSubjectServiceModel);
-//
-//    // repository --> service
+    // ***********************
+    //    FORUM SUBJECT
+    // ***********************
+
+    // dto --> service
+    ForumSubjectServiceModel forumSubjectDtoToService(ForumSubjectDto forumSubjectAddDto);
+
+    // service --> repository
+    ForumSubjectEntity forumSubjectServiceModelToForumSubjectEntity(ForumSubjectServiceModel forumSubjectServiceModel);
+
+    // repository --> service
     @Mapping(target="user", ignore = true)
     ForumSubjectServiceModel forumSubjectEntityToForumSubjectService(ForumSubjectEntity forumSubjectEntity);
 
     // service --> dto
     ForumSubjectDto forumSubjectServiceToForumSubjectDto(ForumSubjectServiceModel forumSubjectServiceModel);
-
 
 }

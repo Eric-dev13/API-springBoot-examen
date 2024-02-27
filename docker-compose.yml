@@ -5,18 +5,18 @@ version: '3.0'
 
 services:
   # MYSQL - BASE DE DONNEES #
-  db:
+  mysql:
     image: mysql:8.2.0
-    container_name: DB_mysql
-    command: --default-authentication-plugin=mysql_native_password
+    container_name: bd_mysql
+    ports:
+      - 3310:3306 # Port 3310 de Tomcat exposé sur le port 3306 de l'hôte
+    # command: --default-authentication-plugin=mysql_native_password
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: mushroom
       MYSQL_USER: your-username
       MYSQL_PASSWORD: your-password
-    ports:
-      - 3310:3306 # Port 3310 de Tomcat exposé sur le port 3306 de l'hôte
     volumes:
       - /src/main/resources: /docker-entrypoint-initdb.d
     networks:
@@ -36,29 +36,65 @@ services:
   # PHPMYADMIN -  #
   phpmyadmin:
     image: phpmyadmin
+    container_name: phpMyAdmin
     restart: always
     depends_on:
-      - mysql-db
+      - mysql
     ports:
-      - 8081:8081
+      - 8081:80
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3310
+      MYSQL_ROOT_PASSWORD: root
 
+  #  dbeaver:
+  #    image: dbeaver/cloudbeaver:latest
+  #    container_name: DBeaver
+  #    depends_on:
+  #      - mysql
+  #    ports:
+  #      - "8080:8978"
+  #    environment:
+  #      - DB_SERVER=db_mysql
+  #      - DB_PORT=3306
+  #      - DB_DATABASE=mushroom
+  #      - DB_USER=root
+  #      - DB_PASSWORD=root
+  #    volumes:
+  #      - cloudbeaver_vol:/opt/cloudbeaver/workspace
+
+  # APPLICATION #
+    web:
+#      build:
+#        context: .
+      depends_on:
+        - db
+      image: tomcat
+      container_name: tomcat
+      volumes:
+        - ./target/le-royaume-des-champignons.war:/usr/local/tomcat/webapps/le-royaume-des-champignons.war
+      ports:
+        - "8080:8080"
+      environment:
+        MYSQL_USER: your-username
+        MYSQL_PASSWORD: your-password
 
   # JAVA - APPLICATION #
-  app:
-    image: openjdk:17
-    volumes:
-      - ./target: /app
-    command: ["java", "-jar", "api.mushroom-0.0.1-SNAPSHOT.war"]
-    ports:
-      - 9000:9000
-    depends_on:
-      - mysql-db
-    networks:
-      - app-network
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/mushroom
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: root
+#  app:
+#    image: openjdk:17
+#    volumes:
+#      - ./target: /app
+#    command: ["java", "-jar", "api.mushroom-0.0.1-SNAPSHOT.war"]
+#    ports:
+#      - 9000:9000
+#    depends_on:
+#      - mysql-db
+#    networks:
+#      - app-network
+#    environment:
+#      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/mushroom
+#      SPRING_DATASOURCE_USERNAME: root
+#      SPRING_DATASOURCE_PASSWORD: root
 
 networks:
   app-network:

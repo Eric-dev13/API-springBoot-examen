@@ -1,11 +1,15 @@
 package com.api.mushroom.controller.forum;
 
+import com.api.mushroom.Mapper.MapStructMapper;
+import com.api.mushroom.controller.dto.ForumCommentaryDto;
 import com.api.mushroom.controller.forum.dto.ForumSubjectAddDto;
 import com.api.mushroom.controller.forum.dto.ForumSubjectDto;
 import com.api.mushroom.controller.forum.dto.ForumSubjectPaginatorDto;
 import com.api.mushroom.controller.forum.mapper.ForumDtoMapper;
 import com.api.mushroom.entity.ForumSubjectEntity;
 import com.api.mushroom.service.forum.ForumSubjectService;
+import com.api.mushroom.service.model.ForumCommentaryServiceModel;
+import com.api.mushroom.service.model.ForumSubjectServiceModel;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,6 +27,7 @@ public class ForumSubjectController {
 
     private final ForumSubjectService forumSubjectService;
     private final ForumDtoMapper forumDtoMapper;
+    private final MapStructMapper mapStructMapper;
 
     @GetMapping
     public ResponseEntity<ForumSubjectPaginatorDto> findAllPaginate(
@@ -70,6 +75,7 @@ public class ForumSubjectController {
         }
     }
 
+
     public ResponseEntity<ForumSubjectDto> findById(@PathVariable Long id) {
 
         // Une seule couche de mapping DTO --> ENTITY gestion
@@ -83,11 +89,20 @@ public class ForumSubjectController {
         }
     }
 
-    // @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
+
     @PreAuthorize("isAuthenticated()")
     @PostMapping
     public boolean add(@Valid @RequestBody ForumSubjectAddDto forumSubjectAddDto) {
         return forumSubjectService.add(forumDtoMapper.forumSubjectAddDtoToForumSubjectServiceModel(forumSubjectAddDto));
+    }
+
+
+    @PreAuthorize("isAuthenticated()")
+    @PutMapping("/{id}")
+    public boolean put(@PathVariable("id") Long subjectId, @RequestBody com.api.mushroom.controller.dto.ForumSubjectDto forumSubjectDto) {
+        //Mapping
+        ForumSubjectServiceModel forumSubjectServiceModel = mapStructMapper.forumSubjectDtoToService(forumSubjectDto);
+        return forumSubjectService.put(subjectId, forumSubjectServiceModel);
     }
 
 
