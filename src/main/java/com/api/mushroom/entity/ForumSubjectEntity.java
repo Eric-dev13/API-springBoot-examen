@@ -11,11 +11,10 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-
 @Entity
 @Data
 @Table(name = "forum_subject")
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "@id")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class ForumSubjectEntity {
 
     /* ************************************* */
@@ -53,6 +52,7 @@ public class ForumSubjectEntity {
     // @OrderBy("order.createdAt DESC")
     @OneToMany(mappedBy = "forumSubject", orphanRemoval = true)
     private List<ForumCommentaryEntity> forumCommentaries = new ArrayList<>();
+
 
     /* *************************************** */
     /*             JPA PERSISTENCE             */

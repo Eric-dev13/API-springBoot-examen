@@ -22,17 +22,17 @@ public interface ForumServiceMapper {
     ForumCategoryServiceModel forumCategoryEntityToForumCategoryServiceModel(ForumCategoryEntity forumCategoryEntity);
 
 
-
     // service --> repository
     ForumCommentaryEntity addForumCategoryServiceModelToForumCategoryEntity(ForumCommentaryServiceModel forumCommentaryServiceModel);
-
 
 
     // service --> repository
     ForumSubjectEntity forumSubjectServiceModelToForumSubjectEntity(ForumSubjectFullServiceModel forumSubjectFullServiceModel);
 
+
     // repository --> service
     ForumSubjectServiceModel forumSubjectEntityToForumSubjectServiceModel(ForumSubjectEntity forumSubjectEntity);
+
 
     // repository --> service
 //    @Mapping(target="forumCategories", ignore = true)

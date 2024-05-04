@@ -21,6 +21,7 @@
 	<packaging>war</packaging> <!-- + -->
 
 	<dependencies>
+
 		<!-- DATABASE-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -36,7 +37,6 @@
 			<artifactId>mariadb-java-client</artifactId>
 			<scope>runtime</scope>
 		</dependency>
-
 
 		<!-- SECURITY -->
 		<dependency>
@@ -186,7 +186,7 @@
 		</plugins>
 
 		<!-- Configuration du nom du fichier WAR -->
-		<finalName>le-royaume-des-champignons</finalName>
+		<finalName>mushroomkingdom-api</finalName>
 	</build>
 
 	<profiles>

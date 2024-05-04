@@ -61,6 +61,7 @@ public class ForumSubjectService {
 
     public boolean add(ForumSubjectFullServiceModel forumSubjectFullServiceModel) {
         // Récupérer l'email de l'utilisateur courant
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserEntity userEntity = (UserEntity) authentication.getPrincipal();
 
@@ -72,6 +73,7 @@ public class ForumSubjectService {
                 for(Long id : forumSubjectFullServiceModel.getCategoriesId()){
                     if(id > -1) {
                         ForumCategoryEntity forumCategoryEntity = forumCategoryJpaRepository.findById(id).orElse(null);
+
                         forumSubjectEntity.getForumCategories().add(forumCategoryEntity);
                         forumCategoryEntity.getForumSubjects().add(forumSubjectEntity);
                     }

@@ -77,7 +77,6 @@ public class ForumSubjectController {
 
 
     public ResponseEntity<ForumSubjectDto> findById(@PathVariable Long id) {
-
         // Une seule couche de mapping DTO --> ENTITY gestion
         ForumSubjectEntity forumSubjectEntity = forumSubjectService.findById(id);
 
