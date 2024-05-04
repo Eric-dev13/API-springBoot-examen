@@ -1,11 +1,11 @@
 package com.api.mushroom.entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-import org.aspectj.util.LangUtil;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -25,7 +25,6 @@ public class MediaEntity {
     /* ************************************* */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // id auto-incrémente
-    @Setter(AccessLevel.NONE)
     private Long id;
 
     @Column(name="created_at")
@@ -44,9 +43,9 @@ public class MediaEntity {
     // RELATIONS MUSHROOM - mapping type: bidirectionnel
     @ManyToOne
     // Désactiver la génération des méthodes getter ou setter.
-    @Getter(AccessLevel.NONE)
+//    @Getter(AccessLevel.NONE)
     @JoinColumn(name = "mushroom_id")
-    private MushroomEntity mushroomEntity;
+    private MushroomEntity mushroom;
 
 
     /* *************************************** */

@@ -1,10 +1,14 @@
-# ===============================================
-# = CONFIGURATION DU SERVER WEB EMBARQUE TOMCAT =
-# ===============================================
-# Spring Boot incluent par défaut un serveur Web intégré préconfiguré, adresse et port du serveur  8080 par défaut.
-server:
-  port: 9000
-
+# ==========================
+#         PROFIL GENERAL
+# ==========================
+# ============================================================================
+# = CONFIGURATION DE L'INTEGRITE DES JETONS POUR EMPECHER LEUR FALSIFICATION =
+# ============================================================================
+#  Cette clé de 256 bits est considérée comme très robuste en termes de sécurité, offrant une forte protection contre les attaques par force brute et les tentatives de craquage de la clé. Elle est généralement utilisée pour sécuriser des systèmes sensibles, tels que la génération et la validation de tokens JWT (JSON Web Tokens), comme dans votre exemple.
+# "${jwt.signing.secret-key}" = signingKey
+jwt:
+  signing:
+    secret-key: 72357538782F4125442A472D4B6150645367566B597033733676397924422645
 
 # ======================================
 # = CONFIGURATION DE LA JOURNALISATION =
@@ -13,12 +17,15 @@ logging:
   level:
     # Permet de voir dans la console le port utilisé par Tomcat au démarrage
     org.springframework.boot.web.embedded.tomcat: INFO
+    # Niveau de journalisation pour l'ensemble de l'application
     root: INFO
+    # Configuration spécifique pour une classe ou un package
     com.api: DEBUG
+  file: /log/myapp.log
 
-# =============================
-# = DEFINIR PLUSIEURS PROFILS =
-# =============================
+# =======================
+# =  PROFIL PAR DEFAUT  =
+# =======================
 # https://www.baeldung.com/spring-profiles
 
 # deux profils : "dev" et "prod". Le profil actif est défini sur "dev"
@@ -27,20 +34,33 @@ spring:
     # profil a charger par défaut defini dans application.yml
     active: dev
     # Profil Maven : peut être activé via la propriété de configuration spring.profiles.active
-    #	Sa valeur sera utilisée pour remplacer l' espace réservé @spring.profiles.active@ dans application.properties ou application.yml
+    #	Sa valeur sera utilisée pour remplacer l'espace réservé @spring.profiles.active@ dans application.properties ou application.yml
     # active: @spring.profiles.active@
 
   servlet:
     multipart:
-      max-file-size: 5MB
-      max-request-size: 15MB
+      max-file-size: 10MB
+      max-request-size: 10MB
 
 ---
+# ==========================
+#         PROFIL DEV
+# ==========================
+
+# ===============================================
+# = CONFIGURATION DU SERVER WEB EMBARQUE TOMCAT =
+# ===============================================
+# Spring Boot incluent par défaut un serveur Web intégré préconfiguré, adresse et port du serveur  8080 par défaut.
+server:
+  port: 8080
 # =================================
 # = PROFIL PHASE DE DEVELOPPEMENT =
 # =================================
+# domaine : protection CORS (laisse passer l'url spécifiée)
+domaine: http://localhost:4200
+
 spring:
-  #  Définir des propriétés spécifiques pour chaque profil
+  # Définir des propriétés spécifiques pour chaque profil
   config:
     activate:
       on-profile: dev
@@ -50,15 +70,12 @@ spring:
       failedLoginAttempts: 3
       accountLockDuration: 5m
 
-  mvc:
-    throw-exception-if-no-handler-found: true
-    throw-exception-if-no-mapping-found: true
-
   # ==============================================
   # = CONFIGURATION DE LA SOURCE DE DONNEE MySQL =
   # ==============================================
   datasource:
-    url: jdbc:mysql://localhost:3306/mushroom
+    # S'assurer que toute connexion à la base de données est conforme à l’encodage UTF-8.
+    url: jdbc:mysql://localhost:3306/mushroom?useUnicode=yes;characterEncoding=UTF-8
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -71,7 +88,12 @@ spring:
   # = CONFIGURATION DES PROPRIETES JPA (Java Persistence API) =
   # ===========================================================
   jpa:
+    # database-platform: org.hibernate.dialect.MariaDBDialect
     hibernate:
+#      connection:
+#        CharSet: utf-8
+#        characterEncoding: utf-8
+#        useUnicode: true
       ddl-auto: update # create-drop # Hibernate va créer le schéma de base de données à partir des entités annotées. À la fin de l'application, le schéma sera supprimé.
       # ddl-auto: create        # Hibernate va créer le schéma de base de données à partir des entités annotées. Si des tables existent déjà, elles seront supprimées et recréées.
       # ddl-auto: none          # Aucune action DDL automatique ne sera effectuée par Hibernate. Cela signifie que vous devez gérer manuellement la création et la mise à jour des schémas de base de données.
@@ -85,27 +107,47 @@ spring:
     #   Si elle est définie à false, le pool de connexions sera initialisé dès le démarrage de l'application.
 
     # Le moyen le plus simple de vider les requêtes sql vers la sortie standard mais a priori non recommandé
-    show-sql: true
-    properties:
-      hibernate:
+    ##show-sql: true
+    ##properties:
+      ##hibernate:
         # Pour embellir
-        format_sql: true
+        ##format_sql: true
 
-
-  #  Exécute l’insertion de données via le fichier data.sql lors du démarrage de votre application: always / never
+  # Configuration pour l'initialisation SQL
   sql:
     init:
+      #  Définir l'encodage à utiliser lors de l'initialisation de la base de données à partir de scripts SQL.
+      encoding: UTF-8
+      # Exécute l’insertion de données via le fichier data.sql lors du démarrage de votre application: always / never
       mode: never
 
 ---
-# ==============================
-# = PROFIL PHASE DE PRODUCTION =
-# ==============================
+
+# ==========================
+#         PROFIL PROD
+# ==========================
+domaine: https://mushroomkingdom.ddns.net
+
 spring:
   config:
     activate:
       on-profile: prod
+
   datasource:
-    url: jdbc:mysql://localhost:3306/proddatabase
-    username: produser
-    password: prodpassword
+    url: jdbc:mariadb://localhost:3306/mushroom?useUnicode=yes&characterEncoding=UTF-8
+    username: springboot
+    password: auth-for@Mariadb&13009
+    driver-class-name: org.mariadb.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: none # create-drop
+    defer-datasource-initialization: true
+
+  # Configuration pour l'initialisation SQL
+  sql:
+    init:
+      #  Définir l'encodage à utiliser lors de l'initialisation de la base de données à partir de scripts SQL.
+      encoding: UTF-8
+      # Exécute l’insertion de données via le fichier data.sql lors du démarrage de votre application: always / never
+      mode: never

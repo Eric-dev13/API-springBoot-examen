@@ -1,48 +1,50 @@
 package com.api.mushroom.service;
 
+import com.api.mushroom.Mapper.MapStructMapper;
 import com.api.mushroom.entity.EdibilityEntity;
 import com.api.mushroom.entity.LamellatypeEntity;
 import com.api.mushroom.repository.LamellaTypeJpaRepository;
+import com.api.mushroom.service.model.LamellatypeServiceModel;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import javax.management.relation.RoleNotFoundException;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
-//@Data
 @Service
 public class LamellaTypeService {
 
     private final LamellaTypeJpaRepository lamellaTypeJpaRepository;
+    private final MapStructMapper mapStructMapper;
 
-    // GET - Récupère un tableau d'enregistrement
-    public Iterable<LamellatypeEntity> getAll() {
-        return lamellaTypeJpaRepository.findAll();
+
+    public List<LamellatypeServiceModel> getAll() {
+        List<LamellatypeEntity> lamellatype = lamellaTypeJpaRepository.findAll();
+        return lamellatype.stream().map(mapStructMapper::lamellatypeEntityToLamellatypeService).collect(Collectors.toList());
     }
 
-    // GET - Récupère un enregistrement par l'ID
-    public Optional<LamellatypeEntity> getById(Long id){
-        return lamellaTypeJpaRepository.findById(id);
+    public LamellatypeServiceModel getById(Long id) throws RoleNotFoundException {
+        LamellatypeEntity lamellatype = lamellaTypeJpaRepository.findById(id).orElseThrow(() -> new RoleNotFoundException("La référence avec l'ID spécifié n'a pas été trouvé."));
+        return mapStructMapper.lamellatypeEntityToLamellatypeService(lamellatype);
     }
 
-    // POST : Ajouter un enregistrement
-    public LamellatypeEntity add(LamellatypeEntity mushroomEntity) {
-        return lamellaTypeJpaRepository.save(mushroomEntity);
+    public boolean add(LamellatypeServiceModel lamellatypeServiceModel) {
+        LamellatypeEntity lamellatypeEntity = mapStructMapper.lamellatypeServiceToLamellatypeEntity(lamellatypeServiceModel);
+        LamellatypeEntity savedLamellatypeEntity = lamellaTypeJpaRepository.save(lamellatypeEntity);
+        return savedLamellatypeEntity != null;
     }
 
-    // UPDATE : Mettre à jour un enregistrement
-    public LamellatypeEntity put(LamellatypeEntity mushroomEntity){
-        return lamellaTypeJpaRepository.save(mushroomEntity);
+    public boolean put(LamellatypeServiceModel lamellatypeServiceModel){
+        LamellatypeEntity lamellatypeEntity = mapStructMapper.lamellatypeServiceToLamellatypeEntity(lamellatypeServiceModel);
+        LamellatypeEntity savedLamellatypeEntity = lamellaTypeJpaRepository.save(lamellatypeEntity);
+        return savedLamellatypeEntity != null;
     }
 
-    // PATCH : Mise à jour partiel d'un enregistrement
-    public LamellatypeEntity patch(LamellatypeEntity lamellatypeEntity) {
-        return lamellaTypeJpaRepository.save(lamellatypeEntity);
-    }
-
-    // delete : Supprimer un enregistrement
     public boolean delete(Long id) {
         if(lamellaTypeJpaRepository.existsById(id)) {
             lamellaTypeJpaRepository.deleteById(id);
@@ -50,5 +52,4 @@ public class LamellaTypeService {
         }
         return false;
     }
-
 }

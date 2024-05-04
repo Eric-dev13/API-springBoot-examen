@@ -1,8 +1,6 @@
 package com.api.mushroom.service.utils;
 
 import com.github.slugify.Slugify;
-import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;

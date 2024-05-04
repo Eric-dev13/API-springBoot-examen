@@ -1,6 +1,8 @@
 package com.api.mushroom.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.github.slugify.Slugify;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
@@ -14,11 +16,7 @@ import java.util.*;
 @Entity
 @Data
 @Table(name = "mushroom")
-@NamedQueries({
-        @NamedQuery(name = "MushroomEntity.findAllByVisibility", query = "SELECT m FROM MushroomEntity m WHERE m.visibility = :visibility ORDER BY commonname"),
-        @NamedQuery(name = "MushroomEntity.findAllTitleImageEdibilityByVisibility", query = "SELECT m.commonname as commonname, m.medias as medias, m.edibility as edibility FROM MushroomEntity m WHERE m.visibility = :visibility"),
-        @NamedQuery(name = "MushroomEntity.findBySlug", query = "SELECT m FROM MushroomEntity m WHERE m.slug=:slug"),
-})
+@NamedQuery(name = "MushroomEntity.findBySlug", query = "SELECT m FROM MushroomEntity m WHERE m.slug=:slug")
 public class MushroomEntity {
     /* ************************************* */
     /*      DECLARATION DES PROPRIETES       */
@@ -84,16 +82,15 @@ public class MushroomEntity {
     @JoinColumn(name = "edibility_id")
     private EdibilityEntity edibility;
 
-    // ASSOCIE AVEC L'ENTITEE LOCALNAME - mapping type: bidirectionnel - (cle étrangère est stockée dans la table associée)
+    // ASSOCIE AVEC L'ENTITE LOCALNAME - mapping type: bidirectionnel - (cle étrangère est stockée dans la table associée)
     // Configurée pour propager les opérations de persistance (CascadeType.PERSIST)et de suppression automatiquement des entités enfants lorsqu'elles sont dissociées de l'entité parente (orphanRemoval = true).
-    @OneToMany(mappedBy = "mushroomEntity", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    @OneToMany(mappedBy = "mushroom", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<LocalnameEntity> localnames = new ArrayList<>();
 
     // ASSOCIE AVEC L'ENTITEE MEDIAS - mapping type: bidirectionnel - (cle étrangère est stockée dans la table associée)
     // Configurée pour propager les opérations de persistance (CascadeType.PERSIST)et de suppression automatiquement des entités enfants lorsqu'elles sont dissociées de l'entité parente (orphanRemoval = true).
-    @OneToMany(mappedBy = "mushroomEntity", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    @OneToMany(mappedBy = "mushroom", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<MediaEntity> medias = new ArrayList<>();
-
 
 
     /* *************************************** */

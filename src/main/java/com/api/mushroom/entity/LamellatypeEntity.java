@@ -6,7 +6,9 @@ import lombok.Data;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -35,7 +37,7 @@ public class LamellatypeEntity {
     /*           RELATIONS / ASSOCIATIONS           */
     /* ******************************************** */
     @OneToMany(mappedBy = "lamellatype", orphanRemoval = true)
-    private Set<MushroomEntity> mushroom = new LinkedHashSet<>();
+    private List<MushroomEntity> mushroom = new ArrayList<>();
 
 
     /* *************************************** */

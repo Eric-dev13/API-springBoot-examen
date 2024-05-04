@@ -1,10 +1,9 @@
 package com.api.mushroom.entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -12,10 +11,10 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-
 @Entity
 @Data
 @Table(name = "forum_subject")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class ForumSubjectEntity {
 
     /* ************************************* */
@@ -45,14 +44,15 @@ public class ForumSubjectEntity {
     /* ******************************************** */
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private UserEntity userEntity;
+    private UserEntity user;
 
-    @ManyToMany(mappedBy = "forumSubjectEntities")
-    private Set<ForumCategory> forumCategories = new LinkedHashSet<>();
+    @ManyToMany(mappedBy = "forumSubjects")
+    private List<ForumCategoryEntity> forumCategories = new ArrayList<>();
 
-    @OneToMany(mappedBy = "forumSubjectEntity", orphanRemoval = true)
     // @OrderBy("order.createdAt DESC")
-    private List<ForumCommentaryEntity> forumCommentaryEntities = new ArrayList<>();
+    @OneToMany(mappedBy = "forumSubject", orphanRemoval = true)
+    private List<ForumCommentaryEntity> forumCommentaries = new ArrayList<>();
+
 
     /* *************************************** */
     /*             JPA PERSISTENCE             */

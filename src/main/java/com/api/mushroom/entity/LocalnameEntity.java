@@ -19,7 +19,6 @@ public class LocalnameEntity {
     /* ************************************* */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Setter(AccessLevel.NONE)
     private Long id;
 
     @Column(name="created_at")
@@ -34,10 +33,10 @@ public class LocalnameEntity {
     /* ******************************************** */
     // RELATIONS MUSHROOM - mapping type: bidirectionnel
     // Désactiver la génération des méthodes getter ou setter.
-    @Getter(AccessLevel.NONE)
+//    @Getter(AccessLevel.NONE)
     @ManyToOne
     @JoinColumn(name = "mushroom_id")
-    private MushroomEntity mushroomEntity;
+    private MushroomEntity mushroom;
 
 
     /* *************************************** */
