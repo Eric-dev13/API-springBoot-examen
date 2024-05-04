@@ -1,0 +1,47 @@
+# Nom du workflow
+name: Build and Deploy Spring Boot Application
+
+# Événement qui déclenche le workflow
+on:
+  push:
+    branches:
+      - main # Branche sur laquelle le workflow sera exécuté
+
+# Définition des tâches à exécuter
+jobs:
+  build-and-deploy: # Nom de la tâche
+    runs-on: ubuntu-latest # Système d'exploitation sur lequel la tâche sera exécutée
+
+    steps: # Liste des étapes à exécuter
+      - name: Checkout code # Nom de l'étape
+        uses: actions/checkout@v2 # Action qui clone le dépôt GitHub sur le runner
+
+      - name: Set up JDK 17 # Nom de l'étape
+        uses: actions/setup-java@v2 # Action qui installe le JDK 17 sur le runner
+        with:
+          java-version: '17' # Version du JDK à installer
+          distribution: 'adopt' # Distribution du JDK à installer
+
+      - name: Build with Maven # Nom de l'étape
+        run: mvn -B package --file pom.xml # Commande qui construit l'application Spring Boot avec Maven
+
+      - name: Copy WAR file to Tomcat webapps directory # Nom de l'étape
+        uses: appleboy/scp-action@master # Action qui copie les fichiers sur le serveur via SCP
+        with:
+          host: 151.80.148.111 # Adresse IP ou nom d'hôte du serveur
+          username: lova # Nom d'utilisateur sur le serveur
+          key: ${{ secrets.VPS_LOVA }} # Clé SSH privée pour se connecter au serveur, stockée en tant que secret GitHub
+          port: 22 # Port SSH du serveur
+          source: target/*.war # Chemin d'accès aux fichiers WAR à copier sur le serveur
+          target: /opt/tomcat/apache-tomcat-10.1.23/webapps/*.war # Répertoire cible sur le serveur
+          sudo: true # Exécute la commande avec des privilèges sudo
+
+      - name: Restart Tomcat # Nom de l'étape
+        uses: appleboy/ssh-action@master
+        with:
+          host: 151.80.148.111 # Adresse IP ou nom d'hôte du serveur
+          username: lova # Nom d'utilisateur sur le serveur
+          key: ${{ secrets.VPS_LOVA }} # Clé SSH privée pour se connecter au serveur, stockée en tant que secret GitHub
+          port: 22 # Port SSH du serveur
+          script: | # Commande à exécuter sur le serveur - Redémarre le service Tomcat
+            sudo systemctl restart tomcat
