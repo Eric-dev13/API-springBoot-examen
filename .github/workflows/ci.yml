@@ -26,11 +26,6 @@ jobs:
         run: mvn clean package -DskipTests --file pom.xml # Commande qui construit l'application Spring Boot avec Maven
 
       - name: Copy WAR file to Tomcat webapps directory # Nom de l'étape
-        run: |
-          echo "Copy WAR file to Tomcat webapps directory"
-          echo "Host: ${{ secrets.VPS_LOVA }}"
-          echo "Source: target/*.war"
-          echo "Target: /opt/tomcat/apache-tomcat-10.1.23/webapps/mushroomkingdom-api.war"
         uses: appleboy/scp-action@master # Action qui copie les fichiers sur le serveur via SCP
         with:
           host: 151.80.148.111 # Adresse IP ou nom d'hôte du serveur
