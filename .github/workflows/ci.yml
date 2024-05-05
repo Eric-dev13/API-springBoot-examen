@@ -27,8 +27,16 @@ jobs:
 
       - name: Copy WAR file to Tomcat webapps directory # Nom de l'étape
         run: |
-          sudo scp -i ${{ secrets.VPS_LOVA }} -P 22 target/*.war lova@151.80.148.111:/opt/tomcat/apache-tomcat-10.1.23/webapps/mushroomkingdom-api.war
-
-      - name: Restart Tomcat # Nom de l'étape
-        run: |
-          sudo ssh -i ${{ secrets.VPS_LOVA }} -p 22 lova@151.80.148.111 'sudo systemctl restart tomcat'
+          echo "Copy WAR file to Tomcat webapps directory"
+          echo "Host: ${{ secrets.VPS_LOVA }}"
+          echo "Source: target/*.war"
+          echo "Target: /opt/tomcat/apache-tomcat-10.1.23/webapps/mushroomkingdom-api.war"
+        uses: appleboy/scp-action@master # Action qui copie les fichiers sur le serveur via SCP
+        with:
+          host: 151.80.148.111 # Adresse IP ou nom d'hôte du serveur
+          username: lova # Nom d'utilisateur sur le serveur
+          key: ${{ secrets.VPS_LOVA }} # Clé SSH privée pour se connecter au serveur, stockée en tant que secret GitHub
+          port: 22 # Port SSH du serveur
+          source: target/*.war # Chemin d'accès aux fichiers WAR à copier sur le serveur
+          target: /opt/tomcat/apache-tomcat-10.1.23/webapps/mushroomkingdom-api.war # Répertoire cible sur le serveur
+          sudo: true  # Exécute la commande avec des privilèges sudo
