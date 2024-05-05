@@ -34,3 +34,5 @@ jobs:
           port: 22 # Port SSH du serveur
           source: target/*.war # Chemin d'accès aux fichiers WAR à copier sur le serveur
           target: /opt/tomcat/apache-tomcat-10.1.23/webapps/mushroomkingdom-api.war # Répertoire cible sur le serveur
+          sudo: true
+          sudoPassword: ${{ secrets.VPS_LOVA_SUDO_PASSWORD }}
