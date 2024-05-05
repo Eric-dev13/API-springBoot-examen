@@ -3,7 +3,7 @@ name: Build and Deploy Spring Boot Application
 
 # Événement qui déclenche le workflow
 on:
-  push:
+  pull_request:
     branches:
       - main # Branche sur laquelle le workflow sera exécuté
 
