@@ -27,11 +27,19 @@ jobs:
 
       - name: Copy WAR file to Tomcat webapps directory # Nom de l'étape
         run: |
-          echo "${{ secrets.VPS_LOVA }}" > /tmp/vps_lova_key
-          chmod 600 /tmp/vps_lova_key
-          sudo scp -i /tmp/vps_lova_key -P 22 target/*.war lova@151.80.148.111:/opt/tomcat/apache-tomcat-10.1.23/webapps/mushroomkingdom-api.war
-
-
-      - name: Restart Tomcat # Nom de l'étape
-        run: |
-          sudo ssh -i ${{ secrets.VPS_LOVA }} -p 22 lova@151.80.148.111 'sudo systemctl restart tomcat'
+          echo "Déploiement sur le VPS"
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VPS_LOVA }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          # Vérifier la connexion au VPS
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa lova@151.80.148.111 'exit 0'
+          if [ $? -eq 0 ]; then
+            echo "Connexion au VPS établie"
+            # Déployer le fichier WAR
+            scp -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa target/mushroomkingdom-api.war lova@151.80.148.111:/opt/tomcat/apache-tomcat-10.1.23/webapps/mushroomkingdom-api.war
+            # Redémarrer Tomcat
+            ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa lova@151.80.148.111 'sudo systemctl restart tomcat'
+          else
+            echo "Échec de la connexion au VPS"
+            exit 1
+          fi
