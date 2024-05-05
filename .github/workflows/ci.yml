@@ -25,7 +25,6 @@ jobs:
       - name: Build with Maven # Nom de l'étape
         run: mvn clean package -DskipTests --file pom.xml # Commande qui construit l'application Spring Boot avec Maven
 
-
       - name: Copy WAR file to Tomcat webapps directory # Nom de l'étape
         run: |
           echo "Copy WAR file to Tomcat webapps directory"
