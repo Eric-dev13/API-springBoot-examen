@@ -3,7 +3,7 @@ name: Build and Deploy Spring Boot Application
 
 # Événement qui déclenche le workflow
 on:
-  push:
+  pull_request:
     branches:
       - main # Branche sur laquelle le workflow sera exécuté
 
@@ -34,4 +34,3 @@ jobs:
           port: 22 # Port SSH du serveur
           source: target/*.war # Chemin d'accès aux fichiers WAR à copier sur le serveur
           target: /opt/tomcat/apache-tomcat-10.1.23/webapps/mushroomkingdom-api.war # Répertoire cible sur le serveur
-          sudo: true  # Exécute la commande avec des privilèges sudo
