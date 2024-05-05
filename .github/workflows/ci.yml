@@ -36,7 +36,7 @@ jobs:
           if [ $? -eq 0 ]; then
             echo "Connexion au VPS établie"
             # Déployer le fichier WAR
-            scp -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa target/mushroomkingdom-api.war lova@151.80.148.111:/home/lova/eric/mushroomkingdom-api.war
+            scp -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa target/mushroomkingdom-api.war lova@151.80.148.111:/opt/tomcat/apache-tomcat-10.1.23/webapps/mushroomkingdom-api.war
             echo "Le fichier WAR a été copier sur le VPS"
             # Redémarrer Tomcat
             ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa lova@151.80.148.111 'sudo systemctl restart tomcat'
