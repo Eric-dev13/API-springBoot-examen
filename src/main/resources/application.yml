@@ -32,7 +32,7 @@ logging:
 spring:
   profiles:
     # profil a charger par défaut defini dans application.yml
-    active: dev
+    active: prod
     # Profil Maven : peut être activé via la propriété de configuration spring.profiles.active
     #	Sa valeur sera utilisée pour remplacer l'espace réservé @spring.profiles.active@ dans application.properties ou application.yml
     # active: @spring.profiles.active@
