@@ -34,6 +34,9 @@ jobs:
           username: lova # Nom d'utilisateur sur le serveur
           key: ${{ secrets.VPS_LOVA }} # Clé SSH privée pour se connecter au serveur, stockée en tant que secret GitHub
           port: 22 # Port SSH du serveur
-          source: target/*.war # Chemin d'accès aux fichiers WAR à copier sur le serveur
-          target: /opt/tomcat/apache-tomcat-10.1.23/webapps/mushroomkingdom-api.war # Répertoire cible sur le serveur
+          source: /github/workspace/target/*.war
+          #source: target/*.war # Chemin d'accès aux fichiers WAR à copier sur le serveur
+          target: /home/lova/test/mushroomkingdom-api.war
+          #target: /opt/tomcat/apache-tomcat-10.1.23/webapps/mushroomkingdom-api.war # Répertoire cible sur le serveur
           sudo: true
+
