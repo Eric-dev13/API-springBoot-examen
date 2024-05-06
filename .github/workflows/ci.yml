@@ -35,6 +35,6 @@ jobs:
           key: ${{ secrets.VPS_LOVA }} # Clé SSH privée pour se connecter au serveur, stockée en tant que secret GitHub
           port: 22 # Port SSH du serveur
           script: | # Commande(s) à exécuter sur le serveur
-            echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S cp -r /github/workspace/target/mushroomkingdom-api.war /opt/tomcat/apache-tomcat-10.1.23/webapps/mushroomkingdom2-api.war # Copie le fichier WAR dans le répertoire cible
+            echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S cp -r /github/workspace/target/mushroomkingdom-api.war /opt/tomcat/apache-tomcat-10.1.23/webapps/mushroomkingdom3-api.war # Copie le fichier WAR dans le répertoire cible
         env:
           SUDO_PASSWORD: ${{ secrets.SUDO_PASSWORD }}
