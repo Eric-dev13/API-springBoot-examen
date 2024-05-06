@@ -3,9 +3,11 @@ name: Build and Deploy Spring Boot Application
 
 # Événement qui déclenche le workflow
 on:
+  push:
+    branches: [ "main" ] # Branche sur laquelle le workflow sera exécuté
   pull_request:
-    branches:
-      - main # Branche sur laquelle le workflow sera exécuté
+    branches: [ "main" ] # Branche sur laquelle le workflow sera exécuté
+
 
 # Définition des tâches à exécuter
 jobs:
@@ -35,4 +37,3 @@ jobs:
           source: target/*.war # Chemin d'accès aux fichiers WAR à copier sur le serveur
           target: /opt/tomcat/apache-tomcat-10.1.23/webapps/mushroomkingdom-api.war # Répertoire cible sur le serveur
           sudo: true
-          sudoPassword: ${{ secrets.VPS_LOVA_SUDO_PASSWORD }}
