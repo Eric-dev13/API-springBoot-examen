@@ -30,6 +30,17 @@ jobs:
         run: mvn clean package -DskipTests --file pom.xml # Commande qui construit l'application Spring Boot avec Maven
 
 
+      - name: Copy WAR file to VPS user # Nom de l'étape
+        uses: appleboy/scp-action@master # Action qui copie les fichiers sur le serveur via SCP
+        with:
+          host: 151.80.148.111 # Adresse IP ou nom d'hôte du serveur
+          username: lova # Nom d'utilisateur sur le serveur
+          key: ${{ secrets.VPS_LOVA }} # Clé SSH privée pour se connecter au serveur, stockée en tant que secret GitHub
+          port: 22 # Port SSH du serveur
+          source: /github/workspace/target/mushroomkingdom-api.war
+          target: /home/lova/application_web-eric # Répertoire cible sur le serveur
+
+
       - name: Copy WAR file to Tomcat webapps directory # Nom de l'étape
         uses: appleboy/ssh-action@master # Action qui exécute des commandes SSH sur le serveur
         with:
@@ -38,6 +49,7 @@ jobs:
           key: ${{ secrets.VPS_LOVA }} # Clé SSH privée pour se connecter au serveur, stockée en tant que secret GitHub
           port: 22 # Port SSH du serveur
           script: | # Commande(s) à exécuter sur le serveur
-            echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S cp -r ${{ github.workspace }}/target/mushroomkingdom-api.war /opt/tomcat/apache-tomcat-10.1.23/webapps/mushroomkingdom-api.war # Copie le fichier WAR dans le répertoire cible
+            echo "Racine: ${{ github.workspace }}"
+            echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S cp -r /home/lova/application_web-eric/github/workspace/target/mushroomkingdom-api.war /opt/tomcat/apache-tomcat-10.1.23/webapps/mushroomkingdom-api.war # Copie le fichier WAR dans le répertoire cible
         env:
           SUDO_PASSWORD: ${{ secrets.SUDO_PASSWORD }}
