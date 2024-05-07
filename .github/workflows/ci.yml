@@ -14,15 +14,15 @@ jobs:
   build-and-deploy: # Nom de la tâche
     runs-on: ubuntu-latest # Système d'exploitation sur lequel la tâche sera exécutée
     steps: # Liste des étapes à exécuter
-      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
-      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
-      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
+      - run: echo "🎉 Le travail a été automatiquement déclenché par l'évenement ${{ github.event_name }}."
+      - run: echo "🐧 Cette tâche s'exécute désormais sur un serveur ${{ runner.os }} hébergé par GitHub !"
+      - run: echo "🔎 Le nom de votre branche est ${{ github.ref }} et votre référentiel est  ${{ github.repository }}."
 
 
       - name: Checkout code # Nom de l'étape
         uses: actions/checkout@v2 # Action qui clone le dépôt GitHub sur le runner
-      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
-      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
+      - run: echo "💡 Le dépôt ${{ github.repository }} a été cloné sur le runner."
+      - run: echo "🖥️ Le workflow est maintenant prêt à tester mon code sur le runner."
 
 
       - name: Set up JDK 17 # Nom de l'étape
@@ -51,7 +51,9 @@ jobs:
       - name: List files in the repository
         run: |
           ls ${{ github.workspace }}
-      - run: echo "🍏 This job's status is ${{ job.status }}."
+      - run: echo "🍏 Le statut de cette tâche est ${{ job.status }}."
+      - run: |
+          ls "${{ github.workspace }}/target"
 
 
       - name: Copy WAR file to Tomcat webapps directory # Nom de l'étape
