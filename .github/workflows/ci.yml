@@ -23,8 +23,8 @@ jobs:
         uses: actions/setup-java@v2 # Action qui installe le JDK 17 sur le runner
         with:
           java-version: '17' # Version du JDK à installer
-          distribution: 'adopt' # Distribution du JDK à installer
-
+          distribution: 'temurin' # Distribution du JDK à installer
+          cache: maven #  Cache Maven à utiliser pour stocker les dépendances téléchargées ('accélérer les builds).
 
       - name: Build with Maven # Nom de l'étape
         run: mvn clean package -DskipTests --file pom.xml # Commande qui construit l'application Spring Boot avec Maven
@@ -39,6 +39,7 @@ jobs:
           port: 22 # Port SSH du serveur
           source: /github/workspace/target/mushroomkingdom-api.war
           target: /home/lova/application_web-eric # Répertoire cible sur le serveur
+          flatten: true # Le chemin d'origine du fichier sera ignoré, seul le fichier WAR sera copié dans le répertoire cible
 
 
       - name: Copy WAR file to Tomcat webapps directory # Nom de l'étape
@@ -49,6 +50,6 @@ jobs:
           key: ${{ secrets.VPS_LOVA }} # Clé SSH privée pour se connecter au serveur, stockée en tant que secret GitHub
           port: 22 # Port SSH du serveur
           script: | # Commande(s) à exécuter sur le serveur
-            echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S cp -r /home/lova/application_web-eric/github/workspace/target/mushroomkingdom-api.war /opt/tomcat/apache-tomcat-10.1.23/webapps/mushroomkingdom-api.war # Copie le fichier WAR dans le répertoire cible
+            echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S cp -r /home/lova/application_web-eric/mushroomkingdom-api.war /opt/tomcat/apache-tomcat-10.1.23/webapps/mushroomkingdom-api.war # Copie le fichier WAR dans le répertoire cible
         env:
           SUDO_PASSWORD: ${{ secrets.SUDO_PASSWORD }}
