@@ -13,10 +13,17 @@ on:
 jobs:
   build-and-deploy: # Nom de la tâche
     runs-on: ubuntu-latest # Système d'exploitation sur lequel la tâche sera exécutée
-
     steps: # Liste des étapes à exécuter
+      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
+      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
+      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
+
+
       - name: Checkout code # Nom de l'étape
         uses: actions/checkout@v2 # Action qui clone le dépôt GitHub sur le runner
+      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
+      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
+
 
       - name: Set up JDK 17 # Nom de l'étape
         uses: actions/setup-java@v2 # Action qui installe le JDK 17 sur le runner
@@ -25,8 +32,10 @@ jobs:
           distribution: 'temurin' # Distribution du JDK à installer
           cache: maven #  Cache Maven à utiliser pour stocker les dépendances téléchargées ('accélérer les builds).
 
+
       - name: Build with Maven # Nom de l'étape
         run: mvn clean package -DskipTests --file pom.xml # Commande qui construit l'application Spring Boot avec Maven
+
 
       - name: Copy WAR file to VPS user # Nom de l'étape
         uses: appleboy/scp-action@master # Action qui copie les fichiers sur le serveur via SCP
@@ -37,6 +46,12 @@ jobs:
           port: 22 # Port SSH du serveur
           source: /github/workspace/target/mushroomkingdom-api.war
           target: /home/lova/application_web-eric # Répertoire cible sur le serveur
+
+
+      - name: List files in the repository
+        run: |
+          ls ${{ github.workspace }}
+      - run: echo "🍏 This job's status is ${{ job.status }}."
 
 
       - name: Copy WAR file to Tomcat webapps directory # Nom de l'étape
