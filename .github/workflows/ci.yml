@@ -38,8 +38,7 @@ jobs:
           key: ${{ secrets.VPS_LOVA }} # Clé SSH privée pour se connecter au serveur, stockée en tant que secret GitHub
           port: 22 # Port SSH du serveur
           source: /github/workspace/target/mushroomkingdom-api.war
-          target: /home/lova/application_web-eric # Répertoire cible sur le serveur
-          flatten: true # Le chemin d'origine du fichier sera ignoré, seul le fichier WAR sera copié dans le répertoire cible
+          target: /home/lova/application_web-eric/$(basename /github/workspace/target/mushroomkingdom-api.war) # Répertoire cible sur le serveur
 
 
       - name: Copy WAR file to Tomcat webapps directory # Nom de l'étape
