@@ -49,11 +49,14 @@ jobs:
 
 
       - name: List files in the repository
-        run: |
-          ls ${{ github.workspace }}
-      - run: echo "🍏 Le statut de cette tâche est ${{ job.status }}."
-      - run: |
-          ls "${{ github.workspace }}/target"
+        run: ls ${{ github.workspace }}
+
+
+      - name: List files in the target
+        run: ls "${{ github.workspace }}/target"
+
+      - name: Absolute path of working directory
+        run: echo "Path':' ${{ github.workspace }}"
 
 
       - name: Copy WAR file to Tomcat webapps directory # Nom de l'étape
@@ -64,12 +67,9 @@ jobs:
           key: ${{ secrets.PRIVATE_SSH_KEY }} # Clé SSH privée pour se connecter au serveur, stockée en tant que secret GitHub
           port: 22 # Port SSH du serveur
           script: | # Commande(s) à exécuter sur le serveur
-            echo "Racine: ${{ github.workspace }}"
-            if [ -e "${{ github.workspace }}/target/mushroomkingdom-api.war" ]; then
-              echo "Le chemin existe."
-            else
-              echo "Le chemin n'existe pas."
-            fi
             echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S cp -r /home/lova/application_web-eric/github/workspace/target/mushroomkingdom-api.war /opt/tomcat/apache-tomcat-10.1.23/webapps/mushroomkingdom-api.war # Copie le fichier WAR dans le répertoire cible
         env:
           SUDO_PASSWORD: ${{ secrets.SUDO_PASSWORD }}
+
+
+      - run: echo "🍏 Le statut de cette tâche est ${{ job.status }}."
